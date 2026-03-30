@@ -8,7 +8,7 @@ import 'package:demo_app/res/app_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-Widget commonButton({
+Widget commonButton2({
   required String text,
   required VoidCallback? onPressed,
   Color color = Colors.red,
@@ -35,14 +35,45 @@ Widget commonButton({
       child: isLoading
           ? CircularProgressIndicator(color: textColor, strokeWidth: 2.5)
           : child ??
-                Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: fontSize,
-                    color: textColor,
-                    fontWeight: FontWeight.w600,
-                  ),
+              Text(
+                text,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  color: textColor,
+                  fontWeight: FontWeight.w600,
                 ),
+              ),
+    ),
+  );
+}
+
+Widget commonButton({
+  required String text,
+  required VoidCallback? onPressed,
+  bool isLoading = false,
+}) {
+  return SizedBox(
+    width: double.infinity,
+    height: 56,
+    child: ElevatedButton(
+      onPressed: isLoading ? null : onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF1E40AF),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        elevation: 0,
+      ),
+      child: isLoading
+          ? const CircularProgressIndicator(color: Colors.white)
+          : Text(
+              text,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
     ),
   );
 }
@@ -272,8 +303,7 @@ class CustomDropdownButton3 extends StatelessWidget {
           width: buttonWidth ?? double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16),
 
-          decoration:
-              buttonDecoration ??
+          decoration: buttonDecoration ??
               BoxDecoration(
                 color: AppColors.color_F7F7,
                 borderRadius: BorderRadius.circular(16),
@@ -297,8 +327,7 @@ class CustomDropdownButton3 extends StatelessWidget {
           maxHeight: dropdownHeight ?? 200,
           // width: dropdownWidth ?? double.infinity - 32,
           padding: dropdownPadding,
-          decoration:
-              dropdownDecoration ??
+          decoration: dropdownDecoration ??
               BoxDecoration(
                 color: AppColors.color_FFFF,
                 borderRadius: BorderRadius.circular(14),
@@ -325,44 +354,46 @@ class CustomDropdownButton3 extends StatelessWidget {
   }
 }
 
-Widget commonSvgIcon({required String icon, required double width, required double height}) {
+Widget commonSvgIcon(
+    {required String icon, required double width, required double height}) {
   return CircleAvatar(
     radius: 30,
     backgroundColor: Colors.pink[50],
     child: SvgPicture.asset(icon, width: width, height: height),
   );
 }
-  Widget datePickerField({
-    required BuildContext context,
-    required DateTime selectedDate,
-    required Function(DateTime) onDateSelected,
-  }) {
-    return GestureDetector(
-      onTap: () async {
-        // Mở DatePicker của hệ thống
-        final DateTime? picked = await showDatePicker(
-          context: context,
-          initialDate: selectedDate,
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2101),
-        );
-        print(picked);
-        if (picked != null && picked != selectedDate) {
-          onDateSelected(picked);
-        }
-      },
-      child: grayContainer(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 8,
-          children: [
-            Text(
-              "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
-              style: AppTextFonts.poppinsRegular.copyWith(fontSize: 14),
-            ),
-            SvgPicture.asset(AppImages.icCalendarRed),
-          ],
-        ),
+
+Widget datePickerField({
+  required BuildContext context,
+  required DateTime selectedDate,
+  required Function(DateTime) onDateSelected,
+}) {
+  return GestureDetector(
+    onTap: () async {
+      // Mở DatePicker của hệ thống
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+      print(picked);
+      if (picked != null && picked != selectedDate) {
+        onDateSelected(picked);
+      }
+    },
+    child: grayContainer(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 8,
+        children: [
+          Text(
+            "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+            style: AppTextFonts.poppinsRegular.copyWith(fontSize: 14),
+          ),
+          SvgPicture.asset(AppImages.icCalendarRed),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}

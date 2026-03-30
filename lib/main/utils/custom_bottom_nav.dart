@@ -23,7 +23,6 @@ class CustomBottomNav extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Positioned.fill(child: CustomPaint(painter: BottomNavPainter())),
-
           Positioned.fill(
             child: Row(
               children: [
@@ -41,25 +40,16 @@ class CustomBottomNav extends StatelessWidget {
                     AppLocalizations.of(context)!.reward,
                   ),
                 ),
-                Expanded(child: _buildCenterItem(context)),
                 Expanded(
                   child: _buildNavItem(
-                    3,
+                    2,
                     AppImages.icEntertainment,
                     AppLocalizations.of(context)!.entertainment,
-                  ),
-                ),
-                Expanded(
-                  child: _buildNavItem(
-                    4,
-                    AppImages.icHelpCenter,
-                    AppLocalizations.of(context)!.help_center,
                   ),
                 ),
               ],
             ),
           ),
-
           Positioned(
             top: -30,
             left: MediaQuery.of(context).size.width / 2 - 40,
@@ -97,34 +87,6 @@ class CustomBottomNav extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCenterItem(context) {
-    final bool isSelected = currentIndex == 2;
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => onTabSelected(2),
-      child: SizedBox.expand(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 36),
-            Text(
-              AppLocalizations.of(context)!.metfone,
-              style: isSelected
-                  ? AppTextFonts.poppinsMedium.copyWith(
-                      fontSize: 10,
-                      color: AppColors.colorMain,
-                    )
-                  : AppTextFonts.poppinsRegular.copyWith(
-                      fontSize: 10,
-                      color: AppColors.colorMain,
-                    ),
-            ),
-          ],
-        ),
       ),
     );
   }

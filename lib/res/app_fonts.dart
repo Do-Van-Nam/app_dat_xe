@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppTextFonts {
   static const TextStyle _poppins = TextStyle(fontFamily: 'Poppins');
+  static const TextStyle _inter = TextStyle(fontFamily: 'Inter');
 
   static final TextStyle poppinsThin = _poppins.copyWith(
     fontWeight: FontWeight.w100,

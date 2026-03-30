@@ -1,6 +1,8 @@
 import 'package:demo_app/main/data/model/user_info_model.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
-import 'package:demo_app/main/ui/help_center/help_center_page.dart';
+import 'package:demo_app/main/ui/activity/activity_page.dart';
+import 'package:demo_app/main/ui/home/home_page.dart';
+import 'package:demo_app/main/ui/profile/profile_page.dart';
 import 'package:demo_app/main/utils/app_check.dart';
 import 'package:demo_app/main/utils/app_config.dart';
 import 'package:demo_app/main/utils/custom_bottom_nav.dart';
@@ -17,8 +19,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
-  final PageController _pageController =
-  PageController();
+  final PageController _pageController = PageController();
 
   void _onItemTapped(int index) {
     setState(() {
@@ -45,22 +46,18 @@ class _MainPageState extends State<MainPage> {
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
         children: [
-          
-          HelpCenterPage(),
-          HelpCenterPage(),
-          HelpCenterPage(),
-          HelpCenterPage(),
-          HelpCenterPage(),
+          HomePage(),
+          ActivityPage(),
+          ProfilePage(),
         ],
       ),
-
       bottomNavigationBar: CustomBottomNav(
         currentIndex: _currentIndex,
         onTabSelected: (index) async {
-          if (index == 2 && await AppCheck.checkLogin(context) == false) {
-            // _onLogin();
-            return;
-          }
+          // if (index == 2 && await AppCheck.checkLogin(context) == false) {
+          //   // _onLogin();
+          //   return;
+          // }
 
           setState(() => _currentIndex = index);
           _onItemTapped(index);
