@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:mymetfone.page.link?mode=developer</string>
+		<string>webcredentials:mymetfone.page.link</string>
+		<string>applinks:mymetfone.page.link</string>
+		<string>applinks:camid.page.link?mode=developer</string>
+		<string>applinks:camid.net</string>
+		<string>applinks:camid.net?mode=developer</string>
+		<string>webcredentials:camid.net</string>
+		<string>applinks:camid.app</string>
+		<string>applinks:camid.app?mode=developer</string>
+		<string>applinks:link.camid.app</string>
+		<string>applinks:linktest.camid.app</string>
+	</array>
+	<key>com.apple.security.application-groups</key>
+	<array/>
+</dict>
+</plist>

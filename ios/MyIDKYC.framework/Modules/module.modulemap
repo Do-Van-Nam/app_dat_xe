@@ -1,0 +1,11 @@
+framework module MyIDKYC {
+  umbrella header "MyIDKYC.h"
+
+  export *
+  module * { export * }
+}
+
+module MyIDKYC.Swift {
+  header "MyIDKYC-Swift.h"
+  requires objc
+}
