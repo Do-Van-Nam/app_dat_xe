@@ -20,16 +20,13 @@ import 'main/ui/splash/splash_bloc.dart';
 import 'main/ui/splash/splash_event.dart';
 
 class App extends StatefulWidget {
-final AppConfig config;
-  const App({super.key,required this.config});
+  final AppConfig config;
+  const App({super.key, required this.config});
   @override
   State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
-
-
-
   @override
   void initState() {
     super.initState();
@@ -77,25 +74,28 @@ class _AppState extends State<App> {
             builder: (_, child) {
               return AnnotatedRegion<SystemUiOverlayStyle>(
                 value: appSystemUiOverlayStyle,
-                child: MaterialApp.router(
-                  title: widget.config.appName,
-                  theme: AppTheme.lightTheme,
-                  darkTheme: AppTheme.darkTheme,
-                  themeMode: ThemeMode.system,
-                  debugShowCheckedModeBanner: false,
-                  locale: languageState.locale,
-                  supportedLocales: const [
-                    Locale("en"),
-                    Locale("vi"),
-                    Locale("km"),
-                  ],
-                  localizationsDelegates: const [
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                    AppLocalizations.delegate,
-                  ],
-                  routerConfig: router,
+                child: SafeArea(
+                  child: MaterialApp.router(
+                    title: widget.config.appName,
+                    theme: AppTheme.lightTheme,
+                    darkTheme: AppTheme.darkTheme,
+                    themeMode: ThemeMode.light,
+                    // themeMode: ThemeMode.system,
+                    debugShowCheckedModeBanner: false,
+                    locale: languageState.locale,
+                    supportedLocales: const [
+                      Locale("en"),
+                      Locale("vi"),
+                      Locale("km"),
+                    ],
+                    localizationsDelegates: const [
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                      AppLocalizations.delegate,
+                    ],
+                    routerConfig: router,
+                  ),
                 ),
               );
             },

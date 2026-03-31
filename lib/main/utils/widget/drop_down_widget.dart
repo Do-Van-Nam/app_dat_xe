@@ -108,9 +108,7 @@ class CustomDropdownButton2<T> extends StatelessWidget {
                     width: iconSize ?? 24,
                     height: iconSize ?? 24,
                     colorFilter: ColorFilter.mode(
-                      selected
-                          ? AppColors.color_E11B
-                          : AppColors.color_1618,
+                      selected ? AppColors.color_E11B : AppColors.color_1618,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -128,9 +126,7 @@ class CustomDropdownButton2<T> extends StatelessWidget {
                     ),
                   ),
                   SvgPicture.asset(
-                    selected
-                        ? AppImages.icRadioSelected
-                        : AppImages.icRadioUnselected,
+                    selected ? AppImages.icHome : AppImages.icHomeActive,
                     width: iconSize ?? 24,
                     height: iconSize ?? 24,
                   ),
@@ -159,41 +155,40 @@ class CustomDropdownButton2<T> extends StatelessWidget {
             ),
           );
         }).toList(),
-
         onChanged: onChanged,
         selectedItemBuilder: isFtth
             ? (context) {
-          return dropdownItems.map((item) {
-            return Container(
-              alignment: valueAlignment,
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    itemIcon(item),
-                    width: iconSize ?? 24,
-                    height: iconSize ?? 24,
-                    colorFilter: ColorFilter.mode(
-                      iconColor ?? AppColors.color_E11B,
-                      BlendMode.srcIn,
+                return dropdownItems.map((item) {
+                  return Container(
+                    alignment: valueAlignment,
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          itemIcon(item),
+                          width: iconSize ?? 24,
+                          height: iconSize ?? 24,
+                          colorFilter: ColorFilter.mode(
+                            iconColor ?? AppColors.color_E11B,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            itemTitle(item),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: valueTextStyle.copyWith(
+                              fontSize: 14,
+                              color: valueColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      itemTitle(item),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: valueTextStyle.copyWith(
-                        fontSize: 14,
-                        color: valueColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList();
-        }
+                  );
+                }).toList();
+              }
             : selectedItemBuilder,
         buttonStyleData: ButtonStyleData(
           height: buttonHeight ?? 40,
@@ -209,14 +204,14 @@ class CustomDropdownButton2<T> extends StatelessWidget {
         iconStyleData: IconStyleData(
           icon: icon != null
               ? SvgPicture.asset(
-            icon!,
-            width: iconSize ?? 20,
-            height: iconSize ?? 20,
-            colorFilter: ColorFilter.mode(
-              iconColor ?? AppColors.color_8588,
-              BlendMode.srcIn,
-            ),
-          )
+                  icon!,
+                  width: iconSize ?? 20,
+                  height: iconSize ?? 20,
+                  colorFilter: ColorFilter.mode(
+                    iconColor ?? AppColors.color_8588,
+                    BlendMode.srcIn,
+                  ),
+                )
               : const Icon(Icons.arrow_forward_ios_outlined),
           iconSize: iconSize ?? 20,
           iconEnabledColor: iconEnabledColor,

@@ -1,6 +1,8 @@
 ﻿import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'profile_bloc.dart';
 
@@ -46,13 +48,16 @@ class ProfilePage extends StatelessWidget {
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           children: [
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundImage: NetworkImage(
-                                  state.avatarUrl), // hoặc AssetImage
-                              child: state.avatarUrl.isEmpty
-                                  ? const Icon(Icons.person, size: 40)
-                                  : null,
+                            GestureDetector(
+                              onTap: () => context.push(PATH_EDIT_PROFILE),
+                              child: CircleAvatar(
+                                radius: 40,
+                                backgroundImage: NetworkImage(
+                                    state.avatarUrl), // hoặc AssetImage
+                                child: state.avatarUrl.isEmpty
+                                    ? const Icon(Icons.person, size: 40)
+                                    : null,
+                              ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -97,12 +102,11 @@ class ProfilePage extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: _buildStatCard(
-                            context,
-                            icon: Icons.stars,
-                            title: l10n.regularPoints, // "ĐIỂM THƯỜNG"
-                            value: "${state.points} ${l10n.points}",
-                          ),
+                          child: _buildStatCard(context,
+                              icon: Icons.stars,
+                              title: l10n.regularPoints, // "ĐIỂM THƯỜNG"
+                              value: "${state.points} ${l10n.points}",
+                              path: PATH_POINTS_WALLET),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -112,6 +116,7 @@ class ProfilePage extends StatelessWidget {
                             title: l10n.vouchers,
                             value: "${state.vouchers} Voucher",
                             color: Colors.orange,
+                            path: PATH_VOUCHER,
                           ),
                         ),
                       ],
@@ -125,14 +130,14 @@ class ProfilePage extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 8),
+                    _buildMenuItem(context, Icons.person, l10n.accountInfo,
+                        PATH_EDIT_PROFILE),
                     _buildMenuItem(
-                        context, Icons.person, l10n.accountInfo, () {}),
-                    _buildMenuItem(
-                        context, Icons.bookmark, l10n.savedAddresses, () {}),
+                        context, Icons.bookmark, l10n.savedAddresses, "() {}"),
                     _buildMenuItem(context, Icons.receipt_long,
-                        l10n.expenseManagement, () {}),
-                    _buildMenuItem(
-                        context, Icons.card_giftcard, l10n.voucherCode, () {}),
+                        l10n.expenseManagement, PATH_EXPENSE_MANAGEMENT),
+                    _buildMenuItem(context, Icons.card_giftcard,
+                        l10n.voucherCode, PATH_VOUCHER),
 
                     const SizedBox(height: 32),
 
@@ -142,10 +147,10 @@ class ProfilePage extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 8),
-                    _buildMenuItem(
-                        context, Icons.help_outline, l10n.helpSupport, () {}),
-                    _buildMenuItem(
-                        context, Icons.settings, l10n.settings, () {}),
+                    _buildMenuItem(context, Icons.help_outline,
+                        l10n.helpSupport, "PATH_HELP"),
+                    _buildMenuItem(context, Icons.settings, l10n.settings,
+                        "PATH_SETTINGS"),
 
                     const SizedBox(height: 24),
 
@@ -176,23 +181,6 @@ class ProfilePage extends StatelessWidget {
             return const Center(child: Text("Không có dữ liệu"));
           },
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 2, // Tab Cá nhân
-          items: [
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.home),
-              label: l10n.home,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.article),
-              label: l10n.activity,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.person),
-              label: l10n.profile,
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -203,24 +191,28 @@ class ProfilePage extends StatelessWidget {
     required String title,
     required String value,
     Color? color,
+    String? path,
   }) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Icon(icon,
-                size: 32, color: color ?? Theme.of(context).primaryColor),
-            const SizedBox(height: 8),
-            Text(title, style: Theme.of(context).textTheme.bodyMedium),
-            Text(
-              value,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-            ),
-          ],
+    return GestureDetector(
+      onTap: () => context.push(path ?? ""),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Icon(icon,
+                  size: 32, color: color ?? Theme.of(context).primaryColor),
+              const SizedBox(height: 8),
+              Text(title, style: Theme.of(context).textTheme.bodyMedium),
+              Text(
+                value,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -230,14 +222,14 @@ class ProfilePage extends StatelessWidget {
     BuildContext context,
     IconData icon,
     String title,
-    VoidCallback onTap,
+    String path,
   ) {
     return Card(
       child: ListTile(
         leading: Icon(icon),
         title: Text(title),
         trailing: const Icon(Icons.chevron_right),
-        onTap: onTap,
+        onTap: () => context.push(path ?? ""),
       ),
     );
   }

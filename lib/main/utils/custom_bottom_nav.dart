@@ -29,61 +29,31 @@ class CustomBottomNav extends StatelessWidget {
                 Expanded(
                   child: _buildNavItem(
                     0,
-                    AppImages.icHome,
+                    0 == currentIndex
+                        ? AppImages.icHomeActive
+                        : AppImages.icHome,
                     AppLocalizations.of(context)!.home,
                   ),
                 ),
                 Expanded(
                   child: _buildNavItem(
                     1,
-                    AppImages.icLoyalty,
-                    AppLocalizations.of(context)!.reward,
+                    1 == currentIndex
+                        ? AppImages.icActivityActive
+                        : AppImages.icActivity,
+                    AppLocalizations.of(context)!.activity,
                   ),
                 ),
                 Expanded(
                   child: _buildNavItem(
                     2,
-                    AppImages.icEntertainment,
-                    AppLocalizations.of(context)!.entertainment,
+                    2 == currentIndex
+                        ? AppImages.icProfileActive
+                        : AppImages.icProfile,
+                    AppLocalizations.of(context)!.profile,
                   ),
                 ),
               ],
-            ),
-          ),
-          Positioned(
-            top: -30,
-            left: MediaQuery.of(context).size.width / 2 - 40,
-            child: GestureDetector(
-              onTap: () => onTabSelected(2),
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    center: Alignment.center,
-                    radius: 1.0,
-                    colors: [
-                      Colors.red.shade700, // đỏ sát icon
-                      Colors.red.withOpacity(0.35), // đỏ mờ
-                      Colors.transparent,
-                    ],
-                    stops: const [
-                      0.55, // giữ đỏ sát
-                      0.75, // lan ~2px
-                      1.0,
-                    ],
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 5),
-                  ),
-                  child: CircleAvatar(
-                    radius: 35,
-                    backgroundImage: AssetImage(AppImages.imgMetfoneV2),
-                  ),
-                ),
-              ),
             ),
           ),
         ],
@@ -97,40 +67,37 @@ class CustomBottomNav extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTabSelected(index),
       behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: 3,
-            width: isSelected ? 22 : 0,
-            margin: const EdgeInsets.only(bottom: 6),
-            decoration: BoxDecoration(
-              color: AppColors.colorMain,
-              borderRadius: BorderRadius.circular(4),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: isSelected ? AppColors.color_D9E2FF : Colors.transparent,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              icon,
+              colorFilter: ColorFilter.mode(
+                isSelected ? AppColors.colorMain : AppColors.colorMain,
+                BlendMode.srcIn,
+              ),
             ),
-          ),
-          SvgPicture.asset(
-            icon,
-            colorFilter: ColorFilter.mode(
-              isSelected ? AppColors.colorMain : AppColors.colorMain,
-              BlendMode.srcIn,
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: isSelected
+                  ? AppTextFonts.poppinsMedium.copyWith(
+                      fontSize: 10,
+                      color: AppColors.colorMain,
+                    )
+                  : AppTextFonts.poppinsRegular.copyWith(
+                      fontSize: 10,
+                      color: AppColors.colorMain,
+                    ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: isSelected
-                ? AppTextFonts.poppinsMedium.copyWith(
-                    fontSize: 10,
-                    color: AppColors.colorMain,
-                  )
-                : AppTextFonts.poppinsRegular.copyWith(
-                    fontSize: 10,
-                    color: AppColors.colorMain,
-                  ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

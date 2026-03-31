@@ -31,4 +31,31 @@ class AppTextFonts {
   static final TextStyle poppinsBlack = _poppins.copyWith(
     fontWeight: FontWeight.w900,
   );
+  static final TextStyle interThin = _inter.copyWith(
+    fontWeight: FontWeight.w100,
+  );
+  static final TextStyle interExtraLight = _inter.copyWith(
+    fontWeight: FontWeight.w200,
+  );
+  static final TextStyle interLight = _inter.copyWith(
+    fontWeight: FontWeight.w300,
+  );
+  static final TextStyle interRegular = _inter.copyWith(
+    fontWeight: FontWeight.w400,
+  );
+  static final TextStyle interMedium = _inter.copyWith(
+    fontWeight: FontWeight.w500,
+  );
+  static final TextStyle interSemiBold = _inter.copyWith(
+    fontWeight: FontWeight.w600,
+  );
+  static final TextStyle interBold = _inter.copyWith(
+    fontWeight: FontWeight.w700,
+  );
+  static final TextStyle interExtraBold = _inter.copyWith(
+    fontWeight: FontWeight.w800,
+  );
+  static final TextStyle interBlack = _inter.copyWith(
+    fontWeight: FontWeight.w900,
+  );
 }

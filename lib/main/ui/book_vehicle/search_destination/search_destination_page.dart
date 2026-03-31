@@ -1,6 +1,8 @@
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'search_destination_bloc.dart';
 
 class SearchDestinationPage extends StatelessWidget {
@@ -75,17 +77,6 @@ class SearchDestinationPage extends StatelessWidget {
             return const SizedBox();
           },
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 0,
-          items: [
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.home), label: l10n.home),
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.article), label: l10n.activity),
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.person), label: l10n.profile),
-          ],
-        ),
       ),
     );
   }
@@ -131,6 +122,7 @@ class _SearchInputsSection extends StatelessWidget {
                 .read<SearchDestinationBloc>()
                 .add(SearchQueryChangedEvent(value));
           },
+          onSubmitted: (value) => context.push(PATH_BOOKING),
         ),
       ],
     );

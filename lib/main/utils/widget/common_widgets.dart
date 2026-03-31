@@ -11,7 +11,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 Widget commonButton2({
   required String text,
   required VoidCallback? onPressed,
-  Color color = Colors.red,
+  Color color = AppColors.colorMain,
   Color textColor = Colors.white,
   bool isLoading = false,
   double borderRadius = 30.0,
@@ -391,7 +391,7 @@ Widget datePickerField({
             "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
             style: AppTextFonts.poppinsRegular.copyWith(fontSize: 14),
           ),
-          SvgPicture.asset(AppImages.icCalendarRed),
+          SvgPicture.asset(AppImages.icHome),
         ],
       ),
     ),

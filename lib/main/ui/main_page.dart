@@ -41,7 +41,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const AppDrawer(),
+      // drawer: const AppDrawer(),
       body: PageView(
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),

@@ -197,26 +197,6 @@ class ActivityPage extends StatelessWidget {
             return const SizedBox();
           },
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 1, // Tab Hoạt động
-          onTap: (index) {
-            // TODO: Handle navigation
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.home),
-              label: l10n.home,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.article),
-              label: l10n.activity,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.person),
-              label: l10n.profile,
-            ),
-          ],
-        ),
       ),
     );
   }

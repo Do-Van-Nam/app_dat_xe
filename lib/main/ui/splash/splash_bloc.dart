@@ -66,9 +66,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       AppLogger().logInfo("CHECK_LOGIN $isFirstOpenApp");
       emit(
         SplashResolved(
-          next: (isLogin || isFirstOpenApp)
-              ? SplashNext.home
-              : SplashNext.login,
+          next:
+              (isLogin || isFirstOpenApp) ? SplashNext.home : SplashNext.login,
         ),
       );
     } catch (e) {
@@ -80,9 +79,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       AppLogger().logInfo("CHECK_LOGIN $isFirstOpenApp");
       emit(
         SplashResolved(
-          next: (isLogin || isFirstOpenApp)
-              ? SplashNext.home
-              : SplashNext.login,
+          next:
+              (isLogin || isFirstOpenApp) ? SplashNext.home : SplashNext.login,
         ),
       );
     }
@@ -91,6 +89,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   Future<bool> _isLoggedIn() async {
     await SharePreferenceUtil.getUser();
     final isLoggedIn = UserInfoModel.instance.username.isNotEmpty;
+    return true; // demo
     return isLoggedIn; // demo
   }
 
@@ -101,6 +100,4 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       AppLogger().logInfo('LocalNotification init error: $e');
     }
   }
-
-
 }

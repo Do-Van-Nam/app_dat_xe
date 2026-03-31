@@ -99,21 +99,21 @@ class _LanguagePageState extends State<LanguagePage> {
                   children: [
                     LanguageItemButton(
                       title: AppLocalizations.of(context)!.english,
-                      assetFlag: AppImages.imgEn,
+                      assetFlag: AppImages.icHome,
                       isSelected: currentLang == 'en',
                       onTap: () => _changeLanguage('en'),
                     ),
                     const SizedBox(height: 12),
                     LanguageItemButton(
                       title: AppLocalizations.of(context)!.vietnamese,
-                      assetFlag: AppImages.imgVn,
+                      assetFlag: AppImages.icHome,
                       isSelected: currentLang == 'vi',
                       onTap: () => _changeLanguage('vi'),
                     ),
                     const SizedBox(height: 12),
                     LanguageItemButton(
                       title: AppLocalizations.of(context)!.khmer,
-                      assetFlag: AppImages.imgKm,
+                      assetFlag: AppImages.icHome,
                       isSelected: currentLang == 'km',
                       onTap: () => _changeLanguage('km'),
                     ),
@@ -174,9 +174,7 @@ class LanguageItemButton extends StatelessWidget {
               ),
             ),
             SvgPicture.asset(
-              isSelected
-                  ? AppImages.icCheckSelected
-                  : AppImages.icCheckUnselected,
+              isSelected ? AppImages.icHome : AppImages.icHomeActive,
               width: 20,
               height: 20,
             ),

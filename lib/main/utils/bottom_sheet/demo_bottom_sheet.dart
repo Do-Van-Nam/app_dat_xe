@@ -6,10 +6,8 @@ import 'package:demo_app/res/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-Future<String?> showDemoBottomSheet(
-    BuildContext context,
-    String currentValue,{bool showFull = true}
-    ) {
+Future<String?> showDemoBottomSheet(BuildContext context, String currentValue,
+    {bool showFull = true}) {
   final l10n = AppLocalizations.of(context)!;
 
   return showModalBottomSheet<String>(
@@ -36,9 +34,7 @@ Future<String?> showDemoBottomSheet(
                 child: Row(
                   children: [
                     SvgPicture.asset(
-                      isSelected
-                          ? AppImages.icRadioSelected
-                          : AppImages.icRadioUnselected,
+                      isSelected ? AppImages.icHome : AppImages.icHome,
                       width: 20,
                       height: 20,
                     ),
@@ -77,16 +73,15 @@ Future<String?> showDemoBottomSheet(
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: SvgPicture.asset(AppImages.icClose),
+                      child: SvgPicture.asset(AppImages.icHome),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 const Divider(height: 1, color: AppColors.color_F7F7),
-
                 buildItem(Constant.TODAY, l10n.today),
                 buildItem(Constant.WEEK, l10n.last7Days),
-                if(showFull)...[
+                if (showFull) ...[
                   buildItem(Constant.MONTH, l10n.last30Days),
                   buildItem(Constant.CUSTOM, l10n.customDay),
                 ]

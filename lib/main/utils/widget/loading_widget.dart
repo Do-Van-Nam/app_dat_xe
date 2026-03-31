@@ -31,23 +31,23 @@ class LoadingWidget extends StatelessWidget {
 
       case LoadingWidgetState.empty:
         return _StateContent(
-          icon: AppImages.icEmpty,
+          icon: AppImages.icHome,
           message: emptyMessage ?? AppLocalizations.of(context)!.no_data,
         );
       case LoadingWidgetState.emptyNotification:
         return _StateContent(
-          icon: AppImages.icEmptyNotification,
+          icon: AppImages.icHome,
           message: emptyMessage ?? AppLocalizations.of(context)!.no_data,
         );
       case LoadingWidgetState.emptyShowroom:
         return _StateContent(
-          icon: AppImages.icEmptyShowroom,
+          icon: AppImages.icHome,
           message: emptyMessage ?? AppLocalizations.of(context)!.no_data,
         );
 
       case LoadingWidgetState.error:
         return _StateContent(
-          icon: AppImages.icError,
+          icon: AppImages.icHome,
           message: errorMessage ?? AppLocalizations.of(context)!.error_occurred,
           onRetry: onRetry,
         );
@@ -55,7 +55,14 @@ class LoadingWidget extends StatelessWidget {
   }
 }
 
-enum LoadingWidgetState { loading, success, empty, emptyNotification, emptyShowroom, error }
+enum LoadingWidgetState {
+  loading,
+  success,
+  empty,
+  emptyNotification,
+  emptyShowroom,
+  error
+}
 
 class _LoadingView extends StatelessWidget {
   const _LoadingView();

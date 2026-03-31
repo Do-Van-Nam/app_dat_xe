@@ -1,6 +1,8 @@
 ﻿import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'home_bloc.dart';
 
 class HomePage extends StatelessWidget {
@@ -35,10 +37,13 @@ class HomeView extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 22,
-                      backgroundImage: const NetworkImage(
-                          'https://i.pravatar.cc/150?img=68'),
+                    GestureDetector(
+                      onTap: () => context.push(PATH_LOGIN),
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundImage: const NetworkImage(
+                            'https://i.pravatar.cc/150?img=68'),
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Column(
@@ -59,7 +64,7 @@ class HomeView extends StatelessWidget {
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.notifications_outlined),
-                      onPressed: () {},
+                      onPressed: () => context.push(PATH_NOTIFICATION),
                     ),
                   ],
                 ),
@@ -68,15 +73,19 @@ class HomeView extends StatelessWidget {
               // Search Bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: l10n.whereDoYouWantToGo,
-                    prefixIcon: const Icon(Icons.search),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
+                child: GestureDetector(
+                  onTap: () => context.push(PATH_SEARCH_DESTINATION),
+                  child: TextField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                      hintText: l10n.whereDoYouWantToGo,
+                      prefixIcon: const Icon(Icons.search),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                 ),
@@ -91,25 +100,29 @@ class HomeView extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: 4,
-                  childAspectRatio: 1.1,
+                  childAspectRatio: 0.95,
                   children: [
                     _buildServiceItem(Icons.motorcycle, l10n.motorcycle,
-                        Colors.blue.shade100),
+                        Colors.blue.shade100, context),
+                    _buildServiceItem(Icons.directions_car, l10n.car,
+                        Colors.blue.shade100, context),
+                    _buildServiceItem(Icons.restaurant, l10n.food,
+                        Colors.orange.shade100, context),
                     _buildServiceItem(
-                        Icons.directions_car, l10n.car, Colors.blue.shade100),
-                    _buildServiceItem(
-                        Icons.restaurant, l10n.food, Colors.orange.shade100),
-                    _buildServiceItem(
-                        Icons.local_shipping, l10n.delivery, Colors.green,
-                        isSelected: true),
+                        Icons.local_shipping,
+                        l10n.delivery,
+                        Colors.green,
+                        isSelected: true,
+                        context),
                     _buildServiceItem(Icons.location_on, l10n.goAnywhere,
-                        Colors.blue.shade100),
-                    _buildServiceItem(
-                        Icons.flight, l10n.airport, Colors.blue.shade100),
-                    _buildServiceItem(
-                        Icons.drive_eta, l10n.drivingLicense, Colors.amber),
-                    _buildServiceItem(
-                        Icons.home_work, l10n.bookRide, Colors.cyan.shade100),
+                        Colors.blue.shade100, context),
+                    _buildServiceItem(Icons.flight, l10n.airport,
+                        Colors.blue.shade100, context,
+                        path: PATH_AIRPORT_BOOKING),
+                    _buildServiceItem(Icons.drive_eta, l10n.drivingLicense,
+                        Colors.amber, context),
+                    _buildServiceItem(Icons.home_work, l10n.bookRide,
+                        Colors.cyan.shade100, context),
                   ],
                 ),
               ),
@@ -310,39 +323,32 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(
-              icon: const Icon(Icons.home), label: l10n.home),
-          BottomNavigationBarItem(
-              icon: const Icon(Icons.history), label: l10n.activity),
-          BottomNavigationBarItem(
-              icon: const Icon(Icons.person), label: l10n.profile),
-        ],
-      ),
     );
   }
 
-  Widget _buildServiceItem(IconData icon, String label, Color bgColor,
-      {bool isSelected = false}) {
-    return Column(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF22C55E) : bgColor,
-            borderRadius: BorderRadius.circular(16),
+  Widget _buildServiceItem(
+      IconData icon, String label, Color bgColor, BuildContext context,
+      {bool isSelected = false, String path = ''}) {
+    return GestureDetector(
+      onTap: () {
+        context.push(path);
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFF22C55E) : bgColor,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(icon,
+                color: isSelected ? Colors.white : Colors.black87, size: 28),
           ),
-          child: Icon(icon,
-              color: isSelected ? Colors.white : Colors.black87, size: 28),
-        ),
-        const SizedBox(height: 6),
-        Text(label, style: const TextStyle(fontSize: 12)),
-      ],
+          const SizedBox(height: 6),
+          Text(label, style: const TextStyle(fontSize: 12)),
+        ],
+      ),
     );
   }
 
