@@ -1,9 +1,13 @@
 ﻿import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/res/app_colors.dart';
+import 'package:demo_app/res/app_fonts.dart';
 import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'home_bloc.dart';
+import 'package:demo_app/core/app_export.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -81,9 +85,9 @@ class HomeView extends StatelessWidget {
                       hintText: l10n.whereDoYouWantToGo,
                       prefixIcon: const Icon(Icons.search),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: AppColors.color_E2E2E5,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
                     ),
@@ -102,26 +106,28 @@ class HomeView extends StatelessWidget {
                   crossAxisCount: 4,
                   childAspectRatio: 0.95,
                   children: [
-                    _buildServiceItem(Icons.motorcycle, l10n.motorcycle,
+                    _buildServiceItem(AppImages.icBike, l10n.motorcycle,
                         Colors.blue.shade100, context),
-                    _buildServiceItem(Icons.directions_car, l10n.car,
+                    _buildServiceItem(AppImages.icCar, l10n.car,
                         Colors.blue.shade100, context),
-                    _buildServiceItem(Icons.restaurant, l10n.food,
-                        Colors.orange.shade100, context),
+                    _buildServiceItem(AppImages.icFood, l10n.food,
+                        Colors.orange.shade100, context,
+                        path: PATH_FOOD),
                     _buildServiceItem(
-                        Icons.local_shipping,
+                        AppImages.icTruck,
                         l10n.delivery,
                         Colors.green,
                         isSelected: true,
                         context),
-                    _buildServiceItem(Icons.location_on, l10n.goAnywhere,
-                        Colors.blue.shade100, context),
-                    _buildServiceItem(Icons.flight, l10n.airport,
+                    _buildServiceItem(AppImages.icLocation, l10n.goAnywhere,
+                        Colors.blue.shade100, context,
+                        path: PATH_INTERPROVINCE_RIDE),
+                    _buildServiceItem(AppImages.icPlane, l10n.airport,
                         Colors.blue.shade100, context,
                         path: PATH_AIRPORT_BOOKING),
-                    _buildServiceItem(Icons.drive_eta, l10n.drivingLicense,
+                    _buildServiceItem(AppImages.icCar, l10n.drivingLicense,
                         Colors.amber, context),
-                    _buildServiceItem(Icons.home_work, l10n.bookRide,
+                    _buildServiceItem(AppImages.icCar, l10n.bookRide,
                         Colors.cyan.shade100, context),
                   ],
                 ),
@@ -141,13 +147,21 @@ class HomeView extends StatelessWidget {
               const SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    _buildSavedAddress(l10n.home, Icons.home, 'Thêm địa chỉ'),
-                    const SizedBox(width: 12),
-                    _buildSavedAddress(
-                        'Công ty', Icons.work, 'Bitexco Financial'),
-                  ],
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 12,
+                    children: [
+                      IntrinsicHeight(
+                        child: _buildSavedAddress(
+                            l10n.home, Icons.home, 'Thêm địa chỉ'),
+                      ),
+                      IntrinsicHeight(
+                        child: _buildSavedAddress(
+                            'Công ty', Icons.work, 'Bitexco Financial'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -167,7 +181,8 @@ class HomeView extends StatelessWidget {
                     Text(
                       l10n.viewAll,
                       style: const TextStyle(
-                          color: Colors.blue, fontWeight: FontWeight.w600),
+                          color: AppColors.colorMain,
+                          fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -212,6 +227,8 @@ class HomeView extends StatelessWidget {
                 'Khám phá các điểm du lịch mới với ưu đãi...',
                 'https://picsum.photos/id/201/300/180',
               ),
+              const SizedBox(height: 12),
+
               _buildNewsItem(
                 l10n.promotionTag,
                 'Mời bạn mới, nhận ngay voucher 50k đặt đồ ăn',
@@ -327,7 +344,7 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _buildServiceItem(
-      IconData icon, String label, Color bgColor, BuildContext context,
+      String icon, String label, Color bgColor, BuildContext context,
       {bool isSelected = false, String path = ''}) {
     return GestureDetector(
       onTap: () {
@@ -342,8 +359,13 @@ class HomeView extends StatelessWidget {
               color: isSelected ? const Color(0xFF22C55E) : bgColor,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon,
-                color: isSelected ? Colors.white : Colors.black87, size: 28),
+            child: SvgPicture.asset(icon,
+                fit: BoxFit.scaleDown,
+                colorFilter: ColorFilter.mode(
+                    isSelected ? Colors.white : Colors.black87,
+                    BlendMode.srcIn),
+                width: 12,
+                height: 12),
           ),
           const SizedBox(height: 6),
           Text(label, style: const TextStyle(fontSize: 12)),
@@ -353,37 +375,41 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _buildSavedAddress(String title, IconData icon, String subtitle) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.blue),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title,
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
-                  Text(subtitle,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                ],
-              ),
+    return Container(
+      width: 180,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.color_F3F3F6,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(icon, color: AppColors.colorMain),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildPromoCard(String title, String subtitle, String imageUrl) {
     return Container(
-      width: 260,
+      width: 280,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         image:
@@ -418,9 +444,15 @@ class HomeView extends StatelessWidget {
 
   Widget _buildNewsItem(
       String tag, String title, String subtitle, String imageUrl) {
-    return Padding(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.color_F3F3F6,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
@@ -436,12 +468,17 @@ class HomeView extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: tag == 'TIN MỚI' ? Colors.blue : Colors.orange,
-                    borderRadius: BorderRadius.circular(4),
+                    color: tag == 'TIN MỚI'
+                        ? AppColors.color_D9E2FF
+                        : AppColors.color_FFDDB0,
+                    borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(tag,
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 10)),
+                      style: AppTextFonts.interBold.copyWith(
+                          color: tag == 'TIN MỚI'
+                              ? AppColors.colorMain
+                              : AppColors.color_805600,
+                          fontSize: 10)),
                 ),
                 const SizedBox(height: 6),
                 Text(title,

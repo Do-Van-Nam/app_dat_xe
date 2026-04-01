@@ -37,7 +37,7 @@ class VehicleOption {
   final int price;
   final String time;
   final String tag; // TIẾT KIỆM, PHỔ BIẾN, GIA ĐÌNH
-  final IconData icon;
+  final String icon;
   final Color? tagColor;
 
   VehicleOption({

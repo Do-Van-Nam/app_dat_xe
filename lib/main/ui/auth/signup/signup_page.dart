@@ -1,7 +1,11 @@
-﻿import 'package:demo_app/res/app_images.dart';
+﻿import 'package:demo_app/main/utils/widget/common_widgets.dart';
+import 'package:demo_app/res/app_colors.dart';
+import 'package:demo_app/res/app_images.dart';
+import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'signup_bloc.dart';
 
 class SignupPage extends StatelessWidget {
@@ -81,148 +85,157 @@ class _SignupViewState extends State<SignupView> {
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 32),
-              BlocBuilder<SignupBloc, SignupState>(
-                builder: (context, state) {
-                  return Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            // Họ và tên
-                            _buildTextField(
-                              controller: fullNameController,
-                              label: 'HỌ VÀ TÊN',
-                              hint: 'Nhập họ và tên đầy đủ',
-                              icon: Icons.person_outline,
-                            ),
-
-                            const SizedBox(height: 20),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Số điện thoại",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87),
+              BlocListener<SignupBloc, SignupState>(
+                listenWhen: (previous, current) =>
+                    previous != current &&
+                    current is SignupSuccess, // chỉ lắng nghe khi thành công
+                listener: (context, state) {
+                  if (state is SignupSuccess) {
+                    context.push(PATH_VERIFY_OTP,
+                        extra: phoneController.text.trim());
+                  }
+                },
+                child: BlocBuilder<SignupBloc, SignupState>(
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                spreadRadius: 2,
+                                offset: const Offset(0, 4),
                               ),
-                            ),
-                            const SizedBox(height: 12),
-                            // Số điện thoại
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Container(
-                                  width: 80,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[100],
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '+84',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              // Họ và tên
+                              _buildTextField(
+                                controller: fullNameController,
+                                label: 'HỌ VÀ TÊN',
+                                hint: 'Nhập họ và tên đầy đủ',
+                                icon: Icons.person_outline,
+                              ),
+
+                              const SizedBox(height: 20),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Số điện thoại",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87),
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: _buildTextField(
-                                    controller: phoneController,
-                                    label: '',
-                                    hint: '9xx xxx xxx',
-                                    icon: Icons.phone_iphone,
-                                    keyboardType: TextInputType.phone,
+                              ),
+                              const SizedBox(height: 12),
+                              // Số điện thoại
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    width: 80,
+                                    height: 56,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.color_E2E2E5,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '+84',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: _buildTextField(
+                                      controller: phoneController,
+                                      label: '',
+                                      hint: '9xx xxx xxx',
+                                      icon: Icons.phone_iphone,
+                                      keyboardType: TextInputType.phone,
+                                    ),
+                                  ),
+                                ],
+                              ),
 
-                            const SizedBox(height: 20),
+                              const SizedBox(height: 20),
 
-                            // Email
-                            _buildTextField(
-                              controller: emailController,
-                              label: 'EMAIL',
-                              hint: 'example@gmail.com',
-                              icon: Icons.email_outlined,
-                              keyboardType: TextInputType.emailAddress,
-                            ),
+                              // Email
+                              _buildTextField(
+                                controller: emailController,
+                                label: 'EMAIL',
+                                hint: 'example@gmail.com',
+                                icon: Icons.email_outlined,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
 
-                            const SizedBox(height: 20),
+                              const SizedBox(height: 20),
 
-                            // Mật khẩu
-                            _buildPasswordField(),
+                              // Mật khẩu
+                              _buildPasswordField(),
 
-                            const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                            // Checkbox điều khoản
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Checkbox(
-                                  value: _agreeToTerms,
-                                  onChanged: (value) {
-                                    setState(
-                                        () => _agreeToTerms = value ?? false);
-                                  },
-                                  activeColor: const Color(0xFF1E40AF),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 12),
-                                    child: RichText(
-                                      text: const TextSpan(
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 14),
-                                        children: [
-                                          TextSpan(text: 'Tôi đồng ý với '),
-                                          TextSpan(
-                                            text: 'Điều khoản sử dụng',
-                                            style: TextStyle(
-                                              color: Color(0xFF1E40AF),
-                                              fontWeight: FontWeight.bold,
+                              // Checkbox điều khoản
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Checkbox(
+                                    value: _agreeToTerms,
+                                    onChanged: (value) {
+                                      setState(
+                                          () => _agreeToTerms = value ?? false);
+                                    },
+                                    activeColor: const Color(0xFF1E40AF),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 12),
+                                      child: RichText(
+                                        text: const TextSpan(
+                                          style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 14),
+                                          children: [
+                                            TextSpan(text: 'Tôi đồng ý với '),
+                                            TextSpan(
+                                              text: 'Điều khoản sử dụng',
+                                              style: TextStyle(
+                                                color: Color(0xFF1E40AF),
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          TextSpan(text: ' và '),
-                                          TextSpan(
-                                            text: 'Chính sách bảo mật',
-                                            style: TextStyle(
-                                              color: Color(0xFF1E40AF),
-                                              fontWeight: FontWeight.bold,
+                                            TextSpan(text: ' và '),
+                                            TextSpan(
+                                              text: 'Chính sách bảo mật',
+                                              style: TextStyle(
+                                                color: Color(0xFF1E40AF),
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          TextSpan(text: ' của Logistics Pro.'),
-                                        ],
+                                            TextSpan(
+                                                text: ' của Logistics Pro.'),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
 
-                            const SizedBox(height: 32),
+                              const SizedBox(height: 32),
 
-                            // Nút Đăng ký
-                            SizedBox(
-                              width: double.infinity,
-                              height: 56,
-                              child: ElevatedButton(
+                              // Nút Đăng ký
+                              commonButton(
+                                text: 'Đăng ký',
                                 onPressed: (state is SignupLoading ||
                                         !_agreeToTerms)
                                     ? null
@@ -241,85 +254,71 @@ class _SignupViewState extends State<SignupView> {
                                               ),
                                             );
                                       },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF1E40AF),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                ),
-                                child: state is SignupLoading
-                                    ? const CircularProgressIndicator(
-                                        color: Colors.white)
-                                    : const Text(
-                                        'Đăng ký',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                disable: !_agreeToTerms,
+                                isLoading: state is SignupLoading,
+                              ),
+                              const SizedBox(height: 32),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Hoặc kết nối qua
+                        const Row(
+                          children: [
+                            Expanded(child: Divider()),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                'HOẶC KẾT NỐI QUA',
+                                style: TextStyle(color: Colors.grey),
                               ),
                             ),
-
-                            const SizedBox(height: 32),
+                            Expanded(child: Divider()),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                      // Hoặc kết nối qua
-                      const Row(
-                        children: [
-                          Expanded(child: Divider()),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              'HOẶC KẾT NỐI QUA',
-                              style: TextStyle(color: Colors.grey),
+
+                        const SizedBox(height: 24),
+
+                        // Google & Apple
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _socialButton(
+                                  'Google', Icons.g_mobiledata, Colors.red),
                             ),
-                          ),
-                          Expanded(child: Divider()),
-                        ],
-                      ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _socialButton(
+                                  'Apple', Icons.apple, Colors.black),
+                            ),
+                          ],
+                        ),
 
-                      const SizedBox(height: 24),
+                        const SizedBox(height: 40),
 
-                      // Google & Apple
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _socialButton(
-                                'Google', Icons.g_mobiledata, Colors.red),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _socialButton(
-                                'Apple', Icons.apple, Colors.black),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 40),
-
-                      // Đã có tài khoản?
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Đã có tài khoản? '),
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const Text(
-                              'Đăng nhập',
-                              style: TextStyle(
-                                color: Color(0xFF1E40AF),
-                                fontWeight: FontWeight.bold,
+                        // Đã có tài khoản?
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Đã có tài khoản? '),
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: const Text(
+                                'Đăng nhập',
+                                style: TextStyle(
+                                  color: Color(0xFF1E40AF),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
 
-                      const SizedBox(height: 40),
-                    ],
-                  );
-                },
+                        const SizedBox(height: 40),
+                      ],
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -348,7 +347,7 @@ class _SignupViewState extends State<SignupView> {
         SizedBox(height: label.isNotEmpty ? 8 : 0),
         Container(
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: AppColors.color_E2E2E5,
             borderRadius: BorderRadius.circular(12),
           ),
           child: TextField(
@@ -377,7 +376,7 @@ class _SignupViewState extends State<SignupView> {
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: AppColors.color_E2E2E5,
             borderRadius: BorderRadius.circular(12),
           ),
           child: TextField(
@@ -386,6 +385,7 @@ class _SignupViewState extends State<SignupView> {
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
               hintText: 'Tối thiểu 8 ký tự',
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
               border: InputBorder.none,
               suffixIcon: IconButton(
                 icon: Icon(

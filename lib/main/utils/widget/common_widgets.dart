@@ -51,6 +51,7 @@ Widget commonButton({
   required String text,
   required VoidCallback? onPressed,
   bool isLoading = false,
+  bool disable = false,
 }) {
   return SizedBox(
     width: double.infinity,
@@ -58,7 +59,7 @@ Widget commonButton({
     child: ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF1E40AF),
+        backgroundColor: disable ? Colors.grey : const Color(0xFF1E40AF),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),

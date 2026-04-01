@@ -12,14 +12,87 @@ class AppStyles {
     color: AppColors.color_434653,
     fontSize: 16,
   );
+
+  static const TextStyle inter18Bold =
+      TextStyle(fontSize: 18, fontWeight: FontWeight.w700, fontFamily: 'Inter');
+  static const TextStyle inter16SemiBold =
+      TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Inter');
+  static const TextStyle inter12Medium =
+      TextStyle(fontSize: 12, fontWeight: FontWeight.w500, fontFamily: 'Inter');
+  static const TextStyle inter10Regular =
+      TextStyle(fontSize: 10, fontWeight: FontWeight.w400, fontFamily: 'Inter');
+  static const title = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Inter',
+    height: 1.5,
+  );
+
+  static const body = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Inter',
+  );
+
+  static const price = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Inter',
+    color: AppColors.primaryDark,
+  );
+
+  static const small = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Inter',
+  );
+  static const String fontFamily = 'Inter';
+
+  static TextStyle heading1 = const TextStyle(
+    color: AppColors.textPrimary,
+    fontSize: 20,
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w700,
+    height: 1.40,
+    letterSpacing: -0.50,
+  );
+
+  static TextStyle heading2 = const TextStyle(
+    color: AppColors.textPrimary,
+    fontSize: 18,
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w700,
+    height: 1.56,
+    letterSpacing: -0.45,
+  );
+
+  static TextStyle bodyLarge = const TextStyle(
+    color: AppColors.textPrimary,
+    fontSize: 16,
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w500,
+    height: 1.50,
+  );
+
+  static TextStyle labelSmall = const TextStyle(
+    color: AppColors.textSecondary,
+    fontSize: 10,
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w700,
+    height: 1.50,
+    letterSpacing: 1,
+  );
+
+  static TextStyle buttonLarge = const TextStyle(
+    color: Colors.white,
+    fontSize: 18,
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w700,
+    height: 1.56,
+  );
   static TextStyle headerWhite = AppTextFonts.interSemiBold.copyWith(
     color: AppColors.color_FFFF,
     fontSize: 16,
-  );
-
-  static TextStyle title = AppTextFonts.interSemiBold.copyWith(
-    color: AppColors.color_1618,
-    fontSize: 18,
   );
 
   static TextStyle content = AppTextFonts.interRegular.copyWith(

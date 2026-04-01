@@ -1,13 +1,16 @@
-abstract class AirportBookingEvent {}
+part of 'airport_booking_bloc.dart';
 
-class LoadDataEvent extends AirportBookingEvent {}
+@immutable
+sealed class AirportBookingEvent {}
+
+class LoadAirportBookingEvent extends AirportBookingEvent {}
 
 class SelectTripTypeEvent extends AirportBookingEvent {
-  final bool isToAirport; // true: đi đến sân bay
-  SelectTripTypeEvent(this.isToAirport);
+  final int index; // 0: Đi đến sân bay, 1: Đón từ sân bay
+  SelectTripTypeEvent(this.index);
 }
 
-class SelectCarEvent extends AirportBookingEvent {
-  final int index;
-  SelectCarEvent(this.index);
+class SelectVehicleEvent extends AirportBookingEvent {
+  final String vehicleId;
+  SelectVehicleEvent(this.vehicleId);
 }

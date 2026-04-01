@@ -5,6 +5,7 @@ import 'package:demo_app/main/ui/auth/otp/otp_page.dart';
 import 'package:demo_app/main/ui/auth/signup/signup_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/airport_booking/airport_booking_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/booking/booking_page.dart';
+import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/interprovice_ride_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/search_destination/search_destination_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/tracking/tracking_page.dart';
 import 'package:demo_app/main/ui/language/language_page.dart';
@@ -19,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'main/ui/auth/login/login_page.dart';
+import 'main/ui/food/food_page3.dart';
 import 'main/ui/splash/splash_page.dart';
 
 const String PATH_SPLASH = "/";
@@ -48,6 +50,12 @@ const String PATH_SEARCH_DESTINATION = "/search-destination";
 const String PATH_BOOKING = "/booking";
 const String PATH_TRACKING = "/tracking";
 const String PATH_AIRPORT_BOOKING = "/airport-booking";
+const String PATH_INTERCITY_BOOKING = "/intercity-booking";
+const String PATH_INTERPROVINCE_RIDE = "/interprovince-ride";
+
+// food
+const String PATH_FOOD_INTRO = "/food-intro";
+const String PATH_FOOD = "/food";
 
 // chatbot
 const String PATH_CHATBOT_INTRO = "/chatbot-info";
@@ -134,6 +142,20 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_AIRPORT_BOOKING,
       builder: (context, state) => AirportBookingPage(),
+    ),
+    GoRoute(
+      path: PATH_INTERPROVINCE_RIDE,
+      builder: (context, state) => InterprovinceRidePage(),
+    ),
+
+    // food
+    // GoRoute(
+    //   path: PATH_FOOD_INTRO,
+    //   builder: (context, state) => FoodIntroPage(),
+    // ),
+    GoRoute(
+      path: PATH_FOOD,
+      builder: (context, state) => FoodPage(),
     ),
   ],
   // redirect: (context, state) {

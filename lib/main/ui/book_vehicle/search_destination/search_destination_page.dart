@@ -1,7 +1,11 @@
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/res/app_colors.dart';
+import 'package:demo_app/res/app_images.dart';
+import 'package:demo_app/res/app_styles.dart';
 import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'search_destination_bloc.dart';
 
@@ -37,17 +41,29 @@ class SearchDestinationPage extends StatelessWidget {
 
             if (state is SearchDestinationLoaded) {
               return SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 1. Search Inputs Section
-                    _SearchInputsSection(l10n: l10n),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.color_F3F3F6,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          _SearchInputsSection(l10n: l10n),
 
-                    const SizedBox(height: 24),
+                          const SizedBox(height: 24),
 
-                    // 2. Quick Add Buttons
-                    _QuickAddButtons(l10n: l10n),
+                          // 2. Quick Add Buttons
+                          _QuickAddButtons(l10n: l10n),
+                        ],
+                      ),
+                    ),
 
                     const SizedBox(height: 32),
 
@@ -91,40 +107,82 @@ class _SearchInputsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Vị trí hiện tại
-        TextField(
-          decoration: InputDecoration(
-            hintText: l10n.yourLocation,
-            prefixIcon: const Icon(Icons.location_on, color: Colors.blue),
-            suffixIcon: const Icon(Icons.my_location, color: Colors.grey),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            filled: true,
-            fillColor: Colors.grey[100],
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          Column(
+            children: [
+              SizedBox(height: 24),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: AppColors.colorMain,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              Expanded(
+                child: VerticalDivider(
+                  color: AppColors.color_C3C6D5,
+                  thickness: 1.5,
+                  width: 1,
+                ),
+              ),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              SizedBox(height: 24),
+            ],
           ),
-          enabled: false,
-        ),
-        const SizedBox(height: 12),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              children: [
+                // Vị trí hiện tại
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: l10n.yourLocation,
+                    // prefixIcon: const Icon(Icons.location_on, color: Colors.blue),
+                    suffixIcon:
+                        const Icon(Icons.my_location, color: Colors.blue),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                  ),
+                  enabled: false,
+                ),
+                const SizedBox(height: 12),
 
-        // Điểm đến
-        TextField(
-          decoration: InputDecoration(
-            hintText: l10n.whereToGo,
-            prefixIcon: const Icon(Icons.location_on, color: Colors.orange),
-            suffixIcon: const Icon(Icons.map, color: Colors.grey),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            filled: true,
-            fillColor: Colors.white,
+                // Điểm đến
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: l10n.whereToGo,
+                    // prefixIcon:
+                    //    const Icon(Icons.location_on, color: Colors.orange),
+                    suffixIcon: const Icon(Icons.map, color: Colors.orange),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  onChanged: (value) {
+                    context
+                        .read<SearchDestinationBloc>()
+                        .add(SearchQueryChangedEvent(value));
+                  },
+                  onSubmitted: (value) => context.push(PATH_BOOKING),
+                ),
+              ],
+            ),
           ),
-          onChanged: (value) {
-            context
-                .read<SearchDestinationBloc>()
-                .add(SearchQueryChangedEvent(value));
-          },
-          onSubmitted: (value) => context.push(PATH_BOOKING),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -136,16 +194,19 @@ class _QuickAddButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _QuickAddChip(icon: Icons.home, label: l10n.addHome, onTap: () {}),
-        const SizedBox(width: 8),
-        _QuickAddChip(
-            icon: Icons.business, label: l10n.addCompany, onTap: () {}),
-        const SizedBox(width: 8),
-        _QuickAddChip(
-            icon: Icons.favorite, label: l10n.addFavorite, onTap: () {}),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _QuickAddChip(icon: Icons.home, label: l10n.addHome, onTap: () {}),
+          const SizedBox(width: 8),
+          _QuickAddChip(
+              icon: Icons.business, label: l10n.addCompany, onTap: () {}),
+          const SizedBox(width: 8),
+          _QuickAddChip(
+              icon: Icons.location_pin, label: l10n.addFavorite, onTap: () {}),
+        ],
+      ),
     );
   }
 }
@@ -163,23 +224,21 @@ class _QuickAddChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 18),
-              const SizedBox(width: 6),
-              Text(label, style: const TextStyle(fontSize: 13)),
-            ],
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.color_E2E2E5,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18),
+            const SizedBox(width: 6),
+            Text(label, style: AppStyles.inter14Medium),
+          ],
         ),
       ),
     );
@@ -213,7 +272,7 @@ class _PopularDestinationsSection extends StatelessWidget {
             Text(
               l10n.viewMore,
               style: const TextStyle(
-                  color: Colors.blue, fontWeight: FontWeight.w600),
+                  color: AppColors.colorMain, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -277,10 +336,9 @@ class _DestinationItem extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
-        backgroundColor: Colors.grey[100],
-        child: Icon(
-          isPopular ? Icons.location_on : Icons.history,
-          color: isPopular ? Colors.red : Colors.grey,
+        backgroundColor: AppColors.color_E8E8EA,
+        child: SvgPicture.asset(
+          AppImages.icHistory,
         ),
       ),
       title: Text(
@@ -294,12 +352,6 @@ class _DestinationItem extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing: IconButton(
-        icon: const Icon(Icons.bookmark_border),
-        onPressed: () {
-          // Save to favorite
-        },
-      ),
     );
   }
 }
@@ -311,8 +363,8 @@ class _MapSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      alignment: Alignment.bottomLeft,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(16),
@@ -324,15 +376,12 @@ class _MapSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Row(
-          children: [
-            const Icon(Icons.location_on, color: Colors.blue, size: 18),
-            const SizedBox(width: 6),
-            Text(
-              "VỊ TRÍ HIỆN TẠI\nThành phố Hồ Chí Minh",
-              style: const TextStyle(fontSize: 13, height: 1.3),
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "VỊ TRÍ HIỆN TẠI\nThành phố Hồ Chí Minh",
+            style: AppStyles.inter14Medium.copyWith(color: Colors.white),
+          ),
         ),
       ],
     );

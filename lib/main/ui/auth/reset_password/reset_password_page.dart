@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:demo_app/res/app_colors.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'reset_password_bloc.dart';
 
@@ -97,131 +98,186 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
               ),
 
               const SizedBox(height: 8),
-              const Text(
-                'Vui lòng nhập mật khẩu mới để tiếp tục sử dụng dịch vụ của NHM SOFTWARE.',
-                style: TextStyle(fontSize: 16, color: Colors.grey, height: 1.5),
+              const Text.rich(
+                TextSpan(
+                  text:
+                      'Vui lòng nhập mật khẩu mới để tiếp tục sử dụng dịch vụ của ',
+                  style:
+                      TextStyle(fontSize: 16, color: Colors.grey, height: 1.5),
+                  children: [
+                    TextSpan(
+                      text: 'NHM SOFTWARE.',
+                      style: TextStyle(
+                        color: Color(0xFF1E40AF),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 32),
 
               BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
                 builder: (context, state) {
-                  return Column(
-                    children: [
-                      // Mật khẩu mới
-                      _buildPasswordField(
-                        controller: newPasswordController,
-                        label: 'Mật khẩu mới',
-                        obscureText: _obscureNewPassword,
-                        onVisibilityToggle: () {
-                          setState(
-                              () => _obscureNewPassword = !_obscureNewPassword);
-                        },
-                        onChanged: (_) => _validatePasswords(),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // Xác nhận mật khẩu mới
-                      _buildPasswordField(
-                        controller: confirmPasswordController,
-                        label: 'Xác nhận mật khẩu mới',
-                        obscureText: _obscureConfirmPassword,
-                        onVisibilityToggle: () {
-                          setState(() => _obscureConfirmPassword =
-                              !_obscureConfirmPassword);
-                        },
-                        onChanged: (_) => _validatePasswords(),
-                        showError: !_passwordsMatch &&
-                            confirmPasswordController.text.isNotEmpty,
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Password Requirement Box
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[50],
-                          borderRadius: BorderRadius.circular(12),
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.color_F3F3F6,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        // Mật khẩu mới
+                        _buildPasswordField(
+                          controller: newPasswordController,
+                          label: 'Mật khẩu mới',
+                          obscureText: _obscureNewPassword,
+                          onVisibilityToggle: () {
+                            setState(() =>
+                                _obscureNewPassword = !_obscureNewPassword);
+                          },
+                          onChanged: (_) => _validatePasswords(),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Row(
-                              children: [
-                                Icon(Icons.info_outline,
-                                    size: 20, color: Colors.grey),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Container(
-                                        height: 4, color: Colors.green)),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                    child: Container(
-                                        height: 4, color: Colors.green)),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                    child: Container(
-                                        height: 4, color: Colors.grey[300])),
-                              ],
-                            ),
-                          ],
+
+                        const SizedBox(height: 20),
+
+                        // Xác nhận mật khẩu mới
+                        _buildPasswordField(
+                          controller: confirmPasswordController,
+                          label: 'Xác nhận mật khẩu mới',
+                          obscureText: _obscureConfirmPassword,
+                          onVisibilityToggle: () {
+                            setState(() => _obscureConfirmPassword =
+                                !_obscureConfirmPassword);
+                          },
+                          onChanged: (_) => _validatePasswords(),
+                          showError: !_passwordsMatch &&
+                              confirmPasswordController.text.isNotEmpty,
                         ),
-                      ),
 
-                      const SizedBox(height: 32),
+                        const SizedBox(height: 16),
 
-                      // Xác nhận button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: (state is ResetPasswordLoading ||
-                                  newPasswordController.text.isEmpty ||
-                                  confirmPasswordController.text.isEmpty ||
-                                  !_passwordsMatch)
-                              ? null
-                              : () {
-                                  context.read<ResetPasswordBloc>().add(
-                                        ResetPasswordSubmitted(
-                                          newPassword:
-                                              newPasswordController.text,
-                                          confirmPassword:
-                                              confirmPasswordController.text,
-                                        ),
-                                      );
-                                },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1E40AF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
+                        // Password Requirement Box
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: state is ResetPasswordLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white)
-                              : const Text(
-                                  'Xác nhận đổi mật khẩu →',
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Row(
+                                children: [
+                                  Icon(Icons.info_outline,
+                                      size: 20, color: Colors.grey),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
+                                        text: 'Mật khẩu phải có ít nhất ',
+                                        style: const TextStyle(
+                                            fontSize: 14, color: Colors.grey),
+                                        children: const [
+                                          TextSpan(
+                                            text: '8 ký tự',
+                                            style: TextStyle(
+                                                color: Colors.black87,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          TextSpan(
+                                            text: ', bao gồm ',
+                                          ),
+                                          TextSpan(
+                                            text: 'chữ hoa, chữ thường',
+                                            style: TextStyle(
+                                                color: Colors.black87,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          TextSpan(
+                                            text: ' và ',
+                                          ),
+                                          TextSpan(
+                                            text: 'số',
+                                            style: TextStyle(
+                                                color: Colors.black87,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          TextSpan(
+                                            text: '.',
+                                          ),
+                                        ],
+                                      ),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                          height: 4, color: Colors.green)),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                      child: Container(
+                                          height: 4, color: Colors.green)),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                      child: Container(
+                                          height: 4, color: Colors.grey[300])),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+
+                        const SizedBox(height: 32),
+
+                        // Xác nhận button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: (state is ResetPasswordLoading ||
+                                    newPasswordController.text.isEmpty ||
+                                    confirmPasswordController.text.isEmpty ||
+                                    !_passwordsMatch)
+                                ? null
+                                : () {
+                                    context.read<ResetPasswordBloc>().add(
+                                          ResetPasswordSubmitted(
+                                            newPassword:
+                                                newPasswordController.text,
+                                            confirmPassword:
+                                                confirmPasswordController.text,
+                                          ),
+                                        );
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF1E40AF),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: state is ResetPasswordLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white)
+                                : const Text(
+                                    'Xác nhận đổi mật khẩu →',
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -295,7 +351,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: AppColors.color_E2E2E5,
             borderRadius: BorderRadius.circular(12),
             border: showError ? Border.all(color: Colors.red) : null,
           ),

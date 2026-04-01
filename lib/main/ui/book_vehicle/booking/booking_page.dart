@@ -1,4 +1,7 @@
+import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/res/app_colors.dart';
+import 'package:demo_app/res/app_fonts.dart';
 import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,14 +47,14 @@ class BookingPage extends StatelessWidget {
                   ),
 
                   SafeArea(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Back button
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Back button
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               CircleAvatar(
                                 backgroundColor: Colors.white,
@@ -72,68 +75,96 @@ class BookingPage extends StatelessWidget {
                               ),
                             ],
                           ),
+                        ),
 
-                          const SizedBox(height: 16),
+                        Spacer(),
 
-                          // Promo Code Button
-                          Row(
+                        // Promo Code Button
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
                             children: [
                               _PromoCodeButton(l10n: l10n),
                               Spacer(),
                               CircleAvatar(
                                 backgroundColor: Colors.white,
                                 child: IconButton(
-                                  icon: const Icon(Icons.arrow_back),
+                                  icon: SvgPicture.asset(AppImages.icLocation3),
                                   onPressed: () {},
                                 ),
                               ),
                             ],
                           ),
+                        ),
 
-                          const SizedBox(height: 24),
+                        const SizedBox(height: 8),
 
-                          // Vehicle Selection Section
-                          Text(
-                            l10n.chooseVehicle,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
+                        // Vehicle Selection Section
+                        Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(32),
+                                  topRight: Radius.circular(32)),
+                            ),
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: Column(
+                              children: [
+                                Center(
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(vertical: 2),
+                                    width: 48,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.color_E8E8EA,
+                                      borderRadius: BorderRadius.circular(999),
+                                    ),
+                                  ),
                                 ),
-                          ),
-                          const SizedBox(height: 12),
+                                Text(l10n.chooseVehicle,
+                                    style: AppTextFonts.interBold.copyWith(
+                                        color: AppColors.color_1C1E,
+                                        fontSize: 18)),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 12),
 
-                          ...state.vehicles.map((vehicle) => _VehicleOptionCard(
-                                vehicle: vehicle,
-                                isSelected:
-                                    vehicle.id == state.selectedVehicleId,
-                                onTap: () => context
-                                    .read<BookingBloc>()
-                                    .add(SelectVehicleEvent(vehicle.id)),
-                              )),
+                                        ...state.vehicles.map(
+                                            (vehicle) => _VehicleOptionCard(
+                                                  vehicle: vehicle,
+                                                  isSelected: vehicle.id ==
+                                                      state.selectedVehicleId,
+                                                  onTap: () => context
+                                                      .read<BookingBloc>()
+                                                      .add(SelectVehicleEvent(
+                                                          vehicle.id)),
+                                                )),
 
-                          const SizedBox(height: 24),
+                                        const SizedBox(height: 24),
 
-                          // Payment Method
-                          _PaymentMethodSection(l10n: l10n),
-
-                          const SizedBox(
-                              height: 100), // space for bottom button
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Bottom Confirm Button
-                  Positioned(
-                    bottom: 16,
-                    left: 16,
-                    right: 16,
-                    child: _ConfirmButton(
-                      totalAmount: state.totalAmount,
-                      l10n: l10n,
-                      onPressed: () => context.push(PATH_TRACKING),
+                                        // Payment Method
+                                        _PaymentMethodSection(l10n: l10n),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                commonButton(
+                                    text: l10n.confirmBooking,
+                                    onPressed: () =>
+                                        context.push(PATH_TRACKING)),
+                                // _ConfirmButton(
+                                //   totalAmount: state.totalAmount,
+                                //   l10n: l10n,
+                                //   onPressed: () => context.push(PATH_TRACKING),
+                                // )
+                              ],
+                            )),
+                      ],
                     ),
                   ),
                 ],
@@ -172,27 +203,54 @@ class _AddressSection extends StatelessWidget {
           BoxShadow(color: Colors.black12, blurRadius: 10),
         ],
       ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.circle, size: 12, color: Colors.blue),
-              const SizedBox(width: 12),
-              Expanded(child: Text(pickup)),
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Divider(),
-          ),
-          Row(
-            children: [
-              const Icon(Icons.circle, size: 12, color: Colors.red),
-              const SizedBox(width: 12),
-              Expanded(child: Text(destination)),
-            ],
-          ),
-        ],
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Column(
+              children: [
+                SizedBox(height: 12),
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: AppColors.colorMain,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                Expanded(
+                  child: VerticalDivider(
+                    color: AppColors.color_C3C6D5,
+                    thickness: 1.5,
+                    width: 1,
+                  ),
+                ),
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                SizedBox(height: 12),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(pickup),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Divider(),
+                  ),
+                  Text(destination, style: AppStyles.inter14Medium),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -206,9 +264,7 @@ class _PromoCodeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // TODO: Mở bottom sheet nhập mã
-      },
+      onTap: () {},
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
@@ -218,10 +274,9 @@ class _PromoCodeButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.local_offer, color: Colors.orange),
+            SvgPicture.asset(AppImages.icVoucher),
             const SizedBox(width: 8),
-            Text(l10n.promoCode,
-                style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(l10n.promoCode, style: AppStyles.inter14Medium),
           ],
         ),
       ),
@@ -248,7 +303,7 @@ class _VehicleOptionCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue[50] : Colors.white,
+          color: isSelected ? Colors.blue[50] : AppColors.color_F3F3F6,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected ? Colors.blue : Colors.transparent,
@@ -258,12 +313,14 @@ class _VehicleOptionCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
+              width: 56,
+              height: 56,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(vehicle.icon, size: 32),
+              child: SvgPicture.asset(vehicle.icon, height: 24),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -296,7 +353,9 @@ class _VehicleOptionCard extends StatelessWidget {
                           ),
                         ),
                       const SizedBox(width: 12),
-                      Text("⏱ ${vehicle.time}",
+                      SvgPicture.asset(AppImages.icClock, height: 16),
+                      const SizedBox(width: 4),
+                      Text(vehicle.time,
                           style: const TextStyle(color: Colors.grey)),
                     ],
                   ),
@@ -330,12 +389,16 @@ class _PaymentMethodSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.color_F3F3F6,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
-          const Icon(Icons.wallet, color: Colors.blue),
+          CircleAvatar(
+            // radius: 999,
+            backgroundColor: Colors.white,
+            child: SvgPicture.asset(AppImages.icMoney, height: 16),
+          ),
           const SizedBox(width: 12),
           const Expanded(
             child:

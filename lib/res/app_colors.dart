@@ -10,6 +10,32 @@ class AppColors {
   static const Color color_E2E2E5 = Color(0xFFE2E2E5);
   static const Color color_737784 = Color(0xFF737784);
   static const Color color_00357F = Color(0xFF00357F);
+  static const Color color_F3F3F6 = Color(0xFFF3F3F6);
+  static const Color color_FFDDB0 = Color(0xFFFFDDB0);
+  static const Color color_805600 = Color(0xFF805600);
+  static const Color color_C3C6D5 = Color(0xFFC3C6D5);
+  static const Color color_E8E8EA = Color(0xFFE8E8EA);
+  static const Color color_69FF87 = Color(0xFF69FF87);
+
+  static const Color primaryBlue = Color(0xFF1565C0);
+  static const Color color_F8F9FA = Color(0xFFF8F9FA);
+  static const Color color_666666 = Color(0xFF666666);
+  static const primary = Color(0xFF004AAD);
+  static const primaryDark = Color(0xFF00357F);
+  static const background = Color(0xFFF9F9FC);
+  static const textPrimary = Color(0xFF1A1C1E);
+  static const textSecondary = Color(0xFF434653);
+  static const grey = Color(0xFFE2E2E5);
+  static const chipBg = Color(0xFFF3F3F6);
+  static const rating = Color(0xFFFDAF0A);
+
+  static const Color textMuted = Color(0xFF64748B);
+  static const Color success = Color(0xFF69FF87);
+  static const Color successDark = Color(0xFF004317);
+  static const Color cardBackground = Colors.white;
+  static const Color inputBackground = Color(0xFFF3F3F6);
+  static const Color bottomNavActive = Color(0xFF00357F);
+  static const Color bottomNavInactive = Color(0xFF64748B);
 
   static const Color color_F6F6 = Color(0xFFF6F6F6);
   static const Color color_FFFF = Color(0xFFFFFFFF);

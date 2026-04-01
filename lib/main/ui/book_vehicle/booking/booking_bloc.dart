@@ -1,3 +1,4 @@
+import 'package:demo_app/res/app_images.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           price: 12000,
           time: "3p",
           tag: "TIẾT KIỆM",
-          icon: Icons.pedal_bike,
+          icon: AppImages.icBike2,
           tagColor: Colors.green,
         ),
         VehicleOption(
@@ -34,7 +35,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           price: 45000,
           time: "5p",
           tag: "PHỔ BIẾN",
-          icon: Icons.directions_car,
+          icon: AppImages.icCar,
           tagColor: Colors.blue,
         ),
         VehicleOption(
@@ -43,7 +44,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           price: 60000,
           time: "8p",
           tag: "GIA ĐÌNH",
-          icon: Icons.directions_bus,
+          icon: AppImages.icBus,
           tagColor: Colors.grey,
         ),
       ];

@@ -125,7 +125,7 @@ class _LoginViewState extends State<LoginView> {
                                 const SizedBox(height: 16),
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[100],
+                                    color: AppColors.color_E2E2E5,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(
@@ -175,7 +175,7 @@ class _LoginViewState extends State<LoginView> {
                                 // Password Input
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[100],
+                                    color: AppColors.color_E2E2E5,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: TextField(
@@ -235,7 +235,8 @@ class _LoginViewState extends State<LoginView> {
                                           EdgeInsets.symmetric(horizontal: 16),
                                       child: Text(
                                         'HOẶC ĐĂNG NHẬP BẰNG',
-                                        style: TextStyle(color: Colors.grey),
+                                        style: TextStyle(
+                                            color: AppColors.color_434653),
                                       ),
                                     ),
                                     Expanded(child: Divider()),
