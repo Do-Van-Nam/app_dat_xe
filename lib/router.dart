@@ -4,10 +4,14 @@ import 'package:demo_app/main/ui/auth/reset_password/reset_password_page.dart';
 import 'package:demo_app/main/ui/auth/otp/otp_page.dart';
 import 'package:demo_app/main/ui/auth/signup/signup_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/airport_booking/airport_booking_page.dart';
+import 'package:demo_app/main/ui/book_vehicle/book_for_family/book_for_family_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/booking/booking_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/interprovice_ride_page.dart';
+import 'package:demo_app/main/ui/book_vehicle/rent_driver/rent_driver_page.dart';
+import 'package:demo_app/main/ui/book_vehicle/finding_driver/finding_driver_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/search_destination/search_destination_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/tracking/tracking_page.dart';
+import 'package:demo_app/main/ui/food_delivery/food_delivery_page.dart';
 import 'package:demo_app/main/ui/language/language_page.dart';
 import 'package:demo_app/main/ui/main_page.dart';
 import 'package:demo_app/main/ui/notification/notification_page.dart';
@@ -52,6 +56,9 @@ const String PATH_TRACKING = "/tracking";
 const String PATH_AIRPORT_BOOKING = "/airport-booking";
 const String PATH_INTERCITY_BOOKING = "/intercity-booking";
 const String PATH_INTERPROVINCE_RIDE = "/interprovince-ride";
+const String PATH_BOOK_FOR_FAMILY = "/book-for-family";
+const String PATH_RENT_DRIVER = "/rent-driver";
+const String PATH_FINDING_DRIVER = "/finding-driver";
 
 // food
 const String PATH_FOOD_INTRO = "/food-intro";
@@ -147,7 +154,18 @@ final GoRouter router = GoRouter(
       path: PATH_INTERPROVINCE_RIDE,
       builder: (context, state) => InterprovinceRidePage(),
     ),
-
+    GoRoute(
+      path: PATH_BOOK_FOR_FAMILY,
+      builder: (context, state) => BookForFamilyPage(),
+    ),
+    GoRoute(
+      path: PATH_RENT_DRIVER,
+      builder: (context, state) => RentDriverPage(),
+    ),
+    GoRoute(
+      path: PATH_FINDING_DRIVER,
+      builder: (context, state) => FindingDriverPage(),
+    ),
     // food
     // GoRoute(
     //   path: PATH_FOOD_INTRO,
@@ -155,7 +173,7 @@ final GoRouter router = GoRouter(
     // ),
     GoRoute(
       path: PATH_FOOD,
-      builder: (context, state) => FoodPage(),
+      builder: (context, state) => FoodDeliveryPage(),
     ),
   ],
   // redirect: (context, state) {

@@ -1,4 +1,6 @@
+import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/res/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -53,7 +55,7 @@ class TrackingPage extends StatelessWidget {
 
                   // Driver Arriving Info
                   Positioned(
-                    top: 80,
+                    top: 16,
                     left: 16,
                     right: 16,
                     child: _DriverArrivingCard(
@@ -112,6 +114,8 @@ class _DriverArrivingCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: const Border(
+            left: BorderSide(color: AppColors.colorMain, width: 4)),
         boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
       child: Row(
@@ -173,10 +177,11 @@ class _DriverInfoBottomSheet extends StatelessWidget {
         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.');
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.all(Radius.circular(24)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -184,37 +189,69 @@ class _DriverInfoBottomSheet extends StatelessWidget {
           // Driver Info
           Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  "https://randomuser.me/api/portraits/men/32.jpg",
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                ),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      "https://randomuser.me/api/portraits/men/32.jpg",
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: -8,
+                    right: -8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF69FF87),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      child: Text("$rating ★",
+                          style: const TextStyle(color: Colors.green)),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(driverName,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(driverName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                        CircleAvatar(
+                          backgroundColor: Colors.grey[200],
+                          child: SvgPicture.asset(AppImages.icMessage),
+                        ),
+                        const SizedBox(width: 12),
+                        CircleAvatar(
+                          backgroundColor: AppColors.colorMain,
+                          child: SvgPicture.asset(AppImages.icPhone),
+                        ),
+                      ],
+                    ),
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.green[100],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text("$rating ★",
-                              style: const TextStyle(color: Colors.green)),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(vehiclePlate),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: AppColors.color_E8E8EA),
+                            child: Text(vehiclePlate)),
                         const SizedBox(width: 8),
                         Text("• $vehicleName",
                             style: const TextStyle(color: Colors.grey)),
@@ -222,19 +259,6 @@ class _DriverInfoBottomSheet extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey[200],
-                    child: const Icon(Icons.chat_bubble_outline),
-                  ),
-                  const SizedBox(width: 12),
-                  CircleAvatar(
-                    backgroundColor: Colors.blue,
-                    child: const Icon(Icons.phone, color: Colors.white),
-                  ),
-                ],
               ),
             ],
           ),
@@ -256,12 +280,11 @@ class _DriverInfoBottomSheet extends StatelessWidget {
                     children: [
                       Text(l10n.promoCode,
                           style: const TextStyle(fontSize: 12)),
-                      const Row(
+                      Row(
                         children: [
-                          Icon(Icons.local_offer,
-                              color: Colors.orange, size: 20),
-                          SizedBox(width: 6),
-                          Text("-10%",
+                          SvgPicture.asset(AppImages.icVoucher),
+                          const SizedBox(width: 6),
+                          const Text("-10%",
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
@@ -288,14 +311,17 @@ class _DriverInfoBottomSheet extends StatelessWidget {
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                color: Colors.blue),
+                                color: AppColors.colorMain),
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            "$formattedOriginalđ",
-                            style: const TextStyle(
-                              decoration: TextDecoration.lineThrough,
-                              color: Colors.grey,
+                          Expanded(
+                            child: Text(
+                              "$formattedOriginalđ",
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
                         ],

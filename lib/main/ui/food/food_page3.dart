@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:demo_app/core/app_export.dart';
 
 class FoodPage extends StatelessWidget {
@@ -76,7 +77,9 @@ Widget _buildCategory() {
 Widget _buildBanner() {
   return Stack(
     children: [
-      Image.network("https://placehold.co/390x200"),
+      CachedNetworkImage(
+          imageUrl:
+              "https://stimg.cardekho.com/images/carexteriorimages/930x620/Audi/Q6-e-tron/11608/1710995400792/front-left-side-47.jpg"),
       Positioned(
         bottom: 0,
         left: 16,
@@ -135,7 +138,9 @@ class DrinkItemCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.network("https://placehold.co/64"),
+          CachedNetworkImage(
+              imageUrl:
+                  "https://stimg.cardekho.com/images/carexteriorimages/930x620/Audi/Q6-e-tron/11608/1710995400792/front-left-side-47.jpg"),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -179,8 +184,9 @@ class FoodItemCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.network(
-            "https://placehold.co/128x128",
+          CachedNetworkImage(
+            imageUrl:
+                "https://stimg.cardekho.com/images/carexteriorimages/930x620/Audi/Q6-e-tron/11608/1710995400792/front-left-side-47.jpg",
             width: 100,
             height: 100,
             fit: BoxFit.cover,

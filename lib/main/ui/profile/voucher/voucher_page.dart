@@ -1,3 +1,4 @@
+import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,25 +57,12 @@ class VoucherPage extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // 3. Voucher sắp hết hạn
-                      Text(
-                        l10n.expiringSoon,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 12),
-                      ...state.expiringSoon.map(
-                          (v) => _ExpiringVoucherCard(voucher: v, l10n: l10n)),
 
-                      const SizedBox(height: 32),
-
-                      // 4. Ưu đãi của bạn
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            l10n.yourOffers,
+                            l10n.expiringSoon,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge
@@ -87,6 +75,21 @@ class VoucherPage extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 12),
+                      ...state.expiringSoon.map(
+                          (v) => _ExpiringVoucherCard(voucher: v, l10n: l10n)),
+
+                      const SizedBox(height: 32),
+
+                      // 4. Ưu đãi của bạn
+                      Text(
+                        l10n.yourOffers,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+
                       const SizedBox(height: 12),
                       ...state.myVouchers
                           .map((v) => _MyVoucherCard(voucher: v, l10n: l10n)),
@@ -124,52 +127,65 @@ class _PromoCodeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController codeController = TextEditingController();
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.enterPromoCode,
-                style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: codeController,
-                    decoration: InputDecoration(
-                      hintText: l10n.promoCodeExample,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                ElevatedButton(
-                  onPressed: () {
-                    final code = codeController.text.trim();
-                    if (code.isNotEmpty) {
-                      context
-                          .read<VoucherBloc>()
-                          .add(ApplyPromoCodeEvent(code));
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text(l10n.apply,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ),
-          ],
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: ShapeDecoration(
+        color: const Color(0xFFF3F3F6),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.enterPromoCode,
+              style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: codeController,
+                  decoration: InputDecoration(
+                    hintText: l10n.promoCodeExample,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Colors.white),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: () {
+                  final code = codeController.text.trim();
+                  if (code.isNotEmpty) {
+                    context.read<VoucherBloc>().add(ApplyPromoCodeEvent(code));
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.colorMain,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(999)),
+                ),
+                child: Text(l10n.apply,
+                    style: AppStyles.inter14Bold.copyWith(color: Colors.white)),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -193,14 +209,17 @@ class _VoucherTabs extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 8),
             child: FilterChip(
+              showCheckmark: false,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(999)),
               selected: isSelected,
               label: Text(tabs[index]),
               onSelected: (_) =>
                   context.read<VoucherBloc>().add(TabChangedEvent(index)),
               backgroundColor: Colors.grey[200],
-              selectedColor: Colors.blue,
-              labelStyle:
-                  TextStyle(color: isSelected ? Colors.white : Colors.black87),
+              selectedColor: AppColors.colorMain,
+              labelStyle: AppStyles.inter14Bold
+                  .copyWith(color: isSelected ? Colors.white : Colors.black87),
             ),
           );
         }),
@@ -217,8 +236,22 @@ class _ExpiringVoucherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border(left: BorderSide(color: Color(0xFF805600), width: 4)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0C000000),
+            blurRadius: 2,
+            offset: Offset(0, 1),
+            spreadRadius: 0,
+          )
+        ],
+      ),
       child: Row(
         children: [
           Container(
@@ -252,17 +285,21 @@ class _ExpiringVoucherCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(voucher.expiry!, style: const TextStyle(fontSize: 13)),
                   ],
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange),
+                        child: Text(l10n.useNow,
+                            style: const TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-              child: Text(l10n.useNow,
-                  style: const TextStyle(color: Colors.white)),
             ),
           ),
         ],

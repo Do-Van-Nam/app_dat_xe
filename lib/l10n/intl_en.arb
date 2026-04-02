@@ -150,6 +150,75 @@
   "family": "Gia đình",
   "estimatedPrice": "Giá dự kiến (trọn gói)",
   "findRideNow": "Tìm xe đi tỉnh ngay",
+  "deliveryAndPickup": "Giao hàng & Đưa đón",
+  "mainDishes": "Món chính",
+  "drinks": "Đồ uống",
+  "datHoAppBarTitle": "Đặt hộ cho người thân",
+  "datHoBannerService": "DỊCH VỤ ƯU TIÊN",
+  "datHoBannerHeadline": "Chăm sóc người thân\nmọi lúc, mọi nơi.",
+
+  "datHoReceiverTitle": "Thông tin người nhận",
+  "datHoReceiverBadge": "BẮT BUỘC",
+  "datHoReceiverNameLabel": "TÊN NGƯỜI NHẬN",
+  "datHoReceiverNameHint": "Nhập họ và tên...",
+  "datHoReceiverPhoneLabel": "SỐ ĐIỆN THOẠI",
+  "datHoReceiverPhoneHint": "Nhập số điện thoại...",
+
+  "datHoServiceTitle": "Chọn dịch vụ",
+  "datHoServiceCar": "Đặt xe hộ",
+  "datHoServiceCarSub": "Di chuyển an toàn & tiện lợi",
+  "datHoServiceFood": "Đặt đồ ăn",
+  "datHoServiceFoodSub": "Giao nhanh 20p",
+
+  "datHoRouteTitle": "Địa chỉ lộ trình",
+  "datHoPickupLabel": "ĐIỂM ĐÓN",
+  "datHoPickupHint": "Nhập địa chỉ đón...",
+  "datHoDestinationLabel": "ĐIỂM ĐẾN",
+  "datHoDestinationHint": "Bạn muốn người thân đến đâu?",
+
+  "datHoNoteTitle": "Ghi chú cho tài xế",
+  "datHoNoteHint": "Ví dụ: Đón ở cổng số 2, gọi số này khi đến...",
+  "datHoNoteTagGate": "CỔNG SỐ 2",
+  "datHoNoteTagCall": "GHI KHI ĐẾN",
+
+  "datHoConfirmButton": "Xác nhận đặt hộ",
+  "laiHoAppBarTitle": "Thuê tài xế lái ô tô",
+
+  "laiHoStep1Label": "1. NHBP THÔNG TIN",
+  "laiHoStep2Label": "2. XÁC NHẬN",
+
+  "laiHoMapLocating": "Đang định vị...",
+
+  "laiHoPickupLabel": "ĐIỂM ĐÓN",
+  "laiHoPickupName": "Vinhomes Central ...",
+  "laiHoPickupAddress": "208 Nguyễn Hữu Cảnh, Ph...",
+
+  "laiHoDestinationLabel": "ĐIỂM ĐẾN",
+  "laiHoDestinationHint": "Bạn muốn đi đâu?",
+  "laiHoDestinationCta": "CLICK ĐỂ CHỌN ĐỊA CHỈ",
+
+  "laiHoSuggestionTitle": "GỢI Ý GẦN ĐÂY",
+  "laiHoSuggestionAirport": "Sân bay Tân Sơn Nhất",
+  "laiHoSuggestionHome": "Nhà riêng",
+
+  "laiHoInfoTitle": "Dịch vụ chuyên nghiệp",
+  "laiHoInfoBody": "Đội ngũ tài xế đã được xác minh danh tính và kiểm tra tay lái kỹ lưỡng.",
+
+  "laiHoEstimateLabel": "ƯỚC TÍNH",
+  "laiHoEstimateWaiting": "Chờ nhập điểm đến",
+  "laiHoPromoLabel": "Khuyến mãi",
+
+  "laiHoContinueButton": "Tiếp tục",
+
+  "findingDriverTitle": "Tìm tài xế",
+  "findingDriverConnecting": "Đang kết nối với tài xế gần nhất...",
+  "findingDriverPleaseWait": "Vui lòng chờ trong giây lát",
+  "findingDriverPickupLabel": "ĐIỂM ĐÓN",
+  "findingDriverDestLabel": "ĐIỂM ĐẾN",
+  "findingDriverEstPrice": "GIÁ ƯỚC TÍNH",
+  "findingDriverDistance": "KHOẢNG CÁCH",
+  "findingDriverCancel": "Hủy tìm kiếm",
+  "personalInfo": "Thông tin cá nhân",
 
   "login": "Login",
   "home": "Home",
@@ -163,7 +232,7 @@
   "setting": "Setting",
   "language": "Language",
   "title_drawer": "Click here to log in",
-  "logout": "Logout",
+  "logout": "Đăng xuất",
   "vietnamese": "Tiếng Việt",
   "english": "English",
   "khmer": "ខ្មែរ",

@@ -21,7 +21,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         name: "Nguyễn Minh Tuấn",
         phone: "090 123 4567",
         avatarUrl:
-            "https://example.com/avatar.jpg", // Thay bằng link avatar thật hoặc asset
+            "https://media.gettyimages.com/id/1809004173/photo/natural-pineapple-on-a-tropical-background.jpg?s=612x612&w=gi&k=20&c=MD05PyDnD6-xcnSEgKCuvH8yqk2mUZ5L99PrMoI5OP0=", // Thay bằng link avatar thật hoặc asset
         points: 1150,
         vouchers: 12,
         membership: "THÀNH VIÊN VÀNG",

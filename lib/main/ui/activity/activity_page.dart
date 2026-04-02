@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:demo_app/core/app_export.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_app/generated/app_localizations.dart';
 
@@ -110,13 +111,13 @@ class ActivityPage extends StatelessWidget {
                         child: Row(
                           children: [
                             _buildFilterChip(
-                                context, Icons.flight, l10n.toAirport),
+                                context, AppImages.icPlane, l10n.toAirport),
                             const SizedBox(width: 8),
                             _buildFilterChip(
-                                context, Icons.location_on, l10n.toProvince),
+                                context, AppImages.icLocation, l10n.toProvince),
                             const SizedBox(width: 8),
                             _buildFilterChip(
-                                context, Icons.restaurant, l10n.orderFood),
+                                context, AppImages.icFood, l10n.orderFood),
                           ],
                         ),
                       ),
@@ -222,7 +223,7 @@ class ActivityPage extends StatelessWidget {
             title,
             style: TextStyle(
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? Colors.blue : Colors.grey[700],
+              color: isSelected ? AppColors.colorMain : Colors.grey[700],
             ),
           ),
         ),
@@ -230,9 +231,9 @@ class ActivityPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(BuildContext context, IconData icon, String label) {
+  Widget _buildFilterChip(BuildContext context, String icon, String label) {
     return Chip(
-      avatar: Icon(icon, size: 18, color: Colors.blue),
+      avatar: SvgPicture.asset(icon, width: 18, height: 18),
       label: Text(label),
       backgroundColor: Colors.blue[50],
       side: BorderSide.none,
@@ -242,96 +243,115 @@ class ActivityPage extends StatelessWidget {
 
   Widget _buildActivityItem(
       BuildContext context, ActivityItem item, AppLocalizations l10n) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(item.icon, size: 28),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        shadows: [
+          BoxShadow(
+            color: Color(0x0C000000),
+            blurRadius: 2,
+            offset: Offset(0, 1),
+            spreadRadius: 0,
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.type,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "${item.date} • ${item.time}",
-                        style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: item.isSuccess ? Colors.green : Colors.redAccent,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    item.status,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: Icon(item.icon, size: 28),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.circle, size: 10, color: Colors.blue),
-                    SizedBox(height: 4),
-                    Icon(Icons.circle, size: 10, color: Colors.orange),
+                    Text(
+                      item.type,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "${item.date} • ${item.time}",
+                      style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                    ),
                   ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item.pickup),
-                      if (item.destination.isNotEmpty) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          item.destination,
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                      ],
-                    ],
-                  ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(
+                  top: 4,
+                  left: 12,
+                  right: 12,
+                  bottom: 4,
                 ),
-                Text(
-                  item.amount,
+                decoration: BoxDecoration(
+                  color: item.isSuccess ? Color(0xFF69FF87) : Color(0xFFFF6969),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  item.status,
                   style: const TextStyle(
+                    color: Color(0xFF002108),
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.circle, size: 10, color: Colors.blue),
+                        const SizedBox(width: 6),
+                        Text(item.pickup),
+                      ],
+                    ),
+                    if (item.destination.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.circle, size: 10, color: Colors.orange),
+                          const SizedBox(width: 6),
+                          Text(
+                            item.destination,
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Text(
+                item.amount,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

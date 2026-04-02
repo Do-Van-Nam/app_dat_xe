@@ -16,6 +16,8 @@ class AppColors {
   static const Color color_C3C6D5 = Color(0xFFC3C6D5);
   static const Color color_E8E8EA = Color(0xFFE8E8EA);
   static const Color color_69FF87 = Color(0xFF69FF87);
+  static const Color color_004317 = Color(0xFF004317);
+  static const Color color_434654 = Color(0xFF434654);
 
   static const Color primaryBlue = Color(0xFF1565C0);
   static const Color color_F8F9FA = Color(0xFFF8F9FA);
@@ -36,6 +38,104 @@ class AppColors {
   static const Color inputBackground = Color(0xFFF3F3F6);
   static const Color bottomNavActive = Color(0xFF00357F);
   static const Color bottomNavInactive = Color(0xFF64748B);
+
+  // Primary
+  static const Color colorPrimary = Color(0xFF1A3FA4);
+  static const Color colorPrimaryLight = Color(0xFFEEF2FF);
+  static const Color colorPrimaryBorder = Color(0xFF1A3FA4);
+
+  // Accent / Yellow
+  static const Color colorYellow = Color(0xFFF5A623);
+  static const Color colorYellowLight = Color(0xFFFFF8EC);
+
+  // Background
+  static const Color colorBackground = Color(0xFFF3F3F6);
+  static const Color colorWhite = Color(0xFFFFFFFF);
+  static const Color colorCardBg = Color(0xFFF7F8FA);
+
+  // Text
+  static const Color colorTextPrimary = Color(0xFF111827);
+  static const Color colorTextSecondary = Color(0xFF6B7280);
+  static const Color colorTextHint = Color(0xFFADB5BD);
+  static const Color colorTextWhite = Color(0xFFFFFFFF);
+
+  // Border
+  static const Color colorBorder = Color(0xFFE5E7EB);
+  static const Color colorBorderInput = Color(0xFFD1D5DB);
+
+  // Badge
+  static const Color colorBadgeBg = Color(0xFFEEF2FF);
+  static const Color colorBadgeText = Color(0xFF1A3FA4);
+
+  // Service card selected
+  static const Color colorServiceSelectedBg = Color(0xFFEEF2FF);
+  static const Color colorServiceSelectedBorder = Color(0xFF1A3FA4);
+  static const Color colorServiceUnselectedBg = Color(0xFFF7F8FA);
+  static const Color colorServiceUnselectedBorder = Color(0xFFE5E7EB);
+
+  // Dot route
+  static const Color colorDotPickup = Color(0xFF1A3FA4);
+  static const Color colorDotDestination = Color(0xFFF5A623);
+
+  // Button
+  static const Color colorButtonPrimary = Color(0xFF1A3FA4);
+  static const Color colorButtonText = Color(0xFFFFFFFF);
+
+  // Tag chip
+  static const Color colorTagBg = Color(0xFFEEF2FF);
+  static const Color colorTagText = Color(0xFF374151);
+
+  // Divider
+  static const Color colorDivider = Color(0xFFF3F3F6);
+
+  // Shadow
+  static const Color colorShadow = Color(0x0D000000);
+  // Primary
+
+  static const Color colorPrimaryIconBg = Color(0xFF2B52C8);
+
+  static const Color colorTextBlue = Color(0xFF1A3FA4);
+  static const Color colorTextYellow = Color(0xFFF5A623);
+
+  // Stepper
+  static const Color colorStepActive = Color(0xFF1A3FA4);
+  static const Color colorStepInactive = Color(0xFFD1D5DB);
+  static const Color colorStepLine = Color(0xFF1A3FA4);
+  static const Color colorStepLineInactive = Color(0xFFD1D5DB);
+
+  // Map
+  static const Color colorMapDotGreen = Color(0xFF22C55E);
+  static const Color colorMapBadgeBg = Color(0xFFFFFFFF);
+
+  // Address row
+  static const Color colorAddressIconBg = Color(0xFFEEF2FF);
+  static const Color colorDestinationBg = Color(0xFFF7F8FA);
+
+  // Suggestion chip
+  static const Color colorChipBg = Color(0xFFFFFFFF);
+  static const Color colorChipBorder = Color(0xFFE5E7EB);
+  static const Color colorChipText = Color(0xFF374151);
+
+  // Info banner
+  static const Color colorInfoBannerBg = Color(0xFFFFF8EC);
+  static const Color colorInfoBannerBorder = Color(0xFFFDE68A);
+  static const Color colorInfoIconFg = Color(0xFFF5A623);
+
+  // Bottom bar
+  static const Color colorBottomBarBg = Color(0xFFFFFFFF);
+  static const Color colorEstimateLabel = Color(0xFF6B7280);
+  static const Color colorEstimateValue = Color(0xFF111827);
+
+  // Button
+  static const Color colorButtonBg = Color(0xFFF5A623);
+  static const Color colorButtonDisabledBg = Color(0xFFE5E7EB);
+
+  // Shadow
+  static const Color colorShadowMd = Color(0x1A000000);
+
+  // Finding Driver
+  static const Color colorFindingPickupDot = Color(0xFFFDAF0A);
+  static const Color colorFindingDistanceBg = Color(0xFFD9E2FF);
 
   static const Color color_F6F6 = Color(0xFFF6F6F6);
   static const Color color_FFFF = Color(0xFFFFFFFF);
