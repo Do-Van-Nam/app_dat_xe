@@ -1,3 +1,4 @@
+import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +38,7 @@ class PointsWalletPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       // 1. Balance Card
                       _BalanceSection(
                         points: state.totalPoints,
@@ -74,7 +75,7 @@ class PointsWalletPage extends StatelessWidget {
                           Text(
                             l10n.viewAll,
                             style: const TextStyle(
-                                color: Colors.blue,
+                                color: AppColors.colorMain,
                                 fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -95,8 +96,20 @@ class PointsWalletPage extends StatelessWidget {
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 12),
-                      ...state.recentActivities.map((activity) =>
-                          _ActivityItem(activity: activity, l10n: l10n)),
+                      Container(
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            ...state.recentActivities.map((activity) =>
+                                _ActivityItem(activity: activity, l10n: l10n)),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -130,7 +143,7 @@ class _BalanceSection extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF1565C0), Color(0xFF1E88E5)],
+          colors: [AppColors.primaryBlue, AppColors.colorMain],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -141,40 +154,74 @@ class _BalanceSection extends StatelessWidget {
         children: [
           Text(
             l10n.currentBalance,
-            style: const TextStyle(color: Colors.white70, fontSize: 14),
+            style: AppStyles.inter14Regular
+                .copyWith(color: AppColors.colorWhite.withOpacity(0.7)),
           ),
           const SizedBox(height: 8),
-          Text(
-            "${points.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} Điểm",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 42,
-              fontWeight: FontWeight.bold,
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text:
+                      "${points.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} ",
+                  style: AppStyles.inter28Bold.copyWith(
+                    color: AppColors.colorWhite,
+                    fontSize: 48,
+                  ),
+                ),
+                TextSpan(
+                  text: "Điểm",
+                  style: AppStyles.inter16Bold.copyWith(
+                    color: AppColors.colorYellow,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(30),
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: ShapeDecoration(
+              color: Colors.white.withValues(alpha: 0.10),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  width: 1,
+                  color: Colors.white.withValues(alpha: 0.20),
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 14,
-                  backgroundColor: Colors.amber,
-                  child: Icon(Icons.star, color: Colors.white, size: 18),
+                  backgroundColor: AppColors.colorYellow,
+                  child: SvgPicture.asset(
+                    AppImages.icOutlinedStar,
+                    height: 12,
+                  ),
                 ),
                 const SizedBox(width: 10),
-                Text(
-                  "HẠNG THÀNH VIÊN\n$tier",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    height: 1.2,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "HẠNG THÀNH VIÊN",
+                      style: AppStyles.inter12SemiBold.copyWith(
+                        color: AppColors.colorWhite,
+                        height: 1.2,
+                      ),
+                    ),
+                    Text(
+                      tier,
+                      style: AppStyles.inter12SemiBold.copyWith(
+                        color: AppColors.colorYellow,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -186,7 +233,8 @@ class _BalanceSection extends StatelessWidget {
                 child: _ActionButton(
                   icon: Icons.history,
                   label: l10n.pointsHistory,
-                  color: Colors.amber,
+                  color: AppColors.colorYellow,
+                  textColor: AppColors.color_694600,
                   onTap: () {},
                 ),
               ),
@@ -195,7 +243,8 @@ class _BalanceSection extends StatelessWidget {
                 child: _ActionButton(
                   icon: Icons.card_giftcard,
                   label: l10n.redeemCodes,
-                  color: Colors.white70,
+                  color: AppColors.colorWhite.withValues(alpha: 0.15),
+                  textColor: AppColors.colorWhite,
                   onTap: () {},
                 ),
               ),
@@ -211,12 +260,14 @@ class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+  final Color textColor;
   final VoidCallback onTap;
 
   const _ActionButton({
     required this.icon,
     required this.label,
     required this.color,
+    required this.textColor,
     required this.onTap,
   });
 
@@ -227,17 +278,17 @@ class _ActionButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.15),
+          color: color,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: color, size: 20),
+            Icon(icon, size: 20),
             const SizedBox(width: 8),
             Text(
               label,
-              style: TextStyle(color: color, fontWeight: FontWeight.w600),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -262,19 +313,29 @@ class _CategoryGrid extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: categories.map((cat) {
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(cat["icon"] as IconData, size: 32),
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: ShapeDecoration(
+            color: const Color(0xFFF3F3F6),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
             ),
-            const SizedBox(height: 8),
-            Text(cat["label"] as String, style: const TextStyle(fontSize: 13)),
-          ],
+          ),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(cat["icon"] as IconData, size: 32),
+              ),
+              const SizedBox(height: 8),
+              Text(cat["label"] as String,
+                  style: const TextStyle(fontSize: 13)),
+            ],
+          ),
         );
       }).toList(),
     );
@@ -289,9 +350,14 @@ class _RedeemItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+      ),
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -333,38 +399,58 @@ class _RedeemItemCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item.title,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item.subtitle,
-                  style: const TextStyle(color: Colors.grey, height: 1.4),
-                ),
-                const SizedBox(height: 12),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.title,
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            item.subtitle,
+                            style: const TextStyle(
+                                color: Colors.grey, height: 1.4),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Text(
                       "${item.pointsRequired} PTS",
                       style: const TextStyle(
-                        color: Colors.blue,
+                        color: AppColors.colorMain,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                      ),
-                      child: Text(l10n.redeemNow),
-                    ),
                   ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.colorMain,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text(
+                      l10n.redeemNow,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -383,26 +469,26 @@ class _ActivityItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor:
-              activity.isPositive ? Colors.green[50] : Colors.red[50],
-          child: Icon(
-            activity.isPositive ? Icons.add : Icons.card_giftcard,
-            color: activity.isPositive ? Colors.green : Colors.red,
-          ),
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: activity.isPositive ? Colors.green[50] : Colors.red[50],
+          borderRadius: BorderRadius.circular(12),
         ),
-        title: Text(activity.title),
-        subtitle: Text(activity.time),
-        trailing: Text(
-          "${activity.isPositive ? '+' : ''}${activity.points}",
-          style: TextStyle(
-            color: activity.isPositive ? Colors.green : Colors.red,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+        child: Icon(
+          activity.isPositive ? Icons.add : Icons.card_giftcard,
+          color: activity.isPositive ? Colors.green : Colors.red,
+        ),
+      ),
+      title: Text(activity.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: Text(activity.time),
+      trailing: Text(
+        "${activity.isPositive ? '+' : ''}${activity.points}",
+        style: TextStyle(
+          color: activity.isPositive ? Colors.green : Colors.red,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
         ),
       ),
     );

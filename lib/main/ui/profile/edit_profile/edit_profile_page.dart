@@ -1,3 +1,4 @@
+import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -136,11 +137,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         controller: _phoneController,
                         hint: "090 123 4567",
                         suffix: state.isPhoneVerified
-                            ? Chip(
-                                backgroundColor: Colors.green[50],
-                                label: Text(
-                                  l10n.verified,
-                                  style: const TextStyle(color: Colors.green),
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0x4C69FF87),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppImages.icVerified,
+                                      width: 13,
+                                      height: 13,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      l10n.verified,
+                                      style: AppStyles.inter14Bold.copyWith(
+                                          color: Colors.green, fontSize: 10),
+                                    ),
+                                  ],
                                 ),
                               )
                             : null,
@@ -183,9 +202,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
                               ),
                               filled: true,
-                              fillColor: Colors.grey[100],
+                              fillColor: AppColors.color_E2E2E5,
                             ),
                             items: ["Nam", "Nữ", "Khác"]
                                 .map((g) => DropdownMenuItem(
@@ -228,7 +256,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                            backgroundColor: AppColors.colorMain,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -291,9 +319,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
             hintText: hint,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
             ),
             filled: true,
-            fillColor: Colors.grey[100],
+            fillColor: AppColors.color_E2E2E5,
             suffix: suffix,
           ),
           validator: (value) {

@@ -408,7 +408,7 @@ class _CartBottomBar extends StatelessWidget {
         ],
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () => context.push(PATH_CART),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.colorMain,
           padding: const EdgeInsets.symmetric(vertical: 16),

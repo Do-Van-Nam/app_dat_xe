@@ -184,6 +184,7 @@ class InterprovinceRidePage extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () {
                             // context.read<InterprovinceRideBloc>().add(SubmitRideRequest());
+                            context.push(PATH_WAITING_DRIVER);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,

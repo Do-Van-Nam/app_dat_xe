@@ -64,6 +64,7 @@ class AppImages {
   static const String icDotGrown = '$_base/ic_dot_grown.svg';
   static const String icPen = '$_base/ic_pen.svg';
   static const String icWallet = '$_base/ic_wallet.svg';
+  static const String icWallet2 = '$_base/ic_wallet2.svg';
   static const String icVoucher2 = '$_base/ic_voucher2.svg';
   static const String icBookmark = '$_base/ic_bookmark.svg';
   static const String icCard = '$_base/ic_card.svg';
@@ -72,6 +73,62 @@ class AppImages {
   static const String icSetting = '$_base/ic_setting.svg';
   static const String icPerson2 = '$_base/ic_person2.svg';
   static const String icLogout = '$_base/ic_logout.svg';
+  static const String icOutlinedStar = '$_base/ic_outlined_star.svg';
+  static const String icVerified = '$_base/ic_verified.svg';
+
+  // Route / Address
+  static const String icPinDelivery = '$_base/ic_pin_delivery.svg';
+  static const String icAddPoint = '$_base/ic_add_point.svg';
+
+  // Checkbox
+  static const String icCheckboxOff = '$_base/ic_checkbox_off.svg';
+  static const String icCheckboxOn = '$_base/ic_checkbox_off.svg';
+
+  // Service types
+  static const String icBolt = '$_base/ic_bolt.svg';
+
+  // Map
+  static const String icMapPin = '$_base/ic_navigation.svg';
+  static const String icNavigation = '$_base/ic_navigation.svg';
+
+  // Payment
+  static const String icCash = '$_base/ic_cash.svg';
+
+  // Bottom buttons
+  static const String icNoteEdit = '$_base/ic_note_edit.svg';
+  static const String icSchedule = '$_base/ic_schedule.svg';
+  // Navigation / AppBar
+  static const String icMoreDots = '$_base/ic_more_dots.svg';
+
+  // Status illustration
+  static const String icCarWhite = '$_base/ic_car_white.svg';
+
+  // Info card
+  static const String icCalendar = '$_base/ic_calendar.svg';
+  static const String icDotDestination = '$_base/ic_pin_destination.svg';
+  static const String icCheckCircle = '$_base/ic_check_circle.svg';
+  static const String icStar = '$_base/ic_star.svg';
+  static const String icXCircle = '$_base/ic_x_circle.svg';
+  static const String icWarning = '$_base/ic_warning.svg';
+  static const String icLocationPin = '$_base/ic_location_pin.svg';
+  static const String icLocationFill = '$_base/ic_location_fill.svg';
+  static const String icBox = '$_base/ic_box.svg';
+  static const String icElectronics = '$_base/ic_electronics.svg';
+  static const String icOther = '$_base/ic_food.svg';
+  static const String icEdit = '$_base/ic_food.svg';
+  static const String icFork = '$_base/ic_food.svg'; // restaurant / food icon
+  static const String icTrash = '$_base/ic_trash.svg'; // delete item
+  static const String icMinus = '$_base/ic_minus.svg'; // stepper decrease
+  static const String icPlus = '$_base/ic_plus.svg'; // stepper increase
+  static const String icTag = '$_base/ic_tag.svg'; // promo code
+  static const String icChevronRight = '$_base/ic_chevron_right.svg';
+
+  static const String icCashPayment =
+      '$_base/ic_cash_payment.svg'; // Thanh toán khi nhận
+  static const String icBankTransfer =
+      '$_base/ic_bank_transfer.svg'; // Chuyển khoản
+  static const String icTicket = '$_base/ic_ticket.svg'; // Mã ưu đãi
+  static const String icMapMarker = '$_base/ic_map_marker.svg';
 
   static final String imgMap = 'assets/images/img_map.png';
   static final String imgInterprovince =

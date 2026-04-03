@@ -12,13 +12,185 @@ class AppStyles {
     color: AppColors.color_434653,
     fontSize: 16,
   );
+  // ── Bold ──────────────────────────────────────────────────────
+  static const TextStyle inter22Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter20Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter18Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter16Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter14Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
 
-  static const TextStyle inter18Bold =
-      TextStyle(fontSize: 18, fontWeight: FontWeight.w700, fontFamily: 'Inter');
-  static const TextStyle inter16SemiBold =
-      TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Inter');
-  static const TextStyle inter12Medium =
-      TextStyle(fontSize: 12, fontWeight: FontWeight.w500, fontFamily: 'Inter');
+  // ── SemiBold ──────────────────────────────────────────────────
+  static const TextStyle inter18SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter16SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter14SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter13SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter12SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter11SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 11,
+    fontWeight: FontWeight.w600,
+    color: AppColors.colorTextPrimary,
+  );
+
+  // ── Medium ────────────────────────────────────────────────────
+
+  static const TextStyle inter14Medium = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter13Medium = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter12Medium = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppColors.colorTextPrimary,
+  );
+
+  // ── Regular ───────────────────────────────────────────────────
+  static const TextStyle inter16Regular = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter14Regular = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: AppColors.colorTextSecondary,
+  );
+  static const TextStyle inter13Regular = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    color: AppColors.colorTextSecondary,
+  );
+  static const TextStyle inter12Regular = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: AppColors.colorTextSecondary,
+  );
+  static const TextStyle inter11Regular = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+    color: AppColors.colorTextSecondary,
+  );
+
+  static const TextStyle inter28Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter24Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
+
+  static const TextStyle inter15Regular = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 15,
+    fontWeight: FontWeight.w400,
+    color: AppColors.colorTextSecondary,
+  );
+
+  static const TextStyle inter15SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    color: AppColors.colorTextPrimary,
+  );
+
+  // 15
+  static const TextStyle inter15Medium = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+    color: AppColors.color333333,
+  );
+  // ── 17 ──────────────────────────────────────────────────────────────────
+  static const TextStyle inter17SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    color: AppColors.color1A56DB,
+  );
+
+  static const TextStyle inter15Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    color: AppColors.color1A1A1A,
+  );
+
+  // ── 26 ──────────────────────────────────────────────────────────────────
+  static const TextStyle inter26ExtraBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 26,
+    fontWeight: FontWeight.w800,
+    color: AppColors.color1A56DB,
+  );
   static const TextStyle inter10Regular =
       TextStyle(fontSize: 10, fontWeight: FontWeight.w400, fontFamily: 'Inter');
   static const title = TextStyle(
@@ -110,13 +282,6 @@ class AppStyles {
     fontSize: 16,
   );
 
-  static final TextStyle inter12Regular = AppTextFonts.interRegular.copyWith(
-    fontSize: 12.0,
-    height: 16.0 / 12.0,
-    letterSpacing: 0.0,
-    fontStyle: FontStyle.normal,
-  );
-
   static final TextStyle header = AppTextFonts.interSemiBold.copyWith(
     fontSize: 20.0,
     height: 24.0 / 20.0,
@@ -124,12 +289,6 @@ class AppStyles {
     fontStyle: FontStyle.normal,
   );
 
-  static final TextStyle inter14Medium = AppTextFonts.interMedium.copyWith(
-    fontSize: 14.0,
-    // height: 24.0 / 14.0,
-    letterSpacing: 0.0,
-    fontStyle: FontStyle.normal,
-  );
   static final TextStyle inter12RegularCentered = inter12Regular.copyWith();
 
   static const Alignment inter12RegularAlignment = Alignment.center;
@@ -153,100 +312,4 @@ class AppStyles {
 
   static const Alignment poppins12RegularAlignment = Alignment.center;
   static const TextAlign poppins12RegularTextAlign = TextAlign.center;
-  // ── Inter Bold ──────────────────────────────────────────────
-  static const TextStyle inter24Bold = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 24,
-    fontWeight: FontWeight.w700,
-    color: AppColors.colorTextPrimary,
-  );
-
-  static const TextStyle inter20Bold = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 20,
-    fontWeight: FontWeight.w700,
-    color: AppColors.colorTextPrimary,
-  );
-
-  static const TextStyle inter16Bold = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-    color: AppColors.colorTextPrimary,
-  );
-
-  static const TextStyle inter14Bold = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 14,
-    fontWeight: FontWeight.w700,
-    color: AppColors.colorTextPrimary,
-  );
-
-  // ── Inter SemiBold ───────────────────────────────────────────
-  static const TextStyle inter18SemiBold = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 18,
-    fontWeight: FontWeight.w600,
-    color: AppColors.colorTextPrimary,
-  );
-
-  static const TextStyle inter14SemiBold = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-    color: AppColors.colorTextPrimary,
-  );
-
-  static const TextStyle inter12SemiBold = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    color: AppColors.colorTextPrimary,
-  );
-
-  // ── Inter Medium ─────────────────────────────────────────────
-
-  static const TextStyle inter13Medium = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 13,
-    fontWeight: FontWeight.w500,
-    color: AppColors.colorTextPrimary,
-  );
-
-  // ── Inter Regular ────────────────────────────────────────────
-  static const TextStyle inter16Regular = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    color: AppColors.colorTextPrimary,
-  );
-
-  static const TextStyle inter14Regular = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    color: AppColors.colorTextSecondary,
-  );
-
-  static const TextStyle inter13Regular = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 13,
-    fontWeight: FontWeight.w400,
-    color: AppColors.colorTextSecondary,
-  );
-
-  static const TextStyle inter11Regular = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 11,
-    fontWeight: FontWeight.w400,
-    color: AppColors.colorTextSecondary,
-  );
-
-  // ── Inter 28 Bold ────────────────────────────────────────────
-  static const TextStyle inter28Bold = TextStyle(
-    fontFamily: 'Inter',
-    fontSize: 28,
-    fontWeight: FontWeight.w700,
-    color: AppColors.colorTextPrimary,
-  );
 }

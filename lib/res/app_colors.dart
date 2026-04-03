@@ -18,6 +18,7 @@ class AppColors {
   static const Color color_69FF87 = Color(0xFF69FF87);
   static const Color color_004317 = Color(0xFF004317);
   static const Color color_434654 = Color(0xFF434654);
+  static const Color color_694600 = Color(0xFF694600);
 
   static const Color primaryBlue = Color(0xFF1565C0);
   static const Color color_F8F9FA = Color(0xFFF8F9FA);
@@ -137,6 +138,213 @@ class AppColors {
   static const Color colorFindingPickupDot = Color(0xFFFDAF0A);
   static const Color colorFindingDistanceBg = Color(0xFFD9E2FF);
 
+  static const Color colorPrimaryDark = Color(0xFF122D7A);
+
+  static const Color colorSectionBg = Color(0xFFF7F8FA);
+
+  // Text
+  static const Color colorTextStrike = Color(0xFFADB5BD);
+  static const Color colorTextAddPoint = Color(0xFF1A3FA4);
+
+  // Border
+  static const Color colorBorderServiceNormal = Color(0xFFE5E7EB);
+
+  // Route dots
+  static const Color colorDotDelivery = Color(0xFFEF4444);
+  static const Color colorRouteLine = Color(0xFFD1D5DB);
+
+  // Service card
+  static const Color colorServiceIconBgSelected = Color(0xFFEEF2FF);
+  static const Color colorServiceIconBgNormal = Color(0xFFF3F3F6);
+
+  // Map
+  static const Color colorMapDistanceBg = Color(0xFFFFFFFF);
+  static const Color colorMapDistanceText = Color(0xFF374151);
+  static const Color colorMapDotIndicator = Color(0xFF374151);
+
+  // Payment row
+  static const Color colorPaymentDivider = Color(0xFFE5E7EB);
+  static const Color colorDiscountBadgeBg = Color(0xFFFFF8EC);
+  static const Color colorDiscountBadgeText = Color(0xFFF5A623);
+  static const Color colorDiscountBadgeBorder = Color(0xFFFDE68A);
+  static const Color colorTotalLabel = Color(0xFF6B7280);
+  static const Color colorTotalValue = Color(0xFF1A3FA4);
+
+  // Checkbox
+  static const Color colorCheckboxBorder = Color(0xFFD1D5DB);
+  static const Color colorCheckboxChecked = Color(0xFF1A3FA4);
+  static const Color colorBorderServiceSelected = Color(0xFF1A3FA4);
+
+  // Buttons
+  static const Color colorBtnAddInfoBg = Color(0xFFF5A623);
+  static const Color colorBtnAddInfoText = Color(0xFF111827);
+  static const Color colorBtnScheduleBg = Color(0xFFF3F3F6);
+  static const Color colorBtnScheduleIcon = Color(0xFF6B7280);
+  static const Color colorBtnOrderBg = Color(0xFF1A3FA4);
+  static const Color colorBtnOrderText = Color(0xFFFFFFFF);
+
+  // AppBar
+  static const Color colorAppBarBg = Color(0xFFFFFFFF);
+  static const Color colorAppBarTitle = Color(0xFF1A3FA4);
+  static const Color colorAppBarDivider = Color(0xFFE5E7EB);
+
+  // Car icon circle
+  static const Color colorCarCircleBg = Color(0xFF1A3FA4);
+  static const Color colorCarCircleGlow = Color(0x331A3FA4);
+  static const Color colorCarIcon = Color(0xFFFFFFFF);
+
+  // Info card
+  static const Color colorInfoCardBg = Color(0xFFF7F8FA);
+  static const Color colorInfoCardBorder = Color(0xFFE5E7EB);
+  static const Color colorCalendarIconBg = Color(0xFFEEF2FF);
+  static const Color colorCalendarIcon = Color(0xFF1A3FA4);
+
+  // Route card
+  static const Color colorRouteCardBg = Color(0xFFF7F8FA);
+  static const Color colorRouteCardBorder = Color(0xFFE5E7EB);
+  static const Color colorDotPickupBorder = Color(0xFF1A3FA4);
+
+  // Cancel button
+  static const Color colorCancelBg = Color(0xFFEEF2FF);
+  static const Color colorCancelText = Color(0xFF6B7280);
+  static const Color colorCancelBorder = Color(0xFFE5E7EB);
+
+// Primary
+
+  // Green (verified badge)
+  static const Color colorGreen = Color(0xFF22C55E);
+  static const Color colorGreenLight = Color(0xFFDCFCE7);
+
+  // Red (cancel / destination dot)
+  static const Color colorRed = Color(0xFFEF4444);
+  static const Color colorRedLight = Color(0xFFFEE2E2);
+
+  // Background
+  static const Color colorTextGreen = Color(0xFF16A34A);
+  static const Color colorTextRed = Color(0xFFDC2626);
+
+  // Notification banner
+  static const Color colorBannerBg = Color(0xFFEEF2FF);
+  static const Color colorBannerBorder = Color(0xFFBFD0FF);
+  static const Color colorBannerIconBg = Color(0xFF1A3FA4);
+  static const Color colorBannerIcon = Color(0xFFFFFFFF);
+
+  // Driver card
+  static const Color colorDriverCardBg = Color(0xFFFFFFFF);
+  static const Color colorDriverCardBorder = Color(0xFFE5E7EB);
+  static const Color colorVerifiedBadgeBg = Color(0xFF22C55E);
+  static const Color colorVerifiedText = Color(0xFFFFFFFF);
+  static const Color colorStarIcon = Color(0xFFF5A623);
+  static const Color colorLicensePlateLabel = Color(0xFF6B7280);
+  static const Color colorLicensePlateBg = Color(0xFFF7F8FA);
+  static const Color colorLicensePlateBorder = Color(0xFFE5E7EB);
+
+  // Car info section
+  static const Color colorCarInfoBg = Color(0xFFF7F8FA);
+  static const Color colorCarInfoBorder = Color(0xFFE5E7EB);
+  static const Color colorCarInfoIcon = Color(0xFF1A3FA4);
+  static const Color colorCarInfoQuote = Color(0xFF6B7280);
+
+  // Buttons
+  static const Color colorBtnCallBg = Color(0xFF1A3FA4);
+  static const Color colorBtnCallText = Color(0xFFFFFFFF);
+  static const Color colorBtnMsgBg = Color(0xFFF5A623);
+  static const Color colorBtnMsgText = Color(0xFF111827);
+
+  // Trip detail card
+  static const Color colorTripCardBg = Color(0xFFFFFFFF);
+  static const Color colorTripCardBorder = Color(0xFFE5E7EB);
+  static const Color colorPaymentIcon = Color(0xFF6B7280);
+
+  // Map banner
+  static const Color colorMapBannerBg = Color(0xFFFFFFFF);
+  static const Color colorMapBannerText = Color(0xFF374151);
+  static const Color colorMapBannerIcon = Color(0xFF1A3FA4);
+  static const Color colorCancelIcon = Color(0xFFDC2626);
+  static const Color colorCancelBg2 = Color(0xFFFFDAD6);
+
+  static const Color colorGlow = Color(0x261A3FA4);
+  static const Color colorFFFFFF = Color(0xFFFFFFFF);
+  static const Color colorF3F3F6 = Color(0xFFF3F3F6);
+  static const Color colorF5F5F5 = Color(0xFFF5F5F5);
+  static const Color colorE8E8E8 = Color(0xFFE8E8E8);
+  static const Color colorD9D9D9 = Color(0xFFD9D9D9);
+  static const Color color9E9E9E = Color(0xFF9E9E9E);
+  static const Color color666666 = Color(0xFF666666);
+  static const Color color333333 = Color(0xFF333333);
+  static const Color color1A1A1A = Color(0xFF1A1A1A);
+  static const Color color000000 = Color(0xFF000000);
+
+  // Primary
+  static const Color color1A56DB = Color(0xFF1A56DB);
+  static const Color color1E40AF = Color(0xFF1E40AF);
+  static const Color colorEBF3FF = Color(0xFFEBF3FF);
+  static const Color colorDCEEFF = Color(0xFFDCEEFF);
+
+  // Accent / CTA
+  static const Color colorF5A623 = Color(0xFFF5A623);
+  static const Color colorFFC107 = Color(0xFFFFC107);
+
+  // Status
+  static const Color colorE53E3E = Color(0xFFE53E3E);
+  static const Color color38A169 = Color(0xFF38A169);
+
+  // Divider
+  static const Color colorEEEEEE = Color(0xFFEEEEEE);
+
+  // Input
+  static const Color colorF7F8FA = Color(0xFFF7F8FA);
+  static const Color colorBDBDBD = Color(0xFFBDBDBD);
+
+  // Chip selected
+  static const Color chipSelectedBg = color1A56DB;
+  static const Color chipSelectedText = colorFFFFFF;
+  static const Color chipUnselectedBg = colorFFFFFF;
+  static const Color chipUnselectedText = color333333;
+  static const Color chipBorder = colorD9D9D9;
+
+  // Card / Section background
+  static const Color pageBackground = colorF3F3F6;
+  static const Color colorF9F9FC = Color(0xFFF9F9FC);
+  // Banner overlay
+  static const Color bannerOverlay = Color(0x80000000);
+  // ── Backgrounds ──────────────────────────────────────────────────────────
+  static const Color colorF3F4F6 = Color(0xFFF3F4F6);
+  static const Color colorF0F2F5 = Color(0xFFF0F2F5);
+
+  static const Color color999999 = Color(0xFF999999);
+  static const Color color2563EB = Color(0xFF2563EB);
+
+  // ── Accent / CTA ─────────────────────────────────────────────────────────
+
+  // ── Danger ───────────────────────────────────────────────────────────────
+  static const Color colorFFF0F0 = Color(0xFFFFF0F0);
+
+  // ── Quantity stepper ─────────────────────────────────────────────────────
+  static const Color colorStepperBorder = Color(0xFFD1D9E0);
+  static const Color colorStepperBg = Color(0xFFFFFFFF);
+
+  // ── Icon tint ─────────────────────────────────────────────────────────────
+  static const Color colorRestaurantIconBg = Color(0xFFDCEEFF);
+  // ── Backgrounds ───────────────────────────────────────────────────────────
+  static const Color colorF5F7FA = Color(0xFFF5F7FA);
+  static const Color colorE8ECF0 = Color(0xFFE8ECF0);
+
+  // ── Orange (item price, voucher label) ───────────────────────────────────
+  static const Color colorF56B2A = Color(0xFFF56B2A);
+  static const Color colorED8936 = Color(0xFFED8936);
+
+  // ── Radio ─────────────────────────────────────────────────────────────────
+  static const Color colorRadioActive = Color(0xFF1A56DB);
+  static const Color colorRadioInactive = Color(0xFFD1D9E0);
+
+  // ── Promo input ───────────────────────────────────────────────────────────
+  static const Color colorPromoInputBg = Color(0xFFF0F2F5);
+  static const Color colorPromoIconBg = Color(0xFFDEB887); // ticket-tan
+
+  // ── Map placeholder ───────────────────────────────────────────────────────
+  static const Color colorMapBg = Color(0xFFE2EAF4);
+  // ── Divider ───────────────────────────────────────────────────────────────
   static const Color color_F6F6 = Color(0xFFF6F6F6);
   static const Color color_FFFF = Color(0xFFFFFFFF);
   static const Color color_1961 = Color(0xFF1961D5);

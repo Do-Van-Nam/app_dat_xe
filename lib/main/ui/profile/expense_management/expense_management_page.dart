@@ -1,3 +1,4 @@
+import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,8 +63,12 @@ class ExpenseManagementPage extends StatelessWidget {
                       // 4. Giao dịch gần đây
                       _RecentTransactionsHeader(l10n: l10n),
                       const SizedBox(height: 12),
-                      ...state.recentTransactions.map((tx) =>
-                          _TransactionItem(transaction: tx, l10n: l10n)),
+                      Column(
+                        children: state.recentTransactions
+                            .map((tx) =>
+                                _TransactionItem(transaction: tx, l10n: l10n))
+                            .toList(),
+                      ),
                     ],
                   ),
                 ),
@@ -102,7 +107,7 @@ class _PeriodTabs extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 4),
               padding: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.blue : Colors.grey[200],
+                color: isSelected ? AppColors.colorMain : Colors.grey[200],
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Center(
@@ -141,31 +146,41 @@ class _TotalExpenseCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1565C0), Color(0xFF1E88E5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+      width: double.infinity,
+      decoration: ShapeDecoration(
+        gradient: LinearGradient(
+          begin: Alignment(0.12, -0.24),
+          end: Alignment(0.88, 1.24),
+          colors: [AppColors.primaryBlue, AppColors.colorMain],
         ),
-        borderRadius: BorderRadius.circular(20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32),
+        ),
+        shadows: [
+          BoxShadow(
+            color: Color(0x0F1A1C1E),
+            blurRadius: 24,
+            offset: Offset(0, 8),
+            spreadRadius: 0,
+          )
+        ],
       ),
       child: Column(
+        spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.totalThisMonth,
-            style: const TextStyle(color: Colors.white70, fontSize: 15),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            "$formattedTotal Đ",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
+            style: AppStyles.inter14Medium.copyWith(
+              color: AppColors.colorWhite.withOpacity(0.7),
             ),
           ),
-          const SizedBox(height: 16),
+          Text(
+            "$formattedTotal Đ",
+            style: AppStyles.inter28Bold.copyWith(
+              color: AppColors.colorWhite,
+            ),
+          ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
@@ -202,67 +217,79 @@ class _SpendingAnalysisSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              l10n.spendingAnalysis,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const Icon(Icons.analytics_outlined, color: Colors.grey),
-          ],
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: ShapeDecoration(
+        color: AppColors.color_F3F3F6,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32),
         ),
-        const SizedBox(height: 24),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                l10n.spendingAnalysis,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const Icon(Icons.analytics_outlined, color: Colors.grey),
+            ],
+          ),
+          const SizedBox(height: 24),
 
-        // Donut Chart (giả lập bằng Stack + Circle)
-        Center(
-          child: SizedBox(
-            width: 200,
-            height: 200,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  width: 180,
-                  height: 180,
-                  child: CircularProgressIndicator(
-                    value: 1.0,
-                    strokeWidth: 25,
-                    backgroundColor: Colors.grey[200],
-                    valueColor: const AlwaysStoppedAnimation(Colors.blue),
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "100%",
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
+          // Donut Chart (giả lập bằng Stack + Circle)
+          Center(
+            child: SizedBox(
+              width: 200,
+              height: 200,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 180,
+                    height: 180,
+                    child: CircularProgressIndicator(
+                      value: 1.0,
+                      strokeWidth: 25,
+                      backgroundColor: Colors.grey[200],
+                      valueColor:
+                          const AlwaysStoppedAnimation(AppColors.colorMain),
                     ),
-                    Text(l10n.total,
-                        style: const TextStyle(color: Colors.grey)),
-                  ],
-                ),
-              ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "100%",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.colorMain,
+                            ),
+                      ),
+                      Text(l10n.total,
+                          style: const TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
 
-        const SizedBox(height: 32),
+          const SizedBox(height: 32),
 
-        // Category List
-        ...categories.map((cat) => _CategoryRow(category: cat)).toList(),
-      ],
+          // Category List
+          ...categories.map((cat) => _CategoryRow(category: cat)).toList(),
+        ],
+      ),
     );
   }
 }
@@ -274,8 +301,15 @@ class _CategoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
       child: Row(
         children: [
           Container(
@@ -291,8 +325,9 @@ class _CategoryRow extends StatelessWidget {
             child: Text(category.name),
           ),
           Text(
-            "${category.percent.toInt()}%",
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            "${category.percent.toInt()} %",
+            style:
+                TextStyle(color: category.color, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -319,8 +354,8 @@ class _RecentTransactionsHeader extends StatelessWidget {
         ),
         Text(
           l10n.viewAll,
-          style:
-              const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+              color: AppColors.colorMain, fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -337,12 +372,24 @@ class _TransactionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isNegative = transaction.amount < 0;
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
+      // padding: const EdgeInsets.all(8),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: transaction.iconBackgroundColor,
-          child: Icon(transaction.icon, color: Colors.blue),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: 40,
+            height: 40,
+            color: transaction.iconBackgroundColor,
+            child: Icon(transaction.icon, color: Colors.blue),
+          ),
         ),
         title: Text(transaction.title,
             style: const TextStyle(fontWeight: FontWeight.w600)),

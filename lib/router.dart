@@ -7,10 +7,14 @@ import 'package:demo_app/main/ui/book_vehicle/airport_booking/airport_booking_pa
 import 'package:demo_app/main/ui/book_vehicle/book_for_family/book_for_family_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/booking/booking_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/interprovice_ride_page.dart';
+import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/trip_detail/tai_xe_nhan_page.dart';
+import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/waiting_driver/waiting_driver_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/rent_driver/rent_driver_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/finding_driver/finding_driver_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/search_destination/search_destination_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/tracking/tracking_page.dart';
+import 'package:demo_app/main/ui/food_delivery/cart/cart_page.dart';
+import 'package:demo_app/main/ui/food_delivery/checkout/checkout_page.dart';
 import 'package:demo_app/main/ui/food_delivery/food_delivery_page.dart';
 import 'package:demo_app/main/ui/language/language_page.dart';
 import 'package:demo_app/main/ui/main_page.dart';
@@ -20,6 +24,8 @@ import 'package:demo_app/main/ui/profile/expense_management/expense_management_p
 import 'package:demo_app/main/ui/profile/points_wallet/points_wallet_page.dart';
 import 'package:demo_app/main/ui/profile/profile_page.dart';
 import 'package:demo_app/main/ui/profile/voucher/voucher_page.dart';
+import 'package:demo_app/main/ui/shipping/delivery_info/delivery_info_page.dart';
+import 'package:demo_app/main/ui/shipping/shipping_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,10 +65,18 @@ const String PATH_INTERPROVINCE_RIDE = "/interprovince-ride";
 const String PATH_BOOK_FOR_FAMILY = "/book-for-family";
 const String PATH_RENT_DRIVER = "/rent-driver";
 const String PATH_FINDING_DRIVER = "/finding-driver";
+const String PATH_WAITING_DRIVER = "/waiting-driver";
+const String PATH_TRIP_DETAIL = "/trip-detail";
+
+//Shipping
+const String PATH_SHIPPING = "/shipping";
+const String PATH_DELIVERY_INFO = "/delivery-info";
 
 // food
 const String PATH_FOOD_INTRO = "/food-intro";
 const String PATH_FOOD = "/food";
+const String PATH_CART = "/cart";
+const String PATH_CHECKOUT = "/checkout";
 
 // chatbot
 const String PATH_CHATBOT_INTRO = "/chatbot-info";
@@ -166,6 +180,14 @@ final GoRouter router = GoRouter(
       path: PATH_FINDING_DRIVER,
       builder: (context, state) => FindingDriverPage(),
     ),
+    GoRoute(
+      path: PATH_WAITING_DRIVER,
+      builder: (context, state) => WaitingDriverPage(),
+    ),
+    GoRoute(
+      path: PATH_TRIP_DETAIL,
+      builder: (context, state) => TripDetailPage(),
+    ),
     // food
     // GoRoute(
     //   path: PATH_FOOD_INTRO,
@@ -174,6 +196,24 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_FOOD,
       builder: (context, state) => FoodDeliveryPage(),
+    ),
+    GoRoute(
+      path: PATH_CART,
+      builder: (context, state) => CartPage(),
+    ),
+
+    GoRoute(
+      path: PATH_CHECKOUT,
+      builder: (context, state) => CheckoutPage(),
+    ),
+    //shipping
+    GoRoute(
+      path: PATH_SHIPPING,
+      builder: (context, state) => ShippingPage(),
+    ),
+    GoRoute(
+      path: PATH_DELIVERY_INFO,
+      builder: (context, state) => DeliveryInfoPage(),
     ),
   ],
   // redirect: (context, state) {

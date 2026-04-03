@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -252,57 +255,76 @@ class _ExpiringVoucherCard extends StatelessWidget {
           )
         ],
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              color: Colors.amber[100],
-              borderRadius:
-                  const BorderRadius.horizontal(left: Radius.circular(12)),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Container(
+              width: 100,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.color_FFDDB0,
+                borderRadius:
+                    const BorderRadius.horizontal(left: Radius.circular(12)),
+              ),
+              child: voucher.imageUrl != null
+                  ? Transform.rotate(
+                      angle: (Random().nextDouble() - 0.5) * 0.2,
+                      child: Center(
+                        child: SizedBox(
+                          width: 76,
+                          height: 76,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: CachedNetworkImage(
+                              imageUrl: voucher.imageUrl!,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Icon(voucher.icon, size: 50, color: Colors.amber),
             ),
-            child: voucher.imageUrl != null
-                ? ClipRRect(
-                    borderRadius: const BorderRadius.horizontal(
-                        left: Radius.circular(12)),
-                    child: Image.network(voucher.imageUrl!, fit: BoxFit.cover),
-                  )
-                : Icon(voucher.icon, size: 50, color: Colors.amber),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(voucher.subtitle,
-                      style: const TextStyle(fontSize: 13, color: Colors.grey)),
-                  const SizedBox(height: 4),
-                  Text(voucher.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  if (voucher.expiry != null) ...[
-                    const SizedBox(height: 8),
-                    Text(voucher.expiry!, style: const TextStyle(fontSize: 13)),
-                  ],
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange),
-                        child: Text(l10n.useNow,
-                            style: const TextStyle(color: Colors.white)),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(voucher.subtitle,
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.grey)),
+                    const SizedBox(height: 4),
+                    Text(voucher.title,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    if (voucher.expiry != null) ...[
+                      const SizedBox(height: 8),
+                      Text(voucher.expiry!,
+                          style: const TextStyle(fontSize: 13)),
+                    ],
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange),
+                          child: Text(l10n.useNow,
+                              style: const TextStyle(color: Colors.white)),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -316,23 +338,58 @@ class _MyVoucherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.blue[50],
-          child: Icon(voucher.icon, color: Colors.blue),
+    return Container(
+        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(bottom: 12),
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          shadows: [
+            BoxShadow(
+              color: Color(0x0A1A1C1E),
+              blurRadius: 16,
+              offset: Offset(0, 4),
+              spreadRadius: 0,
+            )
+          ],
         ),
-        title: Text(voucher.title,
-            style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle:
-            Text(voucher.expiry ?? "", style: const TextStyle(fontSize: 13)),
-        trailing: OutlinedButton(
-          onPressed: () {},
-          child: Text(l10n.useNow),
-        ),
-      ),
-    );
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: 48,
+                height: 48,
+                color: AppColors.color_D9E2FF,
+                child: Icon(voucher.icon, color: AppColors.colorMain),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(voucher.title,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  Text(voucher.expiry ?? "",
+                      style: const TextStyle(fontSize: 13)),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      child: Text(l10n.useNow),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 }
 
@@ -371,7 +428,10 @@ class _ReferFriendBanner extends StatelessWidget {
               backgroundColor: Colors.white,
               foregroundColor: Colors.blue,
             ),
-            child: Text(l10n.shareNow),
+            child: Text(
+              l10n.shareNow,
+              style: AppStyles.inter14Bold.copyWith(color: Colors.blue),
+            ),
           ),
         ],
       ),
@@ -394,30 +454,27 @@ class _PremiumMembershipCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
-          const Row(
-            children: [
-              Icon(Icons.star, color: Colors.white),
-              SizedBox(width: 8),
-              Text("GÓI HỘI VIÊN PREMIUM",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
-            ],
-          ),
-          const SizedBox(height: 12),
+          SvgPicture.asset(AppImages.icOutlinedStar, width: 30, height: 30),
+          Text("GÓI HỘI VIÊN PREMIUM",
+              style: AppStyles.inter14Regular.copyWith(
+                  color: AppColors.color_694600, fontWeight: FontWeight.bold)),
           Text(
             l10n.premiumMembershipDesc,
-            style: const TextStyle(color: Colors.white, fontSize: 15),
+            style: AppStyles.inter14Regular.copyWith(
+                color: AppColors.color_694600.withValues(alpha: 0.8),
+                fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16),
           GestureDetector(
             onTap: () {},
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("Xem chi tiết",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold)),
+                    style: AppStyles.inter14Regular.copyWith(
+                        color: AppColors.color_694600,
+                        fontWeight: FontWeight.bold)),
                 Icon(Icons.arrow_forward, color: Colors.white, size: 18),
               ],
             ),
