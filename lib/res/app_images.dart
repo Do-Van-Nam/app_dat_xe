@@ -2,7 +2,7 @@ class AppImages {
   static const String _base = 'assets/icons';
 
 //nav
-  static final String icHome = 'assets/icons/ic_home.svg';
+  static const String icHome = 'assets/icons/ic_home.svg';
   static final String icActivity = 'assets/icons/ic_activity.svg';
   static final String icProfile = 'assets/icons/ic_profile.svg';
   static final String icHomeActive = 'assets/icons/ic_home_active.svg';
@@ -136,4 +136,46 @@ class AppImages {
   // chatbot
 
   static final String imgVnFlag = 'assets/images/img_vn.jpg';
+  static const String icBell = '$_base/ic_bell.svg';
+  static const String icRestaurant =
+      '$_base/ic_restaurant.svg'; // step: chuẩn bị
+  static const String icBag = '$_base/ic_bag.svg'; // step: đã lấy
+  static const String icScooter =
+      '$_base/ic_scooter.svg'; // step: đang giao / driver badge
+  static const String icLocationTarget =
+      '$_base/ic_location_target.svg'; // recenter map
+  static const String icChat = '$_base/ic_chat.svg'; // chat button
+  static const String icMapMarkerUser = '$_base/ic_map_marker_user.svg';
+  static const String icMapMarkerDriver = '$_base/ic_map_marker_driver.svg';
+
+  static const String icHeadset = '$_base/ic_headset.svg';
+  static const String icSos = '$_base/ic_sos.svg';
+  static const String icNavigate = '$_base/ic_navigate.svg';
+  static const String icRecenter = '$_base/ic_recenter.svg';
+  static const String icPower = '$_base/ic_power.svg';
+  static const String icOfflineCloud = '$_base/ic_offline_cloud.svg';
+  static const String icMotorbike = '$_base/ic_motorbike.svg';
+  static const String icPickupPin = '$_base/ic_pickup_pin.svg';
+  static const String icDropoffPin = '$_base/ic_dropoff_pin.svg';
+  static const String icChart = '$_base/ic_chart.svg';
+  static const String icNavHome = '$_base/ic_nav_home.svg';
+
+  static const String icNavActivity = '$_base/ic_nav_activity.svg';
+  static const String icNavOrders = '$_base/ic_nav_orders.svg';
+  static const String icNavProfile = '$_base/ic_nav_profile.svg';
+  static const String icLightbulb = '$_base/ic_lightbulb.svg';
+  static const String icFire = '$_base/ic_fire.svg';
+  static const String icTurnRight = '$_base/ic_turn_right.svg';
+  static const String icCheckCircleFill = '$_base/ic_check_circle_fill.svg';
+  static const String icStarFill = '$_base/ic_star_fill.svg';
+  static const String icStarEmpty = '$_base/ic_star_empty.svg';
+  static const String icInfoCircle = '$_base/ic_info_circle.svg';
+  static const String icIdCard = '$_base/ic_id_card.svg';
+  static const String icDriverLicense = '$_base/ic_driver_license.svg';
+  static const String icCarRegistration = '$_base/ic_car_registration.svg';
+  static const String icFaceId = '$_base/ic_face_id.svg';
+  static const String icCheckCircleGreen = '$_base/ic_check_circle_green.svg';
+  static const String icUpload = '$_base/ic_upload.svg';
+  static const String icCamera = '$_base/ic_camera.svg';
+  static const String icSend = '$_base/ic_send.svg';
 }

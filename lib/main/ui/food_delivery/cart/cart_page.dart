@@ -38,48 +38,51 @@ class _CartView extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.colorF0F2F5,
+        backgroundColor: AppColors.colorWhite,
         appBar: _buildAppBar(context, l10n),
         body: SafeArea(
-          child: Column(
-            children: [
-              // Scrollable content
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // ── Section 1: Restaurant header ──────────────────────
-                      const RestaurantHeaderSection(),
+          child: Container(
+            color: AppColors.colorF9F9FC,
+            child: Column(
+              children: [
+                // Scrollable content
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // ── Section 1: Restaurant header ──────────────────────
+                        const RestaurantHeaderSection(),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      // ── Section 2: Cart items ─────────────────────────────
-                      const CartItemsSection(),
+                        // ── Section 2: Cart items ─────────────────────────────
+                        const CartItemsSection(),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      // ── Section 3: Restaurant note ────────────────────────
-                      const RestaurantNoteSection(),
+                        // ── Section 3: Restaurant note ────────────────────────
+                        const RestaurantNoteSection(),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      // ── Section 4: Order summary ──────────────────────────
-                      const OrderSummarySection(),
+                        // ── Section 4: Order summary ──────────────────────────
+                        const OrderSummarySection(),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      // ── Section 5: Promo code ─────────────────────────────
-                      const PromoCodeSection(),
+                        // ── Section 5: Promo code ─────────────────────────────
+                        const PromoCodeSection(),
 
-                      const SizedBox(height: 16),
-                    ],
+                        const SizedBox(height: 16),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              // ── Bottom CTA ────────────────────────────────────────────────
-              _BottomBar(),
-            ],
+                // ── Bottom CTA ────────────────────────────────────────────────
+                _BottomBar(),
+              ],
+            ),
           ),
         ),
       ),

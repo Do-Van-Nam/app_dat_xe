@@ -11,9 +11,10 @@ class PromoCodeSection extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => context.read<CartBloc>().add(const PromoCodeTapped()),
-      child: Container(
-        color: AppColors.colorFFFFFF,
+      child: CommonCard(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        color: AppColors.color4CD9E2FF,
         child: Row(
           children: [
             SvgPicture.asset(

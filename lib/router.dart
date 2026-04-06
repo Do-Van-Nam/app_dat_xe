@@ -1,4 +1,5 @@
 import 'package:demo_app/main/ui/activity/activity_page.dart';
+import 'package:demo_app/main/ui/auth/driver_register/upload_records/upload_records_page.dart';
 import 'package:demo_app/main/ui/auth/forget_password/forget_password_page.dart';
 import 'package:demo_app/main/ui/auth/reset_password/reset_password_page.dart';
 import 'package:demo_app/main/ui/auth/otp/otp_page.dart';
@@ -13,9 +14,11 @@ import 'package:demo_app/main/ui/book_vehicle/rent_driver/rent_driver_page.dart'
 import 'package:demo_app/main/ui/book_vehicle/finding_driver/finding_driver_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/search_destination/search_destination_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/tracking/tracking_page.dart';
+import 'package:demo_app/main/ui/driver/map_sample.dart';
 import 'package:demo_app/main/ui/food_delivery/cart/cart_page.dart';
 import 'package:demo_app/main/ui/food_delivery/checkout/checkout_page.dart';
 import 'package:demo_app/main/ui/food_delivery/food_delivery_page.dart';
+import 'package:demo_app/main/ui/food_delivery/order_tracking/order_tracking_page.dart';
 import 'package:demo_app/main/ui/language/language_page.dart';
 import 'package:demo_app/main/ui/main_page.dart';
 import 'package:demo_app/main/ui/notification/notification_page.dart';
@@ -30,7 +33,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'main/ui/auth/login/login_page.dart';
-import 'main/ui/food/food_page3.dart';
+import 'main/ui/driver/main/driver_page.dart';
+import 'main/ui/driver/rating/rate_trip_page.dart';
 import 'main/ui/splash/splash_page.dart';
 
 const String PATH_SPLASH = "/";
@@ -46,6 +50,9 @@ const String PATH_FORGOT_PASSWORD = "/forgot-password";
 const String PATH_RESET_PASSWORD = "/reset-password";
 const String PATH_VERIFY_OTP = "/verify-otp";
 const String PATH_LANGUAGE = "/language";
+//driver auth
+const String PATH_DRIVER_REGISTER = "/driver-register";
+const String PATH_DRIVER_UPLOAD_RECORDS = "/driver-upload-records";
 
 //  profile subpath
 const String PATH_VOUCHER = "/voucher";
@@ -77,11 +84,18 @@ const String PATH_FOOD_INTRO = "/food-intro";
 const String PATH_FOOD = "/food";
 const String PATH_CART = "/cart";
 const String PATH_CHECKOUT = "/checkout";
+const String PATH_ORDER_TRACKING = "/order-tracking";
+
+// driver
+const String PATH_DRIVER_MAIN = "/driver-main";
+const String PATH_RATE_TRIP = "/rate-trip";
+const String PATH_MAP_SAMPLE = "/map-sample";
 
 // chatbot
 const String PATH_CHATBOT_INTRO = "/chatbot-info";
 const String PATH_CHATBOT = "/chatbot";
 const String PATH_LOGIN_OTP = "/login_otp";
+
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -126,6 +140,17 @@ final GoRouter router = GoRouter(
       path: PATH_LANGUAGE,
       builder: (context, state) => LanguagePage(),
     ),
+//driver auth
+    GoRoute(
+      path: PATH_DRIVER_REGISTER,
+      // builder: (context, state) => DriverRegisterPage(),
+      builder: (context, state) => UploadRecordsPage(),
+    ),
+    GoRoute(
+      path: PATH_DRIVER_UPLOAD_RECORDS,
+      builder: (context, state) => UploadRecordsPage(),
+    ),
+
     GoRoute(
       path: PATH_VOUCHER,
       builder: (context, state) => VoucherPage(),
@@ -206,6 +231,11 @@ final GoRouter router = GoRouter(
       path: PATH_CHECKOUT,
       builder: (context, state) => CheckoutPage(),
     ),
+    GoRoute(
+      path: PATH_ORDER_TRACKING,
+      builder: (context, state) => OrderTrackingPage(),
+    ),
+
     //shipping
     GoRoute(
       path: PATH_SHIPPING,
@@ -214,6 +244,22 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_DELIVERY_INFO,
       builder: (context, state) => DeliveryInfoPage(),
+    ),
+
+//Driver
+    GoRoute(
+      path: PATH_DRIVER_MAIN,
+      builder: (context, state) => DriverPage(),
+    ),
+    GoRoute(
+      path: PATH_RATE_TRIP,
+      builder: (context, state) => RateTripPage(),
+    ),
+    GoRoute(
+      path: PATH_MAP_SAMPLE,
+      builder: (context, state) => MyHomePage(
+        title: "test",
+      ),
     ),
   ],
   // redirect: (context, state) {

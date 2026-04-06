@@ -97,6 +97,15 @@ class HomeView extends StatelessWidget {
 
               const SizedBox(height: 20),
 
+              OutlinedButton(
+                  onPressed: () => context.push(PATH_DRIVER_MAIN),
+                  child: Text("Driver Main")),
+              OutlinedButton(
+                  onPressed: () => context.push(PATH_MAP_SAMPLE),
+                  child: Text("Map Sample")),
+              OutlinedButton(
+                  onPressed: () => context.push(PATH_DRIVER_UPLOAD_RECORDS),
+                  child: Text("Upload Records")),
               // Service Icons
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -398,3 +398,39 @@ Widget datePickerField({
     ),
   );
 }
+
+class CommonCard extends StatelessWidget {
+  const CommonCard({
+    super.key,
+    required this.child,
+    this.padding,
+    this.margin,
+    this.color,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: padding ?? const EdgeInsets.all(16),
+      margin: margin ?? const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color ?? AppColors.colorF3F3F6,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.color1A1A1A.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}

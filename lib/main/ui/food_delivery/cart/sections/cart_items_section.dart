@@ -38,9 +38,10 @@ class _CartItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      color: AppColors.colorFFFFFF,
+    return CommonCard(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      color: AppColors.colorFFFFFF,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

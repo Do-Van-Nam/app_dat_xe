@@ -1,7 +1,6 @@
 import 'package:demo_app/core/app_export.dart';
 
 import '../bloc/cart_bloc.dart';
-import '../cart_widgets.dart';
 
 class RestaurantHeaderSection extends StatelessWidget {
   const RestaurantHeaderSection({super.key});
@@ -11,8 +10,14 @@ class RestaurantHeaderSection extends StatelessWidget {
     final state = context.watch<CartBloc>().state;
 
     return Container(
-      color: AppColors.colorFFFFFF,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: ShapeDecoration(
+        color: AppColors.colorF3F3F6,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
       child: Row(
         children: [
           // Restaurant icon box

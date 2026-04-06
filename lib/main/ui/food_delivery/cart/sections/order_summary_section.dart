@@ -19,8 +19,8 @@ class OrderSummarySection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final state = context.watch<CartBloc>().state;
 
-    return Container(
-      color: AppColors.colorFFFFFF,
+    return CommonCard(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

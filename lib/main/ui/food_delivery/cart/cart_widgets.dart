@@ -48,6 +48,7 @@ class QuantityStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.colorStepperBorder),
         borderRadius: BorderRadius.circular(24),
@@ -89,8 +90,8 @@ class _StepButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 36,
-        height: 36,
+        width: 16,
+        height: 16,
         decoration: const BoxDecoration(shape: BoxShape.circle),
         alignment: Alignment.center,
         child: SvgPicture.asset(

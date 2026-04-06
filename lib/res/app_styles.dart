@@ -312,4 +312,26 @@ class AppStyles {
 
   static const Alignment poppins12RegularAlignment = Alignment.center;
   static const TextAlign poppins12RegularTextAlign = TextAlign.center;
+  static const TextStyle inter10SemiBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 10,
+    fontWeight: FontWeight.w600,
+    color: AppColors.color666666,
+  );
+  static const TextStyle inter24ExtraBold = TextStyle(
+    fontFamily: 'Inter', fontSize: 24, fontWeight: FontWeight.w800,
+    color: AppColors.color1A56DB,
+  );
+  static const TextStyle inter28ExtraBold = TextStyle(
+    fontFamily: 'Inter', fontSize: 28, fontWeight: FontWeight.w800,
+    color: AppColors.color1A1A1A,
+  );
+  static const TextStyle inter36ExtraBold = TextStyle(
+    fontFamily: 'Inter', fontSize: 36, fontWeight: FontWeight.w800,
+    color: AppColors.color2ECC71,
+  );
+  static const TextStyle inter36Bold = TextStyle(
+    fontFamily: 'Inter', fontSize: 36, fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
 }

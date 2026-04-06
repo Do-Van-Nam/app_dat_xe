@@ -35,6 +35,7 @@ class _CheckoutView extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Đặt hàng thành công! 🎉')),
             );
+            context.go(PATH_ORDER_TRACKING);
           case CheckoutStatus.promoApplied:
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

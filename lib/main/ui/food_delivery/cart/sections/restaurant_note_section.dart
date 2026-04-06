@@ -10,7 +10,7 @@ class RestaurantNoteSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Container(
-      color: AppColors.colorFFFFFF,
+      // color: AppColors.colorFFFFFF,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
