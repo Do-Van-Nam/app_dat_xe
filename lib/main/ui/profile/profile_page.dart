@@ -1,9 +1,4 @@
 ﻿import 'package:demo_app/core/app_export.dart';
-import 'package:demo_app/generated/app_localizations.dart';
-import 'package:demo_app/router.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import 'profile_bloc.dart';
 

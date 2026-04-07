@@ -30,7 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
   LatLng? _destinationPoint;
   static const clusterLayer = "clusters";
   static const unclusteredPointLayer = "unclustered-point";
-  PolylinePoints polylinePoints = PolylinePoints(apiKey: '<API_KEY>');
+  PolylinePoints polylinePoints =
+      PolylinePoints(apiKey: 'nyVhuiUNsZl54qCI9eYVCNpN43qUa1SEuMui6KVS');
   Symbol? _currentMarker;
   OverlayEntry? _popupOverlayEntry;
 
@@ -140,15 +141,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
       print("Marker added at ($_destinationPoint)");
 
-      //  mapController!.onFeatureDrag.add((value, {
-      //     required LatLng current,
-      //     required LatLng delta,
-      //     required DragEventType eventType,
-      //     required LatLng origin,
-      //     required Point<double> point,
-      //   }) {
-      //     print("5656565656($origin)"); // Đây để log ra location khi draggable
-      //   });
+      // mapController!.onFeatureDrag.add((
+      //   value, {
+      //   required LatLng current,
+      //   required LatLng delta,
+      //   required DragEventType eventType,
+      //   required LatLng origin,
+      //   required Point<double> point,
+      // }) {
+      //   print("5656565656($origin)"); // Đây để log ra location khi draggable
+      // });
 
       // Di chuyển camera đến vị trí mới
       mapController!.animateCamera(CameraUpdate.newLatLng(_destinationPoint!));
@@ -219,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> fetchData(String input) async {
     try {
       final url = Uri.parse(
-          'https://rsapi.goong.io/Place/AutoComplete?location=21.013715429594125%2C%20105.79829597455202&input=$input&api_key=<API_KEY>');
+          'https://rsapi.goong.io/Place/AutoComplete?location=21.013715429594125%2C%20105.79829597455202&input=$input&api_key=nyVhuiUNsZl54qCI9eYVCNpN43qUa1SEuMui6KVS');
       // print('url $url');
       var response = await http.get(url);
       final jsonResponse = jsonDecode(response.body);
@@ -241,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> fetchDataDirection() async {
     if (_currentPosition != null && _destinationPoint != null) {
       final url = Uri.parse(
-          'https://rsapi.goong.io/Direction?origin=${_currentPosition!.latitude},${_currentPosition!.longitude}&destination=${_destinationPoint!.latitude},${_destinationPoint!.longitude}&vehicle=bike&api_key=<API_KEY>');
+          'https://rsapi.goong.io/Direction?origin=${_currentPosition!.latitude},${_currentPosition!.longitude}&destination=${_destinationPoint!.latitude},${_destinationPoint!.longitude}&vehicle=bike&api_key=nyVhuiUNsZl54qCI9eYVCNpN43qUa1SEuMui6KVS');
 
       var response = await http.get(url);
       final jsonResponse = jsonDecode(response.body);
@@ -328,7 +330,7 @@ class _MyHomePageState extends State<MyHomePage> {
               isHidden = false;
             });
             final url = Uri.parse(
-                'https://rsapi.goong.io/place/detail?place_id=${coordinate['place_id']}&api_key=<API_KEY>');
+                'https://rsapi.goong.io/place/detail?place_id=${coordinate['place_id']}&api_key=nyVhuiUNsZl54qCI9eYVCNpN43qUa1SEuMui6KVS');
             var response = await http.get(url);
             final jsonResponse = jsonDecode(response.body);
 
@@ -366,7 +368,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 zoom: 14.0,
               ),
               styleString:
-                  'https://tiles.goong.io/assets/goong_map_web.json?api_key=<MAP_TILE_KEY>', // URL của style
+                  'https://tiles.goong.io/assets/goong_map_web.json?api_key=KACfZd5wh2kqlrhxVVQZp9Ur5SLe50fpszEBDiND', // URL của style
               attributionButtonPosition: null,
             ),
           ),

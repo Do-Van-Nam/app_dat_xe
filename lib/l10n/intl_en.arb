@@ -522,7 +522,175 @@
 
   "xacThucNextButton": "Bước tiếp theo",
   "xacThucNextHint": "VUI LÒNG HOÀN TẤT {completed}/{total} YÊU CẦU ĐỂ TIẾP TỤC",
+"dangKyDvAppBarTitle": "Đăng ký dịch vụ",
 
+  "dangKyDvBannerBadge": "ĐỐI TÁC TÀI XẾ",
+  "dangKyDvBannerTitle": "Mở rộng cơ hội\nTăng thêm thu nhập",
+
+  "dangKyDvSectionTitle": "Dịch vụ hoạt động",
+  "dangKyDvSectionSub": "Chọn các dịch vụ bạn muốn tham gia",
+  "dangKyDvRegisterAll": "Đăng ký tất cả",
+
+  "dangKyDvXeOmName": "Xe ôm",
+  "dangKyDvXeOmSub": "Di chuyển linh hoạt",
+
+  "dangKyDvTaxi4Name": "Taxi 4 chỗ",
+  "dangKyDvTaxi4Sub": "Tiện nghi cơ bản",
+
+  "dangKyDvTaxi7Name": "Taxi 7 chỗ",
+  "dangKyDvTaxi7Sub": "Dành cho nhóm lớn",
+
+  "dangKyDvFoodName": "Giao đồ ăn",
+  "dangKyDvFoodSub": "Giao tận cửa",
+
+  "dangKyDvPackageName": "Giao hàng",
+  "dangKyDvPackageSub": "Vận chuyển siêu tốc",
+
+  "dangKyDvInterCityName": "Xe đi tỉnh",
+  "dangKyDvInterCitySub": "Hành trình đường dài",
+
+  "dangKyDvAirportName": "Xe sân bay",
+  "dangKyDvAirportSub": "Đưa đón đúng giờ",
+
+  "dangKyDvDriveName": "Lái hộ",
+  "dangKyDvDriveSub": "An toàn cho khách",
+
+  "dangKyDvNoticeTitle": "Lưu ý quan trọng",
+  "dangKyDvNoticeBody": "Việc đăng ký dịch vụ mới có thể yêu cầu bổ sung giấy tờ liên quan. Hệ thống sẽ xét duyệt trong vòng 24h làm việc.",
+
+  "dangKyDvConfirmButton": "Xác nhận đăng ký",
+  "choDuyetAppBarTitle": "Xác thực hồ sơ",
+
+  "choDuyetHeroTitle": "Hồ sơ của bạn\nđang được duyệt",
+  "choDuyetHeroBodyPrefix": "Hệ thống đang kiểm tra các giấy tờ bạn đã cung cấp. Quá trình này thường mất từ ",
+  "choDuyetHeroBodyHighlight": "24–48 giờ",
+  "choDuyetHeroBodySuffix": " làm việc.",
+
+  "choDuyetProgressTitle": "TIẾN ĐỘ XÁC THỰC",
+
+  "choDuyetStep1Name": "Đã tải hồ sơ",
+  "choDuyetStep1Sub": "Tài liệu đã được hệ thống ghi nhận",
+
+  "choDuyetStep2Name": "Đang kiểm tra tính xác thực",
+  "choDuyetStep2Sub": "Đang xử lý nội bộ",
+
+  "choDuyetStep3Name": "Kích hoạt tài khoản",
+  "choDuyetStep3Sub": "Chờ hoàn tất kiểm tra",
+
+  "choDuyetSupportQuestion": "Cần trợ giúp?",
+  "choDuyetSupportCta": "Liên hệ Tổng đài 1900 6868",
+
+  "choDuyetMainButton": "Quay lại trang chính",
+
+  "choDuyetNotifBar": "Chúng tôi sẽ gửi thông báo ngay khi hồ sơ được duyệt",
+"statusOnline": "Trạng thái: Trực tuyến",
+  "statusActive": "ĐANG HOẠT ĐỘNG",
+  "sos": "SOS",
+
+  "promoBadge": "ƯU ĐÃI TÀI XẾ",
+  "promoTitle": "Mua gói ngày - chiết khấu 0%",
+  "promoUpgradeBtn": "Nâng cấp ngay",
+
+  "incomeLabel": "THU NHẬP",
+  "incomeValue": "1.250.000đ",
+
+  "creditWalletLabel": "VÍ TÍN DỤNG",
+  "creditLowBadge": "Sắp hết tiền",
+  "creditBalance": "150.000đ",
+  "topUpBtn": "Nạp tiền",
+
+  "transactionHistoryTitle": "Lịch sử giao dịch gần đây",
+  "viewAll": "Xem tất cả",
+
+  "tx1Title": "Thu nhập từ cuốc xe #9921",
+  "tx1Time": "10:45 • 24 Th05, 2024",
+  "tx1Amount": "+45.000đ",
+
+  "tx2Title": "Khấu trừ chiết khấu",
+  "tx2Time": "09:15 • 24 Th05, 2024",
+  "tx2Amount": "-12.500đ",
+
+  "financialPerformanceTitle": "Hiệu suất tài chính",
+  "financialPerformanceSub": "Bạn đang kiếm được nhiều hơn 15% so với tuần trước.",
+   "membershipTitle": "Gói thành viên Tài xế",
+  "membershipListTitle": "Danh sách gói thành viên",
+  "benefitDetail": "Chi tiết quyền lợi",
+
+  "planDayName": "Gói Ngày",
+  "planDayDiscount": "0% chiết khấu",
+  "planDayBenefit": "Ưu tiên cuốc gần",
+  "planDayPrice": "29.000đ",
+
+  "planWeekName": "Gói Tuần",
+  "planWeekDiscount": "0% chiết khấu",
+  "planWeekBenefit": "Bảo hiểm tai nạn",
+  "planWeekPrice": "159.000đ",
+
+  "planMonthName": "Gói Tháng",
+  "planMonthSub": "Tối ưu chi phí lâu dài",
+  "planMonthBadge": "PHỔ BIẾN NHẤT",
+  "planMonthBenefit1": "Tất cả quyền lợi gói Tuần",
+  "planMonthBenefit2": "Thưởng KPI tháng độc quyền",
+  "planMonthBenefit3": "Ưu tiên nhận cuốc VIP",
+  "planMonthPrice": "499.000đ",
+  "planMonthPeriod": "/tháng",
+
+  "infoNote": "Khi đăng ký Gói thành viên, hệ thống sẽ tự động trừ phí từ ",
+  "infoNoteBold": "Ví Tài xế",
+  "infoNoteEnd": " của bạn. Đảm bảo số dư tối thiểu trước khi thực hiện giao dịch.",
+
+  "totalPayment": "Tổng thanh toán:",
+  "registerNow": "Đăng ký ngay",
+  "topUpTitle": "Nạp tiền vào ví",
+  "amountLabel": "SỐ TIỀN MUỐN NẠP",
+  "paymentMethodLabel": "PHƯƠNG THỨC THANH TOÁN",
+  "changeMethod": "Thay đổi",
+
+  "eWalletGroup": "VÍ ĐIỆN TỬ",
+  "bankGroup": "THẺ & NGÂN HÀNG",
+
+  "momoName": "Ví MoMo",
+  "momoSub": "Miễn phí giao dịch",
+  "zaloPayName": "ZaloPay",
+  "atmName": "Thẻ ATM nội địa (Napas)",
+  "bankTransferName": "Chuyển khoản trực tiếp",
+
+  "infoNote": "Tiền sẽ được nạp vào ví ngay lập tức sau khi giao dịch thành công. Nếu có bất kỳ vấn đề gì, vui lòng liên hệ bộ phận CSKH.",
+
+  "confirmTopUp": "Xác nhận nạp tiền",
+  "secureLabel": "THANH TOÁN BẢO MẬT 256-BIT SSL",
+
+  "amount50k": "50k",
+  "amount100k": "100k",
+  "amount200k": "200k",
+  "amount500k": "500k",
+  "napTienAppBarTitle": "Nạp tiền thành công",
+
+  "napTienHeroTitle": "Nạp tiền thành công",
+  "napTienHeroSub": "Giao dịch của bạn đã được xử lý",
+  "napTienHeroAmount": "100.000đ",
+
+  "napTienTxCardTitle": "CHI TIẾT GIAO DỊCH",
+  "napTienTxStatusBadge": "THÀNH CÔNG",
+
+  "napTienTxIdLabel": "Mã giao dịch",
+  "napTienTxIdValue": "#TXN123456789",
+
+  "napTienTxTimeLabel": "Thời gian",
+  "napTienTxTimeValue": "14:30, 20/05/2026",
+
+  "napTienTxMethodLabel": "Phương thức",
+  "napTienTxMethodValue": "Ví MoMo",
+
+  "napTienTxStatusLabel": "Trạng thái",
+  "napTienTxStatusValue": "Hoàn thành",
+
+  "napTienSupportTitle": "Cần hỗ trợ về giao dịch?",
+  "napTienSupportBody": "Liên hệ CSKH 24/7 để được giải đáp nhanh nhất.",
+
+  "napTienBtnHome": "Quay lại trang chủ",
+  "napTienBtnHistory": "Xem lịch sử giao dịch",
+  "tripDetail": "Chi tiết chuyến đi",
 
   "login": "Login",
   "home": "Home",

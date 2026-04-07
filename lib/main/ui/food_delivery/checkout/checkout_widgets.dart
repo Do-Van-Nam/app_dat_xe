@@ -103,8 +103,8 @@ class RadioOptionTile<T> extends StatelessWidget {
           children: [
             SvgPicture.asset(
               iconPath,
-              width: 24,
-              height: 24,
+              width: 16,
+              height: 16,
               colorFilter: ColorFilter.mode(
                 _selected ? AppColors.color1A56DB : AppColors.color666666,
                 BlendMode.srcIn,

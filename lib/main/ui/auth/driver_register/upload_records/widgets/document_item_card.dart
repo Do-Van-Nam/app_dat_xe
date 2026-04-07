@@ -24,116 +24,120 @@ class DocumentItemCard extends StatelessWidget {
     final isVerified = item.isVerified;
     final isUploading = item.isUploading;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isVerified
-            ? AppColors.colorDocVerifiedBg
-            : AppColors.colorDocCardBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border(
-          left: BorderSide(
-            color: isVerified ? AppColors.colorVerifiedBar : Colors.transparent,
-            width: 3,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isVerified
+              ? AppColors.colorDocVerifiedBg
+              : AppColors.colorDocCardBg,
+          // borderRadius: BorderRadius.circular(14),
+          border: Border(
+            left: BorderSide(
+              color:
+                  isVerified ? AppColors.colorVerifiedBar : Colors.transparent,
+              width: 3,
+            ),
+            // top: BorderSide(color: AppColors.colorDocCardBorder),
+            // right: BorderSide(color: AppColors.colorDocCardBorder),
+            // bottom: BorderSide(color: AppColors.colorDocCardBorder),
           ),
-          top: BorderSide(color: AppColors.colorDocCardBorder),
-          right: BorderSide(color: AppColors.colorDocCardBorder),
-          bottom: BorderSide(color: AppColors.colorDocCardBorder),
+          boxShadow: const [
+            BoxShadow(
+              color: AppColors.colorShadow,
+              blurRadius: 6,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: AppColors.colorShadow,
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      child: Row(
-        children: [
-          // Icon circle
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isVerified
-                  ? AppColors.colorDocVerifiedIconBg
-                  : AppColors.colorDocIconBg,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: Row(
+          children: [
+            // Icon circle
+            Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isVerified
+                    ? AppColors.colorDocVerifiedIconBg
+                    : AppColors.colorDocIconBg,
+              ),
+              alignment: Alignment.center,
+              child: isVerified
+                  ? SvgPicture.asset(
+                      AppImages.icCheckCircleFill,
+                      width: 24,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.colorDocVerifiedIcon,
+                        BlendMode.srcIn,
+                      ),
+                    )
+                  : SvgPicture.asset(
+                      item.iconPath,
+                      width: 24,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.colorDocIconFg,
+                        BlendMode.srcIn,
+                      ),
+                    ),
             ),
-            alignment: Alignment.center,
-            child: isVerified
-                ? SvgPicture.asset(
-                    AppImages.icCheckCircleFill,
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.colorDocVerifiedIcon,
-                      BlendMode.srcIn,
-                    ),
-                  )
-                : SvgPicture.asset(
-                    item.iconPath,
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.colorDocIconFg,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-          // Name + sub label
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(item.name, style: AppStyles.inter15SemiBold),
-                const SizedBox(height: 3),
-                Text(
-                  item.subLabel,
-                  style: AppStyles.inter11SemiBold.copyWith(
-                    color: isVerified
-                        ? AppColors.colorDocVerifiedLabel
-                        : AppColors.colorDocSubLabel,
-                    letterSpacing: 0.3,
+            // Name + sub label
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.name, style: AppStyles.inter15SemiBold),
+                  const SizedBox(height: 3),
+                  Text(
+                    item.subLabel,
+                    style: AppStyles.inter11SemiBold.copyWith(
+                      color: isVerified
+                          ? AppColors.colorDocVerifiedLabel
+                          : AppColors.colorDocSubLabel,
+                      letterSpacing: 0.3,
+                    ),
                   ),
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 8),
+
+            // Action: uploading spinner / verified badge / action button
+            if (isUploading)
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: AppColors.colorPrimary,
                 ),
-              ],
-            ),
-          ),
-
-          const SizedBox(width: 8),
-
-          // Action: uploading spinner / verified badge / action button
-          if (isUploading)
-            const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-                color: AppColors.colorPrimary,
+              )
+            else if (isVerified)
+              SvgPicture.asset(
+                AppImages.icCheckCircleGreen,
+                width: 26,
+                height: 26,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.colorGreen,
+                  BlendMode.srcIn,
+                ),
+              )
+            else
+              _ActionButton(
+                item: item,
+                uploadLabel: uploadLabel,
+                cameraLabel: cameraLabel,
+                onUpload: onUpload,
+                onCamera: onCamera,
               ),
-            )
-          else if (isVerified)
-            SvgPicture.asset(
-              AppImages.icCheckCircleGreen,
-              width: 26,
-              height: 26,
-              colorFilter: const ColorFilter.mode(
-                AppColors.colorGreen,
-                BlendMode.srcIn,
-              ),
-            )
-          else
-            _ActionButton(
-              item: item,
-              uploadLabel: uploadLabel,
-              cameraLabel: cameraLabel,
-              onUpload: onUpload,
-              onCamera: onCamera,
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

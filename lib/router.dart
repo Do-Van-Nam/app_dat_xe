@@ -1,4 +1,6 @@
 import 'package:demo_app/main/ui/activity/activity_page.dart';
+import 'package:demo_app/main/ui/activity/trip_detail/trip_detail_page.dart';
+import 'package:demo_app/main/ui/auth/driver_register/service_register/service_register_page.dart';
 import 'package:demo_app/main/ui/auth/driver_register/upload_records/upload_records_page.dart';
 import 'package:demo_app/main/ui/auth/forget_password/forget_password_page.dart';
 import 'package:demo_app/main/ui/auth/reset_password/reset_password_page.dart';
@@ -15,6 +17,7 @@ import 'package:demo_app/main/ui/book_vehicle/finding_driver/finding_driver_page
 import 'package:demo_app/main/ui/book_vehicle/search_destination/search_destination_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/tracking/tracking_page.dart';
 import 'package:demo_app/main/ui/driver/map_sample.dart';
+import 'package:demo_app/main/ui/driver/membership/membership_page.dart';
 import 'package:demo_app/main/ui/food_delivery/cart/cart_page.dart';
 import 'package:demo_app/main/ui/food_delivery/checkout/checkout_page.dart';
 import 'package:demo_app/main/ui/food_delivery/food_delivery_page.dart';
@@ -32,9 +35,14 @@ import 'package:demo_app/main/ui/shipping/shipping_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'main/ui/auth/driver_register/waiting_approval/waiting_approval_page.dart';
 import 'main/ui/auth/login/login_page.dart';
 import 'main/ui/driver/main/driver_page.dart';
+import 'main/ui/driver/payment_success/payment_success_page.dart';
 import 'main/ui/driver/rating/rate_trip_page.dart';
+import 'main/ui/driver/top_up/topup_page.dart';
+import 'main/ui/driver/wallet/wallet_page.dart';
+import 'main/ui/home/home_page.dart';
 import 'main/ui/splash/splash_page.dart';
 
 const String PATH_SPLASH = "/";
@@ -53,6 +61,8 @@ const String PATH_LANGUAGE = "/language";
 //driver auth
 const String PATH_DRIVER_REGISTER = "/driver-register";
 const String PATH_DRIVER_UPLOAD_RECORDS = "/driver-upload-records";
+const String PATH_DRIVER_SERVICE_REGISTER = "/driver-service-register";
+const String PATH_WAITING_APPROVAL = "/waiting-approval";
 
 //  profile subpath
 const String PATH_VOUCHER = "/voucher";
@@ -90,6 +100,13 @@ const String PATH_ORDER_TRACKING = "/order-tracking";
 const String PATH_DRIVER_MAIN = "/driver-main";
 const String PATH_RATE_TRIP = "/rate-trip";
 const String PATH_MAP_SAMPLE = "/map-sample";
+const String PATH_DRIVER_WALLET = "/driver-wallet";
+const String PATH_DRIVER_MEMBERSHIP = "/driver-membership";
+const String PATH_DRIVER_TOPUP = "/driver-topup";
+const String PATH_PAYMENT_SUCCESS = "/payment-success";
+
+// activity
+const String PATH_ACTIVITY_TRIP_DETAIL = "/activity-trip-detail";
 
 // chatbot
 const String PATH_CHATBOT_INTRO = "/chatbot-info";
@@ -100,16 +117,32 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>();
 final GoRouter router = GoRouter(
+  navigatorKey: _rootNavigatorKey,
   initialLocation: PATH_SPLASH,
 
   routes: [
+    ShellRoute(
+      navigatorKey: _shellNavigatorKey,
+      builder: (context, state, child) {
+        return MainPage(child: child);
+      },
+      routes: [
+        GoRoute(path: PATH_HOME, builder: (context, state) => HomePage()),
+        GoRoute(path: PATH_PROFILE, builder: (context, state) => ProfilePage()),
+        GoRoute(
+            path: PATH_ACTIVITY, builder: (context, state) => ActivityPage()),
+        GoRoute(
+          path: PATH_DRIVER_WALLET,
+          builder: (context, state) => WalletPage(),
+        ),
+      ],
+    ),
+
     GoRoute(
       path: PATH_SPLASH,
       builder: (context, state) => const SplashPage(),
     ),
-    GoRoute(path: PATH_HOME, builder: (context, state) => MainPage()),
-    GoRoute(path: PATH_PROFILE, builder: (context, state) => ProfilePage()),
-    GoRoute(path: PATH_ACTIVITY, builder: (context, state) => ActivityPage()),
+
     GoRoute(path: PATH_LOGIN, builder: (context, state) => LoginPage()),
     GoRoute(path: PATH_SIGNUP, builder: (context, state) => SignupPage()),
     GoRoute(
@@ -149,6 +182,14 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_DRIVER_UPLOAD_RECORDS,
       builder: (context, state) => UploadRecordsPage(),
+    ),
+    GoRoute(
+      path: PATH_DRIVER_SERVICE_REGISTER,
+      builder: (context, state) => ServiceRegisterPage(),
+    ),
+    GoRoute(
+      path: PATH_WAITING_APPROVAL,
+      builder: (context, state) => WaitingApprovalPage(),
     ),
 
     GoRoute(
@@ -245,8 +286,11 @@ final GoRouter router = GoRouter(
       path: PATH_DELIVERY_INFO,
       builder: (context, state) => DeliveryInfoPage(),
     ),
-
-//Driver
+    GoRoute(
+      path: PATH_ACTIVITY_TRIP_DETAIL,
+      builder: (context, state) => ActivityTripDetailPage(),
+    ),
+// DRIVER
     GoRoute(
       path: PATH_DRIVER_MAIN,
       builder: (context, state) => DriverPage(),
@@ -260,6 +304,18 @@ final GoRouter router = GoRouter(
       builder: (context, state) => MyHomePage(
         title: "test",
       ),
+    ),
+    GoRoute(
+      path: PATH_DRIVER_MEMBERSHIP,
+      builder: (context, state) => MembershipPage(),
+    ),
+    GoRoute(
+      path: PATH_DRIVER_TOPUP,
+      builder: (context, state) => TopUpPage(),
+    ),
+    GoRoute(
+      path: PATH_PAYMENT_SUCCESS,
+      builder: (context, state) => PaymentSuccessPage(),
     ),
   ],
   // redirect: (context, state) {

@@ -1,10 +1,3 @@
-import 'package:demo_app/main/data/model/user_info_model.dart';
-import 'package:demo_app/main/data/share_preference/share_preference.dart';
-import 'package:demo_app/main/ui/activity/activity_page.dart';
-import 'package:demo_app/main/ui/home/home_page.dart';
-import 'package:demo_app/main/ui/profile/profile_page.dart';
-import 'package:demo_app/main/utils/app_check.dart';
-import 'package:demo_app/main/utils/app_config.dart';
 import 'package:demo_app/main/utils/custom_bottom_nav.dart';
 import 'package:demo_app/main/utils/widget/drawer_widget.dart';
 import 'package:demo_app/router.dart';
@@ -12,64 +5,56 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final Widget child; // ← Nhận child từ GoRouter
+
+  const MainPage({
+    super.key,
+    required this.child,
+  });
+
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
-  final PageController _pageController = PageController();
+
+  // Danh sách các route tương ứng với bottom nav
+  final List<String> _routes = [
+    PATH_HOME,
+    PATH_ACTIVITY,
+    PATH_PROFILE,
+  ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-      _pageController.animateToPage(
-        index,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.bounceOut,
-      );
-    });
-    _pageController.jumpToPage(index);
+    if (index == _currentIndex) return;
+
+    setState(() => _currentIndex = index);
+
+    context.go(_routes[index]);
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final String location = GoRouterState.of(context).uri.toString();
+
+    final index = _routes.indexWhere((route) => location.contains(route));
+    if (index != -1 && index != _currentIndex) {
+      setState(() => _currentIndex = index);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // drawer: const AppDrawer(),
-      body: PageView(
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          HomePage(),
-          ActivityPage(),
-          ProfilePage(),
-        ],
-      ),
+      body: widget.child, // ← Dùng child từ GoRouter
       bottomNavigationBar: CustomBottomNav(
         currentIndex: _currentIndex,
-        onTabSelected: (index) async {
-          // if (index == 2 && await AppCheck.checkLogin(context) == false) {
-          //   // _onLogin();
-          //   return;
-          // }
-
-          setState(() => _currentIndex = index);
-          _onItemTapped(index);
-        },
+        onTabSelected: _onItemTapped,
       ),
     );
   }
-
-  // Future<void> _onLogin() async {
-  //   // await SharePreferenceUtil.setBool(ShareKey.KEY_FIRST_OPEN_APP, false);
-  //   await SharePreferenceUtil.setBool(ShareKey.KEY_CHANGE_OPEN_APP, true);
-  //   if (!mounted) return;
-  //   context.push(PATH_LOGIN);
-  // }
 }

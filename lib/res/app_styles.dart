@@ -319,19 +319,50 @@ class AppStyles {
     color: AppColors.color666666,
   );
   static const TextStyle inter24ExtraBold = TextStyle(
-    fontFamily: 'Inter', fontSize: 24, fontWeight: FontWeight.w800,
+    fontFamily: 'Inter',
+    fontSize: 24,
+    fontWeight: FontWeight.w800,
     color: AppColors.color1A56DB,
   );
   static const TextStyle inter28ExtraBold = TextStyle(
-    fontFamily: 'Inter', fontSize: 28, fontWeight: FontWeight.w800,
+    fontFamily: 'Inter',
+    fontSize: 28,
+    fontWeight: FontWeight.w800,
     color: AppColors.color1A1A1A,
   );
   static const TextStyle inter36ExtraBold = TextStyle(
-    fontFamily: 'Inter', fontSize: 36, fontWeight: FontWeight.w800,
+    fontFamily: 'Inter',
+    fontSize: 36,
+    fontWeight: FontWeight.w800,
     color: AppColors.color2ECC71,
   );
   static const TextStyle inter36Bold = TextStyle(
-    fontFamily: 'Inter', fontSize: 36, fontWeight: FontWeight.w700,
+    fontFamily: 'Inter',
+    fontSize: 36,
+    fontWeight: FontWeight.w700,
     color: AppColors.colorTextPrimary,
+  );
+  // 32 – income hero
+  static const TextStyle inter32ExtraBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 32,
+    fontWeight: FontWeight.w800,
+    color: AppColors.color1A1A1A,
+  );
+
+  // ── Top up styles ─────────────────────────────────────────────────────────
+  static const TextStyle inter20SemiBold = TextStyle(
+    fontFamily: 'Inter', fontSize: 20, fontWeight: FontWeight.w600,
+    color: AppColors.color333333,
+  );
+
+  static const TextStyle inter22SemiBold = TextStyle(
+    fontFamily: 'Inter', fontSize: 22, fontWeight: FontWeight.w600,
+    color: AppColors.color163172,
+  );
+
+  static const TextStyle inter44ExtraBold = TextStyle(
+    fontFamily: 'Inter', fontSize: 44, fontWeight: FontWeight.w800,
+    color: AppColors.color163172,
   );
 }

@@ -24,30 +24,34 @@ class SampleImageGrid extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Row(
-          children: imagePaths.asMap().entries.map((entry) {
-            final i = entry.key;
-            final path = entry.value;
-            return Expanded(
-              child: Padding(
-                padding:
-                    EdgeInsets.only(right: i < imagePaths.length - 1 ? 10 : 0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: AspectRatio(
-                    aspectRatio: 4 / 3,
-                    child: Image.asset(
-                      path,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: AppColors.colorSampleBg,
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: IntrinsicHeight(
+            child: Row(
+              children: imagePaths.asMap().entries.map((entry) {
+                final i = entry.key;
+                final path = entry.value;
+                return SizedBox(
+                  width: 120,
+                  height: 100,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        right: i < imagePaths.length - 1 ? 10 : 0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        path,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: AppColors.colorSampleBg,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            );
-          }).toList(),
+                );
+              }).toList(),
+            ),
+          ),
         ),
       ],
     );

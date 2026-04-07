@@ -55,7 +55,7 @@ class _CheckoutView extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.colorF0F2F5,
+        backgroundColor: AppColors.colorF9F9FC,
         appBar: _buildAppBar(context, l10n),
         body: SafeArea(
           child: Column(

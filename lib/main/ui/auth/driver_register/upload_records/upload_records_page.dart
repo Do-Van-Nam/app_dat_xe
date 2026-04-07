@@ -297,7 +297,8 @@ class _BottomSection extends StatelessWidget {
                       ? () => context
                           .read<UploadRecordsBloc>()
                           .add(const UploadRecordsNextTapped())
-                      : null,
+                      // : null,
+                      : () => context.push(PATH_DRIVER_SERVICE_REGISTER),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: canGo
                         ? AppColors.colorNextBtnBgActive

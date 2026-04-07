@@ -422,13 +422,13 @@ class CommonCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color ?? AppColors.colorF3F3F6,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.color1A1A1A.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: AppColors.color1A1A1A.withOpacity(0.04),
+        //     blurRadius: 8,
+        //     offset: const Offset(0, 2),
+        //   ),
+        // ],
       ),
       child: child,
     );

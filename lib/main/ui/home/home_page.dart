@@ -106,6 +106,12 @@ class HomeView extends StatelessWidget {
               OutlinedButton(
                   onPressed: () => context.push(PATH_DRIVER_UPLOAD_RECORDS),
                   child: Text("Upload Records")),
+              OutlinedButton(
+                  onPressed: () => context.push(PATH_DRIVER_WALLET),
+                  child: Text("Driver Wallet")),
+              OutlinedButton(
+                  onPressed: () => context.push(PATH_DRIVER_MEMBERSHIP),
+                  child: Text("Driver Membership")),
               // Service Icons
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

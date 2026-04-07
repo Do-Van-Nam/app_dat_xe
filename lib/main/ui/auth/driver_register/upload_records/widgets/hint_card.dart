@@ -7,13 +7,9 @@ class HintCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return CommonCard(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.colorHintCardBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.colorHintCardBorder),
-      ),
+      margin: const EdgeInsets.all(0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

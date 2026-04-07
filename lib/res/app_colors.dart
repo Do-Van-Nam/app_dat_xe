@@ -485,7 +485,7 @@ class AppColors {
   static const Color colorTargetPrimary = Color(0xFF1A56DB);
   static const Color colorD9E2FF4D = Color(0xFFD9E2FF4D);
   static const Color color4CD9E2FF = Color(0xFF4CD9E2FF);
-  
+
   static const Color colorGreenDark = Color(0xFF15803D);
   static const Color colorHeroBannerBg = Color(0xFFDEE9FF);
   static const Color colorHeroBannerTitle = Color(0xFF1A3FA4);
@@ -511,9 +511,169 @@ class AppColors {
   static const Color colorBtnCameraText = Color(0xFF111827);
   static const Color colorSampleBg = Color(0xFF9CA3AF);
   static const Color colorNextBtnBg = Color(0xFFE5E7EB);
+  static const Color colorVerifiedBar = Color(0xFF16A34A);
+
+  static const Color colorGreenBadgeBg = Color(0xFF22C55E);
+  static const Color colorGreenBadgeText = Color(0xFFFFFFFF);
+  static const Color colorYellowBtnBg = Color(0xFFFFF8EC);
+  static const Color colorYellowBtnBorder = Color(0xFFFDE68A);
+  static const Color colorYellowBtnText = Color(0xFFF5A623);
+  static const Color colorOrange = Color(0xFFF97316);
+  static const Color colorOrangeLight = Color(0xFFFFF0E6);
+
+  static const Color colorBannerBadgeBg = Color(0xFF22C55E);
+  static const Color colorBannerBadgeText = Color(0xFFFFFFFF);
+  static const Color colorBannerTitle = Color(0xFFFFFFFF);
+  static const Color colorBannerOverlay = Color(0x1AFFFFFF);
+  static const Color colorSectionTitle = Color(0xFF111827);
+  static const Color colorSectionSub = Color(0xFF6B7280);
+  static const Color colorServiceCardBg = Color(0xFFFFFFFF);
+  static const Color colorServiceCardBorder = Color(0xFFE5E7EB);
+  static const Color colorServiceIconBgBlue = Color(0xFFEEF2FF);
+  static const Color colorServiceIconBgOrange = Color(0xFFFFF0E6);
+  static const Color colorServiceIconFgBlue = Color(0xFF1A3FA4);
+  static const Color colorServiceIconFgOrange = Color(0xFFF97316);
+  static const Color colorToggleActive = Color(0xFF1A3FA4);
+  static const Color colorToggleInactive = Color(0xFFD1D5DB);
+  static const Color colorToggleThumb = Color(0xFFFFFFFF);
+  static const Color colorNoticeBg = Color(0xFFF7F8FA);
+  static const Color colorNoticeBorder = Color(0xFFE5E7EB);
+  static const Color colorNoticeIcon = Color(0xFF6B7280);
+  static const Color colorConfirmBtnBgService = Color(0xFF1A3FA4);
+  static const Color colorConfirmBtnTextService = Color(0xFFFFFFFF);
+  static const Color colorYellowDark = Color(0xFFD4841A);
+  // Grey (pending step)
+  static const Color colorGrey = Color(0xFFD1D5DB);
+  static const Color colorGreyLight = Color(0xFFF3F4F6);
+  static const Color colorGreyIcon = Color(0xFF9CA3AF);
+  // Hero icon circle
+  static const Color colorHeroCircleBg = Color(0xFFF5A623);
+  static const Color colorHeroIcon = Color(0xFF111827);
+
+  // Progress card
+  static const Color colorProgressCardBg = Color(0xFFFFFFFF);
+  static const Color colorProgressCardBorder = Color(0xFFE5E7EB);
+  static const Color colorProgressLabel = Color(0xFF6B7280);
+
+  // Step states
+  static const Color colorStepDoneCircle = Color(0xFF22C55E);
+  static const Color colorStepDoneIcon = Color(0xFFFFFFFF);
+  static const Color colorStepDoneLine = Color(0xFF22C55E);
+
+  static const Color colorStepActiveCircle = Color(0xFFF5A623);
+  static const Color colorStepActiveIcon = Color(0xFF111827);
+  static const Color colorStepActiveLine = Color(0xFFE5E7EB);
+
+  static const Color colorStepPendingCircle = Color(0xFFF3F4F6);
+  static const Color colorStepPendingIcon = Color(0xFF9CA3AF);
+  static const Color colorStepPendingBorder = Color(0xFFE5E7EB);
+
+  static const Color colorStepConnectorDone = Color(0xFF22C55E);
+  static const Color colorStepConnectorDefault = Color(0xFFE5E7EB);
+
+  // Support card
+  static const Color colorSupportCardBg = Color(0xFFFFFFFF);
+  static const Color colorSupportCardBorder = Color(0xFFE5E7EB);
+  static const Color colorSupportIconBg = Color(0xFFEEF2FF);
+  static const Color colorSupportIcon = Color(0xFF1A3FA4);
+  static const Color colorSupportArrow = Color(0xFF9CA3AF);
+
+  // Main button
+  static const Color colorBtnBg = Color(0xFFF5A623);
+  static const Color colorBtnText = Color(0xFF111827);
+
+  // Bottom notification bar
+  static const Color colorNotifBarBg = Color(0xFFF3F3F6);
+  static const Color colorNotifBarBorder = Color(0xFFE5E7EB);
+  static const Color colorNotifBarIcon = Color(0xFF6B7280);
+  static const Color colorNotifBarText = Color(0xFF6B7280);
+
+  // ── Promo banner bg ───────────────────────────────────────────────────────
+  static const Color colorPromoBg = Color(0xFF1B3A8C);
+  static const Color colorPromoBgEnd = Color(0xFF163172);
+
+  static const Color colorFFEBEB = Color(0xFFFFEBEB);
+  static const Color colorFFF3CD = Color(0xFFFFF3CD);
+  // ── Wallet icon bg ────────────────────────────────────────────────────────
+  static const Color colorWalletIconBg = Color(0xFFEBF3FF);
+  static const Color colorTopUpIconBg = Color(0xFFFFF3CD);
+
+  // ── Chart bars ────────────────────────────────────────────────────────────
+  static const Color colorChartBar1 = Color(0xFF1A56DB);
+  static const Color colorChartBar2 = Color(0xFF5B8DEF);
+  static const Color colorChartBar3 = Color(0xFF9BB8F8);
+  static const Color colorLowBadgeBg = Color(0xFFFFEBEB);
+  static const Color colorLowBadgeText = Color(0xFFE53E3E);
+  static const Color color1B3A8C = Color(0xFF1B3A8C);
+  // ── Plan card (month – selected) ─────────────────────────────────────────
+  static const Color colorPlanMonthBg = Color(0xFF1A3C8F);
+  static const Color colorPlanMonthBgEnd = Color(0xFF163172);
+  static const Color colorPlanIconBg = Color(0xFF2B52A0);
+
+  // ── Plan card (day / week – unselected) ──────────────────────────────────
+  static const Color colorPlanUnselectedBg = Color(0xFFFFFFFF);
+  static const Color colorPlanUnselectedBorder = Color(0xFFE0E4EA);
+  static const Color colorPlanUnselectedIconBg = Color(0xFFF0F2F5);
+  //── Info note ────────────────────────────────────────────────────────────
+  static const Color colorInfoBg = Color(0xFFF0F2F5);
+
+  // ── CTA button ────────────────────────────────────────────────────────────
+  static const Color colorCtaBg = Color(0xFF163172);
+  static const Color colorCtaText = Color(0xFFFFFFFF);
+
+  // ── Selected check circle ─────────────────────────────────────────────────
+  static const Color colorCheckCircle = Color(0xFFFFFFFF);
+  static const Color colorCheckIcon = Color(0xFF1A3C8F);
+
+  // ── Price text ────────────────────────────────────────────────────────────
+  static const Color colorPriceBlue = Color(0xFF1A56DB);
+  static const Color colorPriceWhite = Color(0xFFFFFFFF);
+
+  // ── Performance section bg ────────────────────────────────────────────────
+  static const Color colorPerfBg = Color(0xFFF5F7FA);
   static const Color colorNextBtnBgActive = Color(0xFF1A3FA4);
   static const Color colorNextBtnText = Color(0xFF9CA3AF);
   static const Color colorNextBtnTextActive = Color(0xFFFFFFFF);
   static const Color colorNextHintText = Color(0xFF9CA3AF);
-  static const Color colorVerifiedBar = Color(0xFF16A34A);
+  static const Color colorTextGrey = Color(0xFF9CA3AF);
+
+  // ── Top up colors ──────────────────────────────────────────────────────────
+  static const Color colorChipSelectedBg = Color(0xFF163172);
+  static const Color colorChipSelectedText = Color(0xFFFFFFFF);
+  static const Color colorChipUnselectedBg = Color(0xFFFFFFFF);
+  static const Color colorChipUnselectedText = Color(0xFF333333);
+  static const Color colorCurrencySymbol = Color(0xFF163172);
+  static const Color colorInputDivider = Color(0xFF163172);
+  static const Color colorGroupHeaderBg = Color(0xFFF0F2F5);
+  static const Color colorGroupHeaderText = Color(0xFF999999);
+  static const Color colorMethodRowBg = Color(0xFFFFFFFF);
+  static const Color colorMethodIconBg = Color(0xFFF0F2F5);
+  static const Color colorMethodDivider = Color(0xFFF0F2F5);
+  static const Color colorChevronColor = Color(0xFFBDBDBD);
+  static const Color colorInfoIcon = Color(0xFF1A56DB);
+  static const Color colorInfoText = Color(0xFF1A56DB);
+  static const Color colorSecureText = Color(0xFF999999);
+  static const Color colorSecureIcon = Color(0xFF999999);
+
+  // ── Payment Success Colors ──────────────────────────────────────────────────
+  static const Color colorGreenGlow = Color(0x4022C55E);
+  static const Color colorSuccessBadgeBg = Color(0xFFDCFCE7);
+  static const Color colorSuccessBadgeText = Color(0xFF15803D);
+  static const Color colorTextAmount = Color(0xFF1A3FA4);
+  static const Color colorTxCardBg = Color(0xFFFFFFFF);
+  static const Color colorTxCardBorder = Color(0xFFE5E7EB);
+  static const Color colorTxLabelText = Color(0xFF6B7280);
+  static const Color colorTxValueText = Color(0xFF111827);
+  static const Color colorTxDivider = Color(0xFFF3F3F6);
+  static const Color colorTxSectionLabel = Color(0xFF9CA3AF);
+  static const Color colorMomoBg = Color(0xFF9B1FE8);
+  static const Color colorMomoText = Color(0xFFFFFFFF);
+  static const Color colorSupportBg = Color(0xFFEEF2FF);
+  static const Color colorSupportBorder = Color(0xFFBFD0FF);
+  static const Color colorSupportTitle = Color(0xFF1A3FA4);
+  static const Color colorSupportBody = Color(0xFF6B7280);
+  static const Color colorBtnPrimaryBg = Color(0xFFF5A623);
+  static const Color colorBtnPrimaryText = Color(0xFF111827);
+  static const Color colorBtnSecondaryBg = Color(0xFFF3F3F6);
+  static const Color colorBtnSecondaryText = Color(0xFF374151);
 }

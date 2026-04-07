@@ -11,7 +11,7 @@ class AppImages {
   static final String icGoogle = 'assets/icons/ic_google.svg';
   static final String icCar = 'assets/icons/ic_car.svg';
   static final String icBike = 'assets/icons/ic_bike.svg';
-  static final String icFood = 'assets/icons/ic_food.svg';
+  static const String icFood = 'assets/icons/ic_food.svg';
   static final String icTruck = 'assets/icons/ic_truck.svg';
   static final String icLocation = 'assets/icons/ic_location.svg';
   static final String icPlane = 'assets/icons/ic_plane.svg';
@@ -178,4 +178,38 @@ class AppImages {
   static const String icUpload = '$_base/ic_upload.svg';
   static const String icCamera = '$_base/ic_camera.svg';
   static const String icSend = '$_base/ic_send.svg';
+  static const String icTaxi4 = '$_base/ic_car.svg';
+  static const String icTaxi7 = '$_base/ic_taxi_7.svg';
+  static const String icPackage = '$_base/ic_box.svg';
+  static const String icAirplane = '$_base/ic_plane.svg';
+  static const String icSteering = '$_base/ic_car.svg';
+  static const String icCheckAll = '$_base/ic_check_all.svg';
+  static const String icHistoryClock = '$_base/ic_clock.svg';
+  static const String icCheckBold = '$_base/ic_check_bold.svg';
+  static const String icRefreshCw = '$_base/ic_refresh_cw.svg';
+  static const String icLock = '$_base/ic_lock.svg';
+
+  static const String icWalletAdd = '$_base/ic_wallet_add.svg';
+  static const String icTopUp = '$_base/ic_top_up.svg'; // bank / top-up
+  static const String icCreditCard = '$_base/ic_credit_card.svg';
+  static const String icArrowDown =
+      '$_base/ic_arrow_down.svg'; // income (green)
+  static const String icArrowUp = '$_base/ic_arrow_up.svg'; // deduction (red)
+  static const String icBadgeVerify =
+      '$_base/ic_badge_verify.svg'; // watermark badge
+  static const String icChartLine = '$_base/ic_chart_line.svg';
+  static const String icCalendarDay = '$_base/ic_calendar_day.svg'; // Gói Ngày
+  static const String icCalendarWeek =
+      '$_base/ic_calendar_week.svg'; // Gói Tuần
+  static const String icStarFilled = '$_base/ic_star_filled.svg'; // Gói Tháng
+  static const String icCheckFilled =
+      '$_base/ic_check_filled.svg'; // selected plan radio
+
+  // ── Top up icons ──────────────────────────────────────────────────────────
+  static const String icMomo = '$_base/ic_momo.svg';
+  static const String icZaloPay = '$_base/ic_zalopay.svg';
+  static const String icAtm = '$_base/ic_atm.svg';
+  static const String icShieldSecure = '$_base/ic_shield_secure.svg';
+  // ── Payment Success Icons ──────────────────────────────────────────────────
+  static const String icHelpCircle = '$_base/ic_help_circle.svg';
 }

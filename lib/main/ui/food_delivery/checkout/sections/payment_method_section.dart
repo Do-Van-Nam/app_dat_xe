@@ -17,22 +17,29 @@ class PaymentMethodSection extends StatelessWidget {
       children: [
         SectionTitle(l10n.paymentMethod),
         const SizedBox(height: 10),
-        RadioOptionTile<PaymentMethod>(
-          value: PaymentMethod.cashOnDelivery,
-          groupValue: selected,
-          label: l10n.cashOnDelivery,
-          iconPath: AppImages.icCashPayment,
-          onChanged: (v) =>
-              context.read<CheckoutBloc>().add(PaymentMethodChanged(v)),
-        ),
-        const SizedBox(height: 8),
-        RadioOptionTile<PaymentMethod>(
-          value: PaymentMethod.bankTransfer,
-          groupValue: selected,
-          label: l10n.bankTransfer,
-          iconPath: AppImages.icBankTransfer,
-          onChanged: (v) =>
-              context.read<CheckoutBloc>().add(PaymentMethodChanged(v)),
+        CommonCard(
+          margin: EdgeInsets.zero,
+          child: Column(
+            children: [
+              RadioOptionTile<PaymentMethod>(
+                value: PaymentMethod.cashOnDelivery,
+                groupValue: selected,
+                label: l10n.cashOnDelivery,
+                iconPath: AppImages.icCashPayment,
+                onChanged: (v) =>
+                    context.read<CheckoutBloc>().add(PaymentMethodChanged(v)),
+              ),
+              const SizedBox(height: 8),
+              RadioOptionTile<PaymentMethod>(
+                value: PaymentMethod.bankTransfer,
+                groupValue: selected,
+                label: l10n.bankTransfer,
+                iconPath: AppImages.icBankTransfer,
+                onChanged: (v) =>
+                    context.read<CheckoutBloc>().add(PaymentMethodChanged(v)),
+              ),
+            ],
+          ),
         ),
       ],
     );
