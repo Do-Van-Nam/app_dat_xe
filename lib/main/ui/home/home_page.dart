@@ -28,337 +28,353 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => context.push(PATH_LOGIN),
-                      child: CircleAvatar(
-                        radius: 22,
-                        backgroundImage: const NetworkImage(
-                            'https://i.pravatar.cc/150?img=68'),
+    return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+      if (state is HomeLoadFailure) {
+        return Center(
+          child: Text('Error: ${state.error}'),
+        );
+      }
+
+      if (state is! HomeLoadSuccess) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+
+      final user = state.user;
+
+      return Scaffold(
+        backgroundColor: Colors.grey[50],
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => context.push(PATH_LOGIN),
+                        child: CircleAvatar(
+                          radius: 22,
+                          backgroundImage: const NetworkImage(
+                              'https://i.pravatar.cc/150?img=68'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.hello,
+                            style: const TextStyle(
+                                fontSize: 13, color: Colors.grey),
+                          ),
+                          Text(
+                            user.phone,
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.notifications_outlined),
+                        onPressed: () => context.push(PATH_NOTIFICATION),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Search Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GestureDetector(
+                    onTap: () => context.push(PATH_SEARCH_DESTINATION),
+                    child: TextField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                        hintText: l10n.whereDoYouWantToGo,
+                        prefixIcon: const Icon(Icons.search),
+                        filled: true,
+                        fillColor: AppColors.color_E2E2E5,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_DRIVER_MAIN),
+                    child: Text("Driver Main")),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_MAP_SAMPLE),
+                    child: Text("Map Sample")),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_DRIVER_UPLOAD_RECORDS),
+                    child: Text("Upload Records")),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_DRIVER_WALLET),
+                    child: Text("Driver Wallet")),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_DRIVER_MEMBERSHIP),
+                    child: Text("Driver Membership")),
+                // Service Icons
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 4,
+                    childAspectRatio: 0.95,
+                    children: [
+                      _buildServiceItem(AppImages.icBike, l10n.motorcycle,
+                          Colors.blue.shade100, context),
+                      _buildServiceItem(AppImages.icCar, l10n.car,
+                          Colors.blue.shade100, context),
+                      _buildServiceItem(AppImages.icFood, l10n.food,
+                          Colors.orange.shade100, context,
+                          path: PATH_FOOD),
+                      _buildServiceItem(
+                          AppImages.icTruck,
+                          l10n.delivery,
+                          Colors.green,
+                          isSelected: true,
+                          context,
+                          path: PATH_SHIPPING),
+                      _buildServiceItem(AppImages.icLocation, l10n.goAnywhere,
+                          Colors.blue.shade100, context,
+                          path: PATH_INTERPROVINCE_RIDE),
+                      _buildServiceItem(AppImages.icPlane, l10n.airport,
+                          Colors.blue.shade100, context,
+                          path: PATH_AIRPORT_BOOKING),
+                      _buildServiceItem(AppImages.icCar, l10n.drivingLicense,
+                          Colors.amber, context,
+                          path: PATH_RENT_DRIVER),
+                      _buildServiceItem(AppImages.icCar, l10n.bookRide,
+                          Colors.cyan.shade100, context,
+                          path: PATH_BOOK_FOR_FAMILY),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Saved Addresses
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    l10n.savedAddresses,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 12,
                       children: [
-                        Text(
-                          l10n.hello,
-                          style:
-                              const TextStyle(fontSize: 13, color: Colors.grey),
+                        IntrinsicHeight(
+                          child: _buildSavedAddress(
+                              l10n.home, Icons.home, 'Thêm địa chỉ'),
                         ),
-                        const Text(
-                          'MAI VĂN HUY',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                        IntrinsicHeight(
+                          child: _buildSavedAddress(
+                              'Công ty', Icons.work, 'Bitexco Financial'),
                         ),
                       ],
                     ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.notifications_outlined),
-                      onPressed: () => context.push(PATH_NOTIFICATION),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Search Bar
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: GestureDetector(
-                  onTap: () => context.push(PATH_SEARCH_DESTINATION),
-                  child: TextField(
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: l10n.whereDoYouWantToGo,
-                      prefixIcon: const Icon(Icons.search),
-                      filled: true,
-                      fillColor: AppColors.color_E2E2E5,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 28),
 
-              OutlinedButton(
-                  onPressed: () => context.push(PATH_DRIVER_MAIN),
-                  child: Text("Driver Main")),
-              OutlinedButton(
-                  onPressed: () => context.push(PATH_MAP_SAMPLE),
-                  child: Text("Map Sample")),
-              OutlinedButton(
-                  onPressed: () => context.push(PATH_DRIVER_UPLOAD_RECORDS),
-                  child: Text("Upload Records")),
-              OutlinedButton(
-                  onPressed: () => context.push(PATH_DRIVER_WALLET),
-                  child: Text("Driver Wallet")),
-              OutlinedButton(
-                  onPressed: () => context.push(PATH_DRIVER_MEMBERSHIP),
-                  child: Text("Driver Membership")),
-              // Service Icons
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 4,
-                  childAspectRatio: 0.95,
-                  children: [
-                    _buildServiceItem(AppImages.icBike, l10n.motorcycle,
-                        Colors.blue.shade100, context),
-                    _buildServiceItem(AppImages.icCar, l10n.car,
-                        Colors.blue.shade100, context),
-                    _buildServiceItem(AppImages.icFood, l10n.food,
-                        Colors.orange.shade100, context,
-                        path: PATH_FOOD),
-                    _buildServiceItem(
-                        AppImages.icTruck,
-                        l10n.delivery,
-                        Colors.green,
-                        isSelected: true,
-                        context,
-                        path: PATH_SHIPPING),
-                    _buildServiceItem(AppImages.icLocation, l10n.goAnywhere,
-                        Colors.blue.shade100, context,
-                        path: PATH_INTERPROVINCE_RIDE),
-                    _buildServiceItem(AppImages.icPlane, l10n.airport,
-                        Colors.blue.shade100, context,
-                        path: PATH_AIRPORT_BOOKING),
-                    _buildServiceItem(AppImages.icCar, l10n.drivingLicense,
-                        Colors.amber, context,
-                        path: PATH_RENT_DRIVER),
-                    _buildServiceItem(AppImages.icCar, l10n.bookRide,
-                        Colors.cyan.shade100, context,
-                        path: PATH_BOOK_FOR_FAMILY),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Saved Addresses
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  l10n.savedAddresses,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 12,
-                    children: [
-                      IntrinsicHeight(
-                        child: _buildSavedAddress(
-                            l10n.home, Icons.home, 'Thêm địa chỉ'),
-                      ),
-                      IntrinsicHeight(
-                        child: _buildSavedAddress(
-                            'Công ty', Icons.work, 'Bitexco Financial'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 28),
-
-              // Khuyến mãi hấp dẫn
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      l10n.attractivePromotions,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      l10n.viewAll,
-                      style: const TextStyle(
-                          color: AppColors.colorMain,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 180,
-                child: ListView(
+                // Khuyến mãi hấp dẫn
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _buildPromoCard(
-                      'Giảm 50% cho Đồ ăn',
-                      'Áp dụng cho đơn hàng từ 100k',
-                      'https://picsum.photos/id/1080/400/200',
-                    ),
-                    const SizedBox(width: 12),
-                    _buildPromoCard(
-                      'Đồ ăn & Uống',
-                      'Giảm thêm 20k',
-                      'https://picsum.photos/id/292/400/200',
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 28),
-
-              // Tin tức & Khuyến mãi
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  l10n.newsAndPromotions,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 12),
-              _buildNewsItem(
-                l10n.newTag,
-                'Ra mắt dịch vụ "Đi tỉnh" giá siêu tiết kiệm cho mùa lễ',
-                'Khám phá các điểm du lịch mới với ưu đãi...',
-                'https://picsum.photos/id/201/300/180',
-              ),
-              const SizedBox(height: 12),
-
-              _buildNewsItem(
-                l10n.promotionTag,
-                'Mời bạn mới, nhận ngay voucher 50k đặt đồ ăn',
-                'Cùng bạn bè thưởng thức ẩm thực với giá 0đ...',
-                'https://picsum.photos/id/292/300/180',
-              ),
-
-              const SizedBox(height: 28),
-
-              // Gợi ý quán ngon
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  l10n.suggestedRestaurants,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 12),
-              _buildRestaurantItem(
-                'Phở Hùng - Nguyễn Trãi',
-                '4.8',
-                '15 phút',
-                '2.4 km',
-                'BÁN CHẠY',
-                'https://picsum.photos/id/1060/300/180',
-              ),
-              _buildRestaurantItem(
-                'The Burger Joint',
-                '4.5',
-                '25 phút',
-                '3.1 km',
-                'JU À ÁI %',
-                'https://picsum.photos/id/1080/300/180',
-                isSpecial: true,
-              ),
-              _buildRestaurantItem(
-                'Dimsum House',
-                '4.9',
-                '20 phút',
-                '1.8 km',
-                '',
-                'https://picsum.photos/id/292/300/180',
-              ),
-
-              const SizedBox(height: 20),
-
-              // Banner hoàn tiền
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  height: 160,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
-                    ),
-                  ),
-                  child: Stack(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Positioned(
-                        right: -30,
-                        bottom: -30,
-                        child: Opacity(
-                          opacity: 0.15,
-                          child: Icon(Icons.local_offer,
-                              size: 140, color: Colors.white),
-                        ),
+                      Text(
+                        l10n.attractivePromotions,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.amber,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                l10n.newOffer,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              l10n.cashback20,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
+                      Text(
+                        l10n.viewAll,
+                        style: const TextStyle(
+                            color: AppColors.colorMain,
+                            fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                 ),
-              ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 180,
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _buildPromoCard(
+                        'Giảm 50% cho Đồ ăn',
+                        'Áp dụng cho đơn hàng từ 100k',
+                        'https://picsum.photos/id/1080/400/200',
+                      ),
+                      const SizedBox(width: 12),
+                      _buildPromoCard(
+                        'Đồ ăn & Uống',
+                        'Giảm thêm 20k',
+                        'https://picsum.photos/id/292/400/200',
+                      ),
+                    ],
+                  ),
+                ),
 
-              const SizedBox(height: 100), // Space for bottom nav
-            ],
+                const SizedBox(height: 28),
+
+                // Tin tức & Khuyến mãi
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    l10n.newsAndPromotions,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildNewsItem(
+                  l10n.newTag,
+                  'Ra mắt dịch vụ "Đi tỉnh" giá siêu tiết kiệm cho mùa lễ',
+                  'Khám phá các điểm du lịch mới với ưu đãi...',
+                  'https://picsum.photos/id/201/300/180',
+                ),
+                const SizedBox(height: 12),
+
+                _buildNewsItem(
+                  l10n.promotionTag,
+                  'Mời bạn mới, nhận ngay voucher 50k đặt đồ ăn',
+                  'Cùng bạn bè thưởng thức ẩm thực với giá 0đ...',
+                  'https://picsum.photos/id/292/300/180',
+                ),
+
+                const SizedBox(height: 28),
+
+                // Gợi ý quán ngon
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    l10n.suggestedRestaurants,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildRestaurantItem(
+                  'Phở Hùng - Nguyễn Trãi',
+                  '4.8',
+                  '15 phút',
+                  '2.4 km',
+                  'BÁN CHẠY',
+                  'https://picsum.photos/id/1060/300/180',
+                ),
+                _buildRestaurantItem(
+                  'The Burger Joint',
+                  '4.5',
+                  '25 phút',
+                  '3.1 km',
+                  'JU À ÁI %',
+                  'https://picsum.photos/id/1080/300/180',
+                  isSpecial: true,
+                ),
+                _buildRestaurantItem(
+                  'Dimsum House',
+                  '4.9',
+                  '20 phút',
+                  '1.8 km',
+                  '',
+                  'https://picsum.photos/id/292/300/180',
+                ),
+
+                const SizedBox(height: 20),
+
+                // Banner hoàn tiền
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    height: 160,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          right: -30,
+                          bottom: -30,
+                          child: Opacity(
+                            opacity: 0.15,
+                            child: Icon(Icons.local_offer,
+                                size: 140, color: Colors.white),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.amber,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  l10n.newOffer,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                l10n.cashback20,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 100), // Space for bottom nav
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildServiceItem(

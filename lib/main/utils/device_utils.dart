@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DeviceUtils {
   static final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -49,16 +52,21 @@ class DeviceUtils {
   }
 
   static String getPlatform() {
-    if(deviceData.isEmpty){
+    if (deviceData.isEmpty) {
       getDeviceInfo();
     }
-    return deviceData["platform"].toString().isEmpty ? "" : deviceData["platform"];
+    return deviceData["platform"].toString().isEmpty
+        ? ""
+        : deviceData["platform"];
   }
+
   static String getVersion() {
-    if(deviceData.isEmpty){
+    if (deviceData.isEmpty) {
       getDeviceInfo();
     }
-    return deviceData["version"].toString().isEmpty ? "" : deviceData["version"];
+    return deviceData["version"].toString().isEmpty
+        ? ""
+        : deviceData["version"];
   }
 
   static Future<String> getVersionName() async {
@@ -68,38 +76,49 @@ class DeviceUtils {
   }
 
   static String getPackageName() {
-    if(deviceData.isEmpty){
+    if (deviceData.isEmpty) {
       getDeviceInfo();
     }
-    return deviceData["packageName"].toString().isEmpty ? "" : deviceData["packageName"];
+    return deviceData["packageName"].toString().isEmpty
+        ? ""
+        : deviceData["packageName"];
   }
-  static String getAppName()  {
-    if(deviceData.isEmpty){
+
+  static String getAppName() {
+    if (deviceData.isEmpty) {
       getDeviceInfo();
     }
-    return deviceData["appName"].toString().isEmpty ? "" : deviceData["appName"];
+    return deviceData["appName"].toString().isEmpty
+        ? ""
+        : deviceData["appName"];
   }
 
   static String getOSVersion() {
-    if(deviceData.isEmpty){
+    if (deviceData.isEmpty) {
       getDeviceInfo();
     }
     if (Platform.isAndroid) {
-      return deviceData["sdkVersion"].toString().isEmpty ? "0" : deviceData["sdkVersion"].toString();
-    } else if (Platform.isIOS){
-      return deviceData["systemVersion"].toString().isEmpty ? "0" : deviceData["systemVersion"].toString();
+      return deviceData["sdkVersion"].toString().isEmpty
+          ? "0"
+          : deviceData["sdkVersion"].toString();
+    } else if (Platform.isIOS) {
+      return deviceData["systemVersion"].toString().isEmpty
+          ? "0"
+          : deviceData["systemVersion"].toString();
     }
     return "";
   }
 
-  static String getDeviceName()  {
-    if(deviceData.isEmpty){
+  static String getDeviceName() {
+    if (deviceData.isEmpty) {
       getDeviceInfo();
     }
     if (Platform.isAndroid) {
       return deviceData["model"].toString().isEmpty ? "" : deviceData["model"];
-    } else if (Platform.isIOS){
-      return deviceData["systemName"].toString().isEmpty ? "" : deviceData["systemName"];
+    } else if (Platform.isIOS) {
+      return deviceData["systemName"].toString().isEmpty
+          ? ""
+          : deviceData["systemName"];
     }
     return "";
   }
@@ -117,4 +136,26 @@ class DeviceUtils {
     return "";
   }
 
+  static Future<void> saveDeviceInfoToPrefs() async {
+    try {
+      await getDeviceInfo();
+      final prefs = await SharedPreferences.getInstance();
+
+      final String deviceId = getDeviceId();
+      final String deviceName = getDeviceName();
+
+      String? deviceToken = '';
+      try {
+        deviceToken = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        print('Could not get Firebase device token: $e');
+      }
+
+      await SharePreferenceUtil.saveDeviceId(deviceId);
+      await SharePreferenceUtil.saveDeviceName(deviceName);
+      await SharePreferenceUtil.saveDeviceToken(deviceToken ?? '');
+    } catch (e) {
+      print('Error saving device info to SharedPreferences: $e');
+    }
+  }
 }

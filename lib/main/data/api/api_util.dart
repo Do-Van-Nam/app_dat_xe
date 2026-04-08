@@ -27,7 +27,10 @@ class ApiUtil {
         "push-id": "",
         "app-provision": DeviceUtils.getPackageName(),
         "os-version": DeviceUtils.getOSVersion(),
-        "device-name": DeviceUtils.getDeviceName()
+        "device-name": DeviceUtils.getDeviceName(),
+        'Content-Type': 'application/json',
+        'Accept': 'application/json', // ← Header quan trọng nhất
+        'X-Requested-With': 'XMLHttpRequest',
       };
       dio!.options.persistentConnection = false;
       dio!.interceptors.add(ApiInterceptors(dio!));
@@ -35,15 +38,15 @@ class ApiUtil {
     }
   }
 
-  Future<BaseResponse> get(
-      {required String url,
-        Map<String, dynamic>? body,
-        Map<String, dynamic> params = const {},
-        Map<String, dynamic>? headers,
-        String contentType = Headers.jsonContentType,}) async {
+  Future<BaseResponse> get({
+    required String url,
+    Map<String, dynamic>? body,
+    Map<String, dynamic> params = const {},
+    Map<String, dynamic>? headers,
+    String contentType = Headers.jsonContentType,
+  }) async {
     try {
-      var response = await dio!
-          .get(url,
+      var response = await dio!.get(url,
           queryParameters: params,
           data: body,
           options: Options(
@@ -62,21 +65,29 @@ class ApiUtil {
     required String url,
     Map<String, dynamic>? body,
     Map<String, dynamic> params = const {},
-    Map<String, dynamic>? headers,
+    Map<String, dynamic>? headers = const {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json', // ← Header quan trọng nhất
+      'X-Requested-With': 'XMLHttpRequest', // Thêm cái này nữa cho an toàn
+    },
     String contentType = Headers.jsonContentType,
   }) async {
     try {
-      var response = await dio!
-          .post(url,
+      var response = await dio!.post(url,
           queryParameters: params,
           data: body,
           options: Options(
-            headers: headers,
-            responseType: ResponseType.json,
-            contentType: contentType,
-            persistentConnection: false,
-          ),
+              headers: headers,
+              responseType: ResponseType.json,
+              contentType: contentType,
+              persistentConnection: false,
+              validateStatus: (status) {
+                return status! < 500;
+              },
+              followRedirects: false),
           cancelToken: cancelToken);
+
+      print("tu dio: ${response.data}");
       return getBaseResponse(response);
     } catch (error) {
       return BaseResponse.error(error.toString());
@@ -251,6 +262,7 @@ class ApiUtil {
         data: response.data ?? "",
         code: response.data['code'],
         message: response.data['message'],
+        success: response.data['success'],
         status: response.data['status']);
   }
 }

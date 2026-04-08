@@ -1,4 +1,5 @@
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/res/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -119,7 +120,7 @@ class NotificationPage extends StatelessWidget {
               title,
               style: TextStyle(
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? Colors.blue : Colors.grey[700],
+                color: isSelected ? AppColors.colorMain : Colors.grey[700],
               ),
             ),
           ),

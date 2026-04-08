@@ -1,4 +1,5 @@
-﻿import 'package:demo_app/main/utils/widget/common_widgets.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
+import 'package:demo_app/main/utils/widget/common_widgets.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:demo_app/res/app_images.dart';
 import 'package:demo_app/router.dart';
@@ -36,8 +37,25 @@ class _SignupViewState extends State<SignupView> {
   bool _obscurePassword = true;
   bool _agreeToTerms = false;
 
+  void _onInputChanged() {
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fullNameController.addListener(_onInputChanged);
+    phoneController.addListener(_onInputChanged);
+    emailController.addListener(_onInputChanged);
+    passwordController.addListener(_onInputChanged);
+  }
+
   @override
   void dispose() {
+    fullNameController.removeListener(_onInputChanged);
+    phoneController.removeListener(_onInputChanged);
+    emailController.removeListener(_onInputChanged);
+    passwordController.removeListener(_onInputChanged);
     fullNameController.dispose();
     phoneController.dispose();
     emailController.dispose();
@@ -87,12 +105,20 @@ class _SignupViewState extends State<SignupView> {
               const SizedBox(height: 32),
               BlocListener<SignupBloc, SignupState>(
                 listenWhen: (previous, current) =>
-                    previous != current &&
-                    current is SignupSuccess, // chỉ lắng nghe khi thành công
+                    previous != current, // chỉ lắng nghe khi thành công
                 listener: (context, state) {
                   if (state is SignupSuccess) {
-                    context.push(PATH_VERIFY_OTP,
-                        extra: phoneController.text.trim());
+                    context.push(
+                      PATH_VERIFY_OTP,
+                      extra: {
+                        'phone': phoneController.text.trim(),
+                        'password': passwordController.text.trim(),
+                        'fullName': fullNameController.text.trim(),
+                      },
+                    );
+                    // AppToast.show(context, "Đăng ký thành công");
+                  } else if (state is SignupFailure) {
+                    AppToast.show(context, state.errorMessage);
                   }
                 },
                 child: BlocBuilder<SignupBloc, SignupState>(
@@ -234,29 +260,37 @@ class _SignupViewState extends State<SignupView> {
                               const SizedBox(height: 32),
 
                               // Nút Đăng ký
-                              commonButton(
-                                text: 'Đăng ký',
-                                onPressed: (state is SignupLoading ||
-                                        !_agreeToTerms)
-                                    ? null
-                                    : () {
-                                        context.read<SignupBloc>().add(
-                                              SignupSubmitted(
-                                                fullName: fullNameController
-                                                    .text
-                                                    .trim(),
-                                                phone:
-                                                    phoneController.text.trim(),
-                                                email:
-                                                    emailController.text.trim(),
-                                                password:
-                                                    passwordController.text,
-                                              ),
-                                            );
-                                      },
-                                disable: !_agreeToTerms,
-                                isLoading: state is SignupLoading,
-                              ),
+                              Builder(builder: (context) {
+                                final bool isFormValid = _agreeToTerms &&
+                                    phoneController.text.trim().isNotEmpty &&
+                                    emailController.text.trim().isNotEmpty &&
+                                    passwordController.text.isNotEmpty &&
+                                    fullNameController.text.trim().isNotEmpty;
+
+                                return commonButton(
+                                  text: 'Đăng ký',
+                                  onPressed: (state is SignupLoading ||
+                                          !isFormValid)
+                                      ? null
+                                      : () {
+                                          context.read<SignupBloc>().add(
+                                                SignupSubmitted(
+                                                  fullName: fullNameController
+                                                      .text
+                                                      .trim(),
+                                                  phone: phoneController.text
+                                                      .trim(),
+                                                  email: emailController.text
+                                                      .trim(),
+                                                  password:
+                                                      passwordController.text,
+                                                ),
+                                              );
+                                        },
+                                  disable: !isFormValid,
+                                  isLoading: state is SignupLoading,
+                                );
+                              }),
                               const SizedBox(height: 32),
                             ],
                           ),

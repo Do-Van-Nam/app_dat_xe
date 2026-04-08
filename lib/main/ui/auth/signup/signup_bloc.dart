@@ -1,4 +1,5 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:demo_app/main/data/repository/auth_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'signup_event.dart';
 part 'signup_state.dart';
@@ -13,18 +14,21 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     emit(SignupLoading());
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
+      print("goi api");
+      final (isSuccess, message) =
+          await AuthRepository().sendOtp(phone: "0${event.phone}", type: 1);
+      print("goi api $isSuccess");
       if (event.fullName.isEmpty ||
           event.phone.isEmpty ||
           event.password.length < 8) {
         emit(SignupFailure('Vui lòng kiểm tra lại thông tin'));
         return;
       }
-
-      // Giả lập đăng ký thành công
-      emit(SignupSuccess());
+      if (isSuccess) {
+        emit(SignupSuccess());
+      } else {
+        emit(SignupFailure(message.isNotEmpty ? message : 'Đăng ký thất bại'));
+      }
     } catch (e) {
       emit(SignupFailure('Đăng ký thất bại: ${e.toString()}'));
     }

@@ -72,5 +72,12 @@
 		<array>
   			<string>tel</string>
 		</array>
+		<!-- google sign in -->
+		<key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.googleusercontent.apps.YOUR-CLIENT-ID</string>
+        </array>
 	</dict>
 </plist>

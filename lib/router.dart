@@ -162,11 +162,16 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_VERIFY_OTP,
       builder: (context, state) {
-        final phone = state.extra as String?;
-        if (phone == null) {
+        final data = state.extra as Map<String, String>?;
+
+        final phone = data?['phone'];
+        final password = data?['password'];
+        final fullName = data?['fullName'];
+        if (phone == null || password == null) {
           return const SplashPage();
         }
-        return OtpPage(phoneNumber: phone);
+        return OtpPage(
+            phoneNumber: phone, password: password, fullName: fullName);
       },
     ),
     GoRoute(

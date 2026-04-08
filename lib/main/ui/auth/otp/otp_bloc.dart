@@ -1,4 +1,5 @@
 ﻿import 'dart:async';
+import 'package:demo_app/main/data/repository/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'otp_event.dart';
@@ -18,6 +19,11 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     if (state is OtpInvalid) {
       emit(OtpInitial());
     }
+    if (event.otp.length == 6) {
+      emit(OtpFullLength());
+    } else {
+      emit(OtpInitial());
+    }
   }
 
   Future<void> _onVerifyOtp(
@@ -25,17 +31,22 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     emit(OtpVerifying());
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
+      print("goi api");
+      final (isSuccess, message) = await AuthRepository().register(
+        phone: "0${event.phone}",
+        fullName: event.fullName,
+        password: event.password,
+        otp: event.otp,
+      );
+      print("goi api $isSuccess");
 
-      if (event.otp == "123456") {
-        // Giả lập OTP đúng
+      if (isSuccess) {
         emit(OtpSuccess());
       } else {
-        emit(OtpInvalid('Mã OTP không đúng. Vui lòng thử lại.'));
+        emit(OtpInvalid(message.isNotEmpty ? message : 'Đăng ký thất bại'));
       }
     } catch (e) {
-      emit(OtpInvalid('Xác thực thất bại. Vui lòng thử lại.'));
+      emit(OtpInvalid('Đăng ký thất bại: ${e.toString()}'));
     }
   }
 

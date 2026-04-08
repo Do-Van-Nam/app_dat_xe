@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/data/model/user_info_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +18,9 @@ class ShareKey {
   static const String KEY_LOGIN_WITH_OTP = "KEY_LOGIN_WITH_OTP";
   static const String KEY_REMOTE_CONFIG = "KEY_REMOTE_CONFIG";
   static const String KEY_CHANGE_OPEN_APP = "KEY_CHANGE_OPEN_APP";
-
+  static const String KEY_DEVICE_ID = "KEY_DEVICE_ID";
+  static const String KEY_DEVICE_NAME = "KEY_DEVICE_NAME";
+  static const String KEY_DEVICE_TOKEN = "KEY_DEVICE_TOKEN";
 }
 
 class SharePreferenceUtil {
@@ -31,9 +34,9 @@ class SharePreferenceUtil {
   }
 
   static Future<String> getString(
-      String key, {
-        String defaultValue = '',
-      }) async {
+    String key, {
+    String defaultValue = '',
+  }) async {
     final prefs = await _prefs();
     return prefs.getString(key) ?? defaultValue;
   }
@@ -44,9 +47,9 @@ class SharePreferenceUtil {
   }
 
   static Future<bool> getBool(
-      String key, {
-        bool defaultValue = false,
-      }) async {
+    String key, {
+    bool defaultValue = false,
+  }) async {
     final prefs = await _prefs();
     return prefs.getBool(key) ?? defaultValue;
   }
@@ -57,9 +60,9 @@ class SharePreferenceUtil {
   }
 
   static Future<int> getInt(
-      String key, {
-        int defaultValue = 0,
-      }) async {
+    String key, {
+    int defaultValue = 0,
+  }) async {
     final prefs = await _prefs();
     return prefs.getInt(key) ?? defaultValue;
   }
@@ -70,9 +73,9 @@ class SharePreferenceUtil {
   }
 
   static Future<double> getDouble(
-      String key, {
-        double defaultValue = 0.0,
-      }) async {
+    String key, {
+    double defaultValue = 0.0,
+  }) async {
     final prefs = await _prefs();
     return prefs.getDouble(key) ?? defaultValue;
   }
@@ -98,19 +101,52 @@ class SharePreferenceUtil {
     );
   }
 
-  static Future<void> saveUser(UserInfoModel? model) async {
+  // device info
+  static Future saveDeviceId(String deviceId) async {
+    return setString(ShareKey.KEY_DEVICE_ID, deviceId);
+  }
+
+  static Future<String> getDeviceId() async {
+    return getString(
+      ShareKey.KEY_DEVICE_ID,
+      defaultValue: '',
+    );
+  }
+
+  static Future saveDeviceName(String deviceName) async {
+    return setString(ShareKey.KEY_DEVICE_NAME, deviceName);
+  }
+
+  static Future<String> getDeviceName() async {
+    return getString(
+      ShareKey.KEY_DEVICE_NAME,
+      defaultValue: '',
+    );
+  }
+
+  static Future saveDeviceToken(String deviceToken) async {
+    return setString(ShareKey.KEY_DEVICE_TOKEN, deviceToken);
+  }
+
+  static Future<String> getDeviceToken() async {
+    return getString(
+      ShareKey.KEY_DEVICE_TOKEN,
+      defaultValue: '',
+    );
+  }
+
+  static Future<void> saveUser(User? model) async {
     if (model == null) return;
     final jsonString = jsonEncode(model.toJson());
     await setString(ShareKey.KEY_USER_INFO, jsonString);
   }
 
-  static Future<UserInfoModel?> getUser() async {
+  static Future<User?> getUser() async {
     final jsonString = await getString(ShareKey.KEY_USER_INFO);
     if (jsonString.isEmpty) return null;
 
     final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
-    final user = UserInfoModel.fromJson(jsonMap);
-    UserInfoModel.instance.fromJson(jsonMap);
+    final user = User.fromJson(jsonMap);
 
     return user;
   }
@@ -137,7 +173,8 @@ class SharePreferenceUtil {
 
   static Future<void> saveConfig(RemoteConfigModel model) async {
     final pref = await SharedPreferences.getInstance();
-    await pref.setString(ShareKey.KEY_REMOTE_CONFIG, jsonEncode(model.toJson()));
+    await pref.setString(
+        ShareKey.KEY_REMOTE_CONFIG, jsonEncode(model.toJson()));
   }
 
   static Future<RemoteConfigModel?> loadConfig() async {

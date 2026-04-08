@@ -1,4 +1,7 @@
-﻿import 'package:demo_app/main/utils/widget/common_widgets.dart';
+﻿import 'package:demo_app/main/data/service/apple_sign_in_service.dart';
+import 'package:demo_app/main/data/service/google_sign_in_service.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
+import 'package:demo_app/main/utils/widget/common_widgets.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:demo_app/res/app_fonts.dart';
 import 'package:demo_app/res/app_images.dart';
@@ -9,6 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'login_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -85,13 +90,14 @@ class _LoginViewState extends State<LoginView> {
 
               // Form
               BlocListener<LoginBloc, LoginState>(
-                  listenWhen: (previous, current) =>
-                      previous != current &&
-                      current is LoginSuccess, // chỉ lắng nghe khi thành công
+                  listenWhen: (previous, current) => previous != current,
                   listener: (context, state) {
                     if (state is LoginSuccess) {
                       // Chuyển sang trang Home và xóa stack (không cho quay lại Login)
                       context.go(PATH_HOME); // Dùng .go() tốt hơn .push() ở đây
+                    }
+                    if (state is LoginFailure) {
+                      AppToast.show(context, state.error);
                     }
                   },
                   child: BlocBuilder<LoginBloc, LoginState>(
@@ -252,9 +258,9 @@ class _LoginViewState extends State<LoginView> {
                                       child: _socialButton(
                                         'Google',
                                         "null",
-                                        () {
-                                          // TODO: Google Sign In
-                                        },
+                                        () => context.read<LoginBloc>().add(
+                                              LoginByGoogle(),
+                                            ),
                                       ),
                                     ),
                                     const SizedBox(width: 12),
@@ -262,9 +268,7 @@ class _LoginViewState extends State<LoginView> {
                                       child: _socialButton(
                                         'iOS Apple',
                                         null,
-                                        () {
-                                          // TODO: Apple Sign In
-                                        },
+                                        signInWithApple,
                                         isApple: true,
                                       ),
                                     ),

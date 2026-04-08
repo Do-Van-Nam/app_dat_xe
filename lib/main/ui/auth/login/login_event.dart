@@ -8,3 +8,7 @@ class LoginSubmitted extends LoginEvent {
 
   LoginSubmitted({required this.phone, required this.password});
 }
+
+class LoginByGoogle extends LoginEvent {
+  LoginByGoogle();
+}

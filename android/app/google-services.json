@@ -1,83 +1,34 @@
 {
   "project_info": {
-    "project_number": "56621047578",
-    "firebase_url": "https://demo-13ab5.firebaseio.com",
-    "project_id": "demo-13ab5",
-    "storage_bucket": "demo-13ab5.firebasestorage.app"
+    "project_number": "485746976967",
+    "project_id": "nhm-datxe-f87c0",
+    "storage_bucket": "nhm-datxe-f87c0.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:56621047578:android:baefa4e3e6345b01f616a3",
+        "mobilesdk_app_id": "1:485746976967:android:77b7fa2ff67c1477b4f6e2",
         "android_client_info": {
-          "package_name": "com.demo.app"
+          "package_name": "com.nhm.appdatxe"
         }
       },
       "oauth_client": [
         {
-          "client_id": "demo56621047578-0icinf88ge9s3jn7sos5ul57u9p7sghb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.demo.app",
-            "certificate_hash": "5608a95717b4b37627909e50ae4fdd06b9b9aaee"
-          }
-        },
-        {
-          "client_id": "demo56621047578-1noc3qm0lbtihme1mokn86omcpga4pds.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.demo.app",
-            "certificate_hash": "e5ba276a764a94ad497b26c1dd438f8889afdbd8"
-          }
-        },
-        {
-          "client_id": "demo56621047578-4tajfoinqvftk5go5i9pd7njfpf73elo.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.demo.app",
-            "certificate_hash": "475027211a17c9ade4e18344a54cd984760b5e10"
-          }
-        },
-        {
-          "client_id": "demo56621047578-aiglm5lp8cjekuiv6bt90m8nsd9cb0ou.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.demo.app",
-            "certificate_hash": "a86bc69d0119939d9991f023c1c253c99bfbed13"
-          }
-        },
-        {
-          "client_id": "demo56621047578-jsds1fivk42r90ef4h1tm4adc0vrm6jg.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.demo.app",
-            "certificate_hash": "45c7e1a61d6041211b50c43a8ca7195456450749"
-          }
-        },
-        {
-          "client_id": "demo56621047578-pvkgo599ptrtev2k4kr4f8rv02haele3.apps.googleusercontent.com",
+          "client_id": "485746976967-8pkd28lar1mofhju2t1ocrhhcv4uod82.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD_k70u4VRFdJqBRzKT52QqDXv35l1Mnw4"
+          "current_key": "AIzaSyAh8g7qv3SXUrgdco_Fr9VeKoy7G0uCY6w"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "demo56621047578-9n3gp87d8o8slolum1mf61u6s5rp6pi0.apps.googleusercontent.com",
+              "client_id": "485746976967-8pkd28lar1mofhju2t1ocrhhcv4uod82.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "demo56621047578-tok5p995ijmn3nd9acelud8lrbipu5o9.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.vtg.app.mydemo.dev",
-                "app_store_id": "999999999"
-              }
             }
           ]
         }

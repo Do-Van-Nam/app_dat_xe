@@ -28,7 +28,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.demo.app"
+        applicationId = "com.nhm.appdatxe"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // minSdk = 21
@@ -95,11 +95,6 @@ repositories {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-//    implementation(files("libs/ekyc-release.aar"))
-    // implementation(files("libs/lib-scanner.aar"))
-    // implementation(files("libs/ipccsupportsdk.aar"))
-    // implementation(files("libs/speedtest-lib.aar"))
-    // ipcc
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.fragment:fragment-ktx:1.8.6")
     implementation("com.google.android.material:material:1.12.0")
@@ -126,6 +121,8 @@ dependencies {
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation ("com.squareup:android-times-square:1.7.11@aar")
     implementation ("com.makeramen:roundedimageview:2.3.0")
+// google sign in 
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
 }
 
 flutter {

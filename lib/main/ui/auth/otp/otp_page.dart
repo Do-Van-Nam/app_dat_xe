@@ -1,37 +1,85 @@
-﻿import 'package:demo_app/res/app_colors.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
+import 'package:demo_app/res/app_colors.dart';
 import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'otp_bloc.dart';
 
 class OtpPage extends StatelessWidget {
   final String phoneNumber; // Ví dụ: "+84 9xx xxx 123"
+  final String password;
+  final String? fullName;
 
-  const OtpPage({super.key, required this.phoneNumber});
+  const OtpPage({
+    super.key,
+    required this.phoneNumber,
+    required this.password,
+    this.fullName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => OtpBloc(),
-      child: OtpView(phoneNumber: phoneNumber),
+      child: OtpView(
+        phoneNumber: phoneNumber,
+        password: password,
+        fullName: fullName,
+      ),
     );
   }
 }
 
 class OtpView extends StatefulWidget {
   final String phoneNumber;
+  final String password;
+  final String? fullName;
 
-  const OtpView({super.key, required this.phoneNumber});
+  const OtpView({
+    super.key,
+    required this.phoneNumber,
+    required this.password,
+    this.fullName,
+  });
 
   @override
   State<OtpView> createState() => _OtpViewState();
 }
 
 class _OtpViewState extends State<OtpView> {
-  final List<TextEditingController> _controllers =
-      List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  late final List<TextEditingController> _controllers;
+  late final List<FocusNode> _focusNodes;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = List.generate(6, (_) => TextEditingController());
+    _focusNodes = List.generate(6, (index) {
+      final node = FocusNode();
+      node.onKeyEvent = (focusNode, event) {
+        if (event.logicalKey == LogicalKeyboardKey.backspace &&
+            event is KeyDownEvent) {
+          if (_controllers[index].text.isEmpty && index > 0) {
+            _focusNodes[index - 1].requestFocus();
+            _controllers[index - 1].clear(); // tuỳ chọn: xoá luôn ô trước đó
+            return KeyEventResult.handled;
+          }
+        }
+        return KeyEventResult.ignored;
+      };
+
+      // Luôn đặt con trỏ ở cuối, tránh di chuyển ra trước
+      _controllers[index].addListener(() {
+        final text = _controllers[index].text;
+        _controllers[index].selection =
+            TextSelection.fromPosition(TextPosition(offset: text.length));
+      });
+
+      return node;
+    });
+  }
 
   String get otpCode => _controllers.map((c) => c.text).join();
 
@@ -47,12 +95,10 @@ class _OtpViewState extends State<OtpView> {
   }
 
   void _onOtpChanged(int index, String value) {
-    print('value: $value');
-    print('otpCode.length: ${otpCode.length}');
-    print('otpCode: $otpCode');
-    if (value.length == 1 && index < 5) {
+    if (value.isNotEmpty && index < 5) {
       _focusNodes[index + 1].requestFocus();
     }
+    print('otpCode: $otpCode');
     context.read<OtpBloc>().add(OtpChanged(otpCode));
   }
 
@@ -129,12 +175,14 @@ class _OtpViewState extends State<OtpView> {
                     children: [
                       BlocListener<OtpBloc, OtpState>(
                         listenWhen: (previous, current) =>
-                            previous != current &&
-                            current
-                                is OtpSuccess, // chỉ lắng nghe khi thành công
+                            previous != current, // chỉ lắng nghe khi thành công
                         listener: (context, state) {
                           if (state is OtpSuccess) {
-                            context.push(PATH_RESET_PASSWORD, extra: otpCode);
+                            AppToast.show(context, 'Đăng ký thành công');
+                            // context.push(PATH_RESET_PASSWORD, extra: otpCode);
+                          }
+                          if (state is OtpInvalid) {
+                            AppToast.show(context, state.message);
                           }
                         },
                         child: BlocBuilder<OtpBloc, OtpState>(
@@ -164,6 +212,22 @@ class _OtpViewState extends State<OtpView> {
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
                                       maxLength: 1,
+                                      enableInteractiveSelection:
+                                          false, // Bỏ chọn đoạn text và di chuyển con trỏ
+                                      onTap: () {
+                                        // Luôn trỏ tới ô trống đầu tiên (hoặc ô cuối nếu đã điền hết)
+                                        int targetIndex = 5;
+                                        for (int i = 0; i < 6; i++) {
+                                          if (_controllers[i].text.isEmpty) {
+                                            targetIndex = i;
+                                            break;
+                                          }
+                                        }
+                                        if (index != targetIndex) {
+                                          _focusNodes[targetIndex]
+                                              .requestFocus();
+                                        }
+                                      },
                                       style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -222,8 +286,9 @@ class _OtpViewState extends State<OtpView> {
                 BlocBuilder<OtpBloc, OtpState>(
                   builder: (context, state) {
                     final isLoading = state is OtpVerifying;
-                    final isEnabled = otpCode.length == 6 && !isLoading;
-
+                    final isEnabled = state is OtpFullLength && !isLoading;
+                    print('otpCode.length: ${otpCode.length}');
+                    print('isLoading: $isLoading');
                     return SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -231,7 +296,12 @@ class _OtpViewState extends State<OtpView> {
                         onPressed: isEnabled
                             ? () {
                                 context.read<OtpBloc>().add(
-                                      VerifyOtpSubmitted(otp: otpCode),
+                                      VerifyOtpSubmitted(
+                                        otp: otpCode,
+                                        phone: widget.phoneNumber,
+                                        fullName: widget.fullName ?? '',
+                                        password: widget.password,
+                                      ),
                                     );
                               }
                             : null,

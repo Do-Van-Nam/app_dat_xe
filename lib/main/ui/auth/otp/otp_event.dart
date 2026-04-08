@@ -9,7 +9,15 @@ class OtpChanged extends OtpEvent {
 
 class VerifyOtpSubmitted extends OtpEvent {
   final String otp;
-  VerifyOtpSubmitted({required this.otp});
+  final String phone;
+  final String fullName;
+  final String password;
+  VerifyOtpSubmitted({
+    required this.otp,
+    required this.phone,
+    required this.fullName,
+    required this.password,
+  });
 }
 
 class ResendOtpRequested extends OtpEvent {}
