@@ -63,11 +63,12 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       final isFirstOpenApp = await SharePreferenceUtil.getBool(
         ShareKey.KEY_FIRST_OPEN_APP,
       );
-      AppLogger().logInfo("CHECK_LOGIN $isFirstOpenApp");
+      AppLogger().logInfo("CHECK_LOGIN isLogin $isLogin");
+      AppLogger().logInfo("CHECK_LOGIN isFirstOpenApp $isFirstOpenApp");
       emit(
         SplashResolved(
           next:
-              (isLogin || isFirstOpenApp) ? SplashNext.home : SplashNext.login,
+              (!isLogin || isFirstOpenApp) ? SplashNext.login : SplashNext.home,
         ),
       );
     } catch (e) {
@@ -76,7 +77,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       final isFirstOpenApp = await SharePreferenceUtil.getBool(
         ShareKey.KEY_FIRST_OPEN_APP,
       );
-      AppLogger().logInfo("CHECK_LOGIN $isFirstOpenApp");
+      AppLogger().logInfo("CHECK_LOGIN isLogin $isLogin");
+      AppLogger().logInfo("CHECK_LOGIN isFirstOpenApp $isFirstOpenApp");
       emit(
         SplashResolved(
           next:
@@ -87,9 +89,10 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   }
 
   Future<bool> _isLoggedIn() async {
-    await SharePreferenceUtil.getUser();
-    final isLoggedIn = UserInfoModel.instance.username.isNotEmpty;
-    return true; // demo
+    final user = await SharePreferenceUtil.getUser();
+    final loginToken = await SharePreferenceUtil.getLoginToken();
+    final isLoggedIn = user != null && loginToken.isNotEmpty;
+    // return true; // demo
     return isLoggedIn; // demo
   }
 

@@ -12,8 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'login_bloc.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -93,8 +91,7 @@ class _LoginViewState extends State<LoginView> {
                   listenWhen: (previous, current) => previous != current,
                   listener: (context, state) {
                     if (state is LoginSuccess) {
-                      // Chuyển sang trang Home và xóa stack (không cho quay lại Login)
-                      context.go(PATH_HOME); // Dùng .go() tốt hơn .push() ở đây
+                      context.go(PATH_HOME);
                     }
                     if (state is LoginFailure) {
                       AppToast.show(context, state.error);

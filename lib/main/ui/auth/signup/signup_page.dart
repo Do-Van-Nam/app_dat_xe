@@ -114,6 +114,7 @@ class _SignupViewState extends State<SignupView> {
                         'phone': phoneController.text.trim(),
                         'password': passwordController.text.trim(),
                         'fullName': fullNameController.text.trim(),
+                        'type': "signup",
                       },
                     );
                     // AppToast.show(context, "Đăng ký thành công");

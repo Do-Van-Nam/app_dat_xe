@@ -9,8 +9,29 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'search_destination_bloc.dart';
 
-class SearchDestinationPage extends StatelessWidget {
+class SearchDestinationPage extends StatefulWidget {
   const SearchDestinationPage({super.key});
+
+  @override
+  State<SearchDestinationPage> createState() => _SearchDestinationPageState();
+}
+
+class _SearchDestinationPageState extends State<SearchDestinationPage> {
+  final TextEditingController _destinationController = TextEditingController();
+  final TextEditingController _pickUpController = TextEditingController();
+
+  @override
+  void dispose() {
+    _destinationController.dispose();
+    _pickUpController.dispose();
+    super.dispose();
+  }
+
+  void _onSelectDestination(PopularDestination dest) {
+    // Ưu tiên hiển thị địa chỉ chi tiết, nếu không có thì lấy tên
+    _destinationController.text =
+        dest.address.isNotEmpty ? dest.address : dest.name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +76,11 @@ class SearchDestinationPage extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          _SearchInputsSection(l10n: l10n),
+                          _SearchInputsSection(
+                            l10n: l10n,
+                            destinationController: _destinationController,
+                            pickUpController: _pickUpController,
+                          ),
 
                           const SizedBox(height: 24),
 
@@ -71,6 +96,7 @@ class SearchDestinationPage extends StatelessWidget {
                     _PopularDestinationsSection(
                       destinations: state.popularDestinations,
                       l10n: l10n,
+                      onSelect: _onSelectDestination,
                     ),
 
                     const SizedBox(height: 40),
@@ -79,6 +105,7 @@ class SearchDestinationPage extends StatelessWidget {
                     _RecentSearchesSection(
                       searches: state.recentSearches,
                       l10n: l10n,
+                      onSelect: _onSelectDestination,
                     ),
 
                     const SizedBox(height: 32),
@@ -102,8 +129,14 @@ class SearchDestinationPage extends StatelessWidget {
 
 class _SearchInputsSection extends StatelessWidget {
   final AppLocalizations l10n;
+  final TextEditingController destinationController;
+  final TextEditingController pickUpController;
 
-  const _SearchInputsSection({required this.l10n});
+  const _SearchInputsSection({
+    required this.l10n,
+    required this.destinationController,
+    required this.pickUpController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -145,6 +178,7 @@ class _SearchInputsSection extends StatelessWidget {
               children: [
                 // Vị trí hiện tại
                 TextField(
+                  controller: pickUpController,
                   decoration: InputDecoration(
                     hintText: l10n.yourLocation,
                     // prefixIcon: const Icon(Icons.location_on, color: Colors.blue),
@@ -155,12 +189,13 @@ class _SearchInputsSection extends StatelessWidget {
                     filled: true,
                     fillColor: Colors.grey[100],
                   ),
-                  enabled: false,
+                  // enabled: false,
                 ),
                 const SizedBox(height: 12),
 
                 // Điểm đến
                 TextField(
+                  controller: destinationController,
                   decoration: InputDecoration(
                     hintText: l10n.whereToGo,
                     // prefixIcon:
@@ -176,7 +211,13 @@ class _SearchInputsSection extends StatelessWidget {
                         .read<SearchDestinationBloc>()
                         .add(SearchQueryChangedEvent(value));
                   },
-                  onSubmitted: (value) => context.push(PATH_BOOKING),
+                  onSubmitted: (value) => context.push(
+                    PATH_BOOKING,
+                    extra: {
+                      'pickUp': pickUpController.text,
+                      'dropOff': value,
+                    },
+                  ),
                 ),
               ],
             ),
@@ -248,10 +289,12 @@ class _QuickAddChip extends StatelessWidget {
 class _PopularDestinationsSection extends StatelessWidget {
   final List<PopularDestination> destinations;
   final AppLocalizations l10n;
+  final Function(PopularDestination) onSelect;
 
   const _PopularDestinationsSection({
     required this.destinations,
     required this.l10n,
+    required this.onSelect,
   });
 
   @override
@@ -280,6 +323,7 @@ class _PopularDestinationsSection extends StatelessWidget {
         ...destinations.map((dest) => _DestinationItem(
               destination: dest,
               isPopular: true,
+              onTap: () => onSelect(dest),
             )),
       ],
     );
@@ -289,10 +333,12 @@ class _PopularDestinationsSection extends StatelessWidget {
 class _RecentSearchesSection extends StatelessWidget {
   final List<RecentSearch> searches;
   final AppLocalizations l10n;
+  final Function(PopularDestination) onSelect;
 
   const _RecentSearchesSection({
     required this.searches,
     required this.l10n,
+    required this.onSelect,
   });
 
   @override
@@ -308,15 +354,19 @@ class _RecentSearchesSection extends StatelessWidget {
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        ...searches.map((search) => _DestinationItem(
-              destination: PopularDestination(
-                id: search.id,
-                name: search.name,
-                distance: "",
-                address: search.address,
-              ),
-              isPopular: false,
-            )),
+        ...searches.map((search) {
+          final dest = PopularDestination(
+            id: search.id,
+            name: search.name,
+            distance: "",
+            address: search.address,
+          );
+          return _DestinationItem(
+            destination: dest,
+            isPopular: false,
+            onTap: () => onSelect(dest),
+          );
+        }),
       ],
     );
   }
@@ -325,15 +375,18 @@ class _RecentSearchesSection extends StatelessWidget {
 class _DestinationItem extends StatelessWidget {
   final PopularDestination destination;
   final bool isPopular;
+  final VoidCallback onTap;
 
   const _DestinationItem({
     required this.destination,
     required this.isPopular,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
         backgroundColor: AppColors.color_E8E8EA,

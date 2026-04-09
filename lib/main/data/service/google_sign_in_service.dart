@@ -36,6 +36,7 @@ class GoogleAuthService {
       }
 
       print("✅ Lấy được Google idToken thành công (độ dài: ${idToken.length})");
+      print("✅ Lấy được Google idToken thành công ${idToken}");
       // Tạo credential cho Firebase
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken, // idToken vẫn có

@@ -106,7 +106,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
 
   void _onTripCompleted(TripCompleted event, Emitter<DriverState> emit) {
     emit(state.copyWith(
-      screen: DriverScreen.arrivedDest,
+      screen: DriverScreen.online,
       todayIncome:
           state.todayIncome + (state.currentOffer?.estimatedEarning ?? 29000),
       totalTrips: state.totalTrips + 1,

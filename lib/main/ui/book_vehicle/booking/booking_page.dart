@@ -10,7 +10,9 @@ import 'package:go_router/go_router.dart';
 import 'booking_bloc.dart';
 
 class BookingPage extends StatelessWidget {
-  const BookingPage({super.key});
+  final String pickUp;
+  final String dropOff;
+  const BookingPage({super.key, required this.pickUp, required this.dropOff});
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +70,8 @@ class BookingPage extends StatelessWidget {
                               // Addresses
                               Expanded(
                                 child: _AddressSection(
-                                  pickup: state.pickupAddress,
-                                  destination: state.destinationAddress,
+                                  pickup: pickUp,
+                                  destination: dropOff,
                                   l10n: l10n,
                                 ),
                               ),
@@ -155,8 +157,9 @@ class BookingPage extends StatelessWidget {
                                 SizedBox(height: 8),
                                 commonButton(
                                     text: l10n.confirmBooking,
-                                    onPressed: () =>
-                                        context.push(PATH_TRACKING)),
+                                    onPressed: () => context.push(
+                                        PATH_FINDING_DRIVER,
+                                        extra: PATH_TRACKING)),
                                 // _ConfirmButton(
                                 //   totalAmount: state.totalAmount,
                                 //   l10n: l10n,
@@ -379,36 +382,112 @@ class _VehicleOptionCard extends StatelessWidget {
   }
 }
 
-class _PaymentMethodSection extends StatelessWidget {
+class _PaymentMethodSection extends StatefulWidget {
   final AppLocalizations l10n;
 
   const _PaymentMethodSection({required this.l10n});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.color_F3F3F6,
-        borderRadius: BorderRadius.circular(16),
+  State<_PaymentMethodSection> createState() => _PaymentMethodSectionState();
+}
+
+class _PaymentMethodSectionState extends State<_PaymentMethodSection> {
+  String _selectedMethod = "Tiền mặt";
+
+  void _showPaymentMethodSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            // radius: 999,
-            backgroundColor: Colors.white,
-            child: SvgPicture.asset(AppImages.icMoney, height: 16),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Đổi phương thức thanh toán",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: CircleAvatar(
+                  backgroundColor: AppColors.color_F3F3F6,
+                  child: SvgPicture.asset(AppImages.icMoney, height: 16),
+                ),
+                title: const Text("Tiền mặt",
+                    style: TextStyle(fontWeight: FontWeight.w600)),
+                trailing: _selectedMethod == "Tiền mặt"
+                    ? const Icon(Icons.check_circle, color: Colors.blue)
+                    : null,
+                onTap: () {
+                  setState(() {
+                    _selectedMethod = "Tiền mặt";
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              const Divider(),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const CircleAvatar(
+                  backgroundColor: AppColors.color_F3F3F6,
+                  child:
+                      Icon(Icons.account_balance, color: Colors.blue, size: 20),
+                ),
+                title: const Text("Chuyển khoản",
+                    style: TextStyle(fontWeight: FontWeight.w600)),
+                trailing: _selectedMethod == "Chuyển khoản"
+                    ? const Icon(Icons.check_circle, color: Colors.blue)
+                    : null,
+                onTap: () {
+                  setState(() {
+                    _selectedMethod = "Chuyển khoản";
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child:
-                Text("Tiền mặt", style: TextStyle(fontWeight: FontWeight.w600)),
-          ),
-          Text(
-            "THAY ĐỔI",
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-          ),
-        ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _showPaymentMethodSheet,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.color_F3F3F6,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              child: _selectedMethod == "Tiền mặt"
+                  ? SvgPicture.asset(AppImages.icMoney, height: 16)
+                  : const Icon(Icons.account_balance,
+                      color: Colors.blue, size: 16),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(_selectedMethod,
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
+            ),
+            const Text(
+              "THAY ĐỔI",
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }

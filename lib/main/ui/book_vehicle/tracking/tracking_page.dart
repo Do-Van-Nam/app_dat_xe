@@ -18,7 +18,9 @@ class TrackingPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.deliveryAndPickup),
-          leading: const BackButton(),
+          leading: BackButton(
+            onPressed: () => context.go(PATH_HOME),
+          ),
           actions: [
             IconButton(
                 icon: const Icon(Icons.notifications_outlined),
@@ -71,16 +73,14 @@ class TrackingPage extends StatelessWidget {
                     left: 0,
                     right: 0,
                     child: _DriverInfoBottomSheet(
-                      driverName: state.driverName,
-                      vehiclePlate: state.vehiclePlate,
-                      vehicleName: state.vehicleName,
-                      rating: state.rating,
-                      discountedPrice: state.discountedPrice,
-                      originalPrice: state.originalPrice,
-                      l10n: l10n,
-                      onCancel: () =>
-                          context.read<TrackingBloc>().add(CancelRideEvent()),
-                    ),
+                        driverName: state.driverName,
+                        vehiclePlate: state.vehiclePlate,
+                        vehicleName: state.vehicleName,
+                        rating: state.rating,
+                        discountedPrice: state.discountedPrice,
+                        originalPrice: state.originalPrice,
+                        l10n: l10n,
+                        onCancel: () => _showCancelDialog(context, l10n)),
                   ),
                 ],
               );
@@ -266,71 +266,73 @@ class _DriverInfoBottomSheet extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Promo & Price
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.promoCode,
-                          style: const TextStyle(fontSize: 12)),
-                      Row(
-                        children: [
-                          SvgPicture.asset(AppImages.icVoucher),
-                          const SizedBox(width: 6),
-                          const Text("-10%",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ],
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l10n.promoCode,
+                            style: const TextStyle(fontSize: 12)),
+                        Row(
+                          children: [
+                            SvgPicture.asset(AppImages.icVoucher),
+                            const SizedBox(width: 6),
+                            const Text("-10%",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.fare, style: const TextStyle(fontSize: 12)),
-                      Row(
-                        children: [
-                          Text(
-                            "$formattedDiscountđ",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: AppColors.colorMain),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              "$formattedOriginalđ",
-                              overflow: TextOverflow.ellipsis,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l10n.fare, style: const TextStyle(fontSize: 12)),
+                        Row(
+                          children: [
+                            Text(
+                              "$formattedDiscountđ",
                               style: const TextStyle(
-                                decoration: TextDecoration.lineThrough,
-                                color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: AppColors.colorMain),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                "$formattedOriginalđ",
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           const SizedBox(height: 24),
@@ -382,4 +384,101 @@ class RoutePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+void _showCancelDialog(BuildContext context, AppLocalizations l10n) {
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Center(
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: AppColors.colorCancelBg2,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: SvgPicture.asset(
+            AppImages.icWarning,
+            width: 8,
+            height: 8,
+            colorFilter: const ColorFilter.mode(
+              AppColors.colorCancelIcon,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            l10n.titleHuyChuyen,
+            style: AppStyles.inter18Bold,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.contentHuyChuyen,
+            style: AppStyles.inter14Regular,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+      actions: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            OutlinedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<TrackingBloc>().add(CancelRideEvent());
+              },
+              style: OutlinedButton.styleFrom(
+                backgroundColor: AppColors.colorMain,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                side: const BorderSide(color: AppColors.colorPrimaryDark),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(AppImages.icPhone),
+                  const SizedBox(width: 8),
+                  Text(
+                    l10n.btnGoiTaiXe,
+                    style: AppStyles.inter14SemiBold.copyWith(
+                      color: AppColors.colorWhite,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                side: BorderSide(color: Colors.grey.shade300, width: 2),
+              ),
+              child: Text(
+                l10n.btnDong,
+                style: AppStyles.inter14SemiBold.copyWith(
+                  color: AppColors.colorTextSecondary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

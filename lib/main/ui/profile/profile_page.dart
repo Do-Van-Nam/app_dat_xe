@@ -1,4 +1,5 @@
 ﻿import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
 import 'profile_bloc.dart';
 
@@ -22,7 +23,15 @@ class ProfilePage extends StatelessWidget {
             ),
           ],
         ),
-        body: BlocBuilder<ProfileBloc, ProfileState>(
+        body: BlocConsumer<ProfileBloc, ProfileState>(
+          listener: (context, state) {
+            if (state is ProfileLoggedOut) {
+              context.go('/login');
+            }
+            if (state is ProfileError) {
+              AppToast.show(context, state.message);
+            }
+          },
           builder: (context, state) {
             if (state is ProfileLoading) {
               return const Center(child: CircularProgressIndicator());

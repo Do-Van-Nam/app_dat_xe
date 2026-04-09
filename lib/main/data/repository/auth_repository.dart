@@ -8,84 +8,10 @@ class AuthRepository {
   static final AuthRepository _instance = AuthRepository._();
   factory AuthRepository() => _instance;
 
-  static const String _userPath = 'https://jsonplaceholder.typicode.com/users';
-
-  /// GET danh sach user va parse thanh List<User>
-  Future<List<User>> getUsers() async {
-    return ApiUtil.getInstance()!.getParsed<List<User>>(
-      url: _userPath,
-      fromJson: (json) {
-        final dynamic usersData = json['data'] ?? json['result'] ?? json;
-        if (usersData is List) {
-          return usersData
-              .whereType<Map<String, dynamic>>()
-              .map(User.fromJson)
-              .toList();
-        }
-        return <User>[];
-      },
-    );
-  }
-
-  /// GET chi tiet user theo id
-  Future<User> getUserDetail(String id) async {
-    return ApiUtil.getInstance()!.getParsed<User>(
-      url: '$_userPath/$id',
-      fromJson: (json) {
-        final dynamic userData = json['data'] ?? json['result'] ?? json;
-        if (userData is Map<String, dynamic>) {
-          return User.fromJson(userData);
-        }
-        return User.fromJson(const {});
-      },
-    );
-  }
-
-  /// POST tao moi user
-  Future<User> createUser(User user) async {
-    return ApiUtil.getInstance()!.postParsed<User>(
-      url: _userPath,
-      body: user.toJson(),
-      fromJson: (json) {
-        final dynamic userData = json['data'] ?? json['result'] ?? json;
-        if (userData is Map<String, dynamic>) {
-          return User.fromJson(userData);
-        }
-        return User.fromJson(const {});
-      },
-    );
-  }
-
-  /// PUT cap nhat user
-  Future<User> updateUser({
-    required String id,
-    required User user,
-  }) async {
-    return ApiUtil.getInstance()!.putParsed<User>(
-      url: '$_userPath/$id',
-      body: user.toJson(),
-      fromJson: (json) {
-        final dynamic userData = json['data'] ?? json['result'] ?? json;
-        if (userData is Map<String, dynamic>) {
-          return User.fromJson(userData);
-        }
-        return User.fromJson(const {});
-      },
-    );
-  }
-
-  /// DELETE user, tra ve true neu status success
-  Future<bool> deleteUser(String id) async {
-    final response = await ApiUtil.getInstance()!.delete(
-      url: '$_userPath/$id',
-    );
-    return response.isSuccess || response.isStatusSuccess;
-  }
-
   /// Gửi OTP với phone và type, trả về true nếu API trả về success
-  Future<(bool, String)> sendOtp({
+  Future<(bool, String)> requestOtp({
     required String phone,
-    required int type,
+    required int type, // 1: register, 3: forget password , 2: login
   }) async {
     final response = await ApiUtil.getInstance()!.post(
       url: ApiEndPoint.DOMAIN_AUTHENTICATE_OTP,
@@ -108,6 +34,11 @@ class AuthRepository {
         print("data['success'] ${data['success']}");
         isSuccess = data['success'] == true;
       }
+      if (data.containsKey('data')) {
+        print("data['data'] ${data['data']}");
+        print("data['data']['otp_code'] ${data['data']['otp_code']}");
+        SharePreferenceUtil.saveOtpCode(data['data']['otp_code']);
+      }
       if (data.containsKey('message') && data['message'] != null) {
         message = data['message'].toString();
       }
@@ -123,7 +54,7 @@ class AuthRepository {
   }) async {
     final deviceId = await SharePreferenceUtil.getDeviceId();
     final deviceToken = await SharePreferenceUtil.getDeviceToken();
-    final deviceType = await SharePreferenceUtil.getDeviceName();
+    final deviceType = await SharePreferenceUtil.getDeviceType();
     final response = await ApiUtil.getInstance()!.post(
       url: ApiEndPoint.DOMAIN_REGISTER,
       body: {
@@ -152,7 +83,7 @@ class AuthRepository {
         isSuccess = data['success'] == true;
       }
       if (data.containsKey('data') && data['data'] != null) {
-        final Map<String, dynamic> userData = data['data'];
+        final Map<String, dynamic> userData = data['data']['user'];
         final User user = User.fromJson(userData);
         print("user ${user.toJson()}");
         SharePreferenceUtil.saveUser(user);
@@ -170,7 +101,7 @@ class AuthRepository {
   }) async {
     final deviceId = await SharePreferenceUtil.getDeviceId();
     final deviceToken = await SharePreferenceUtil.getDeviceToken();
-    final deviceType = await SharePreferenceUtil.getDeviceName();
+    final deviceType = await SharePreferenceUtil.getDeviceType();
     final response = await ApiUtil.getInstance()!.post(
       url: ApiEndPoint.DOMAIN_LOGIN,
       body: {
@@ -196,13 +127,191 @@ class AuthRepository {
         isSuccess = data['success'] == true;
       }
       if (data.containsKey('data') && data['data'] != null) {
-        final Map<String, dynamic> userData = data['data'];
-        final User user = User.fromJson(userData);
-        print("user ${user.toJson()}");
-        SharePreferenceUtil.saveUser(user);
+        final Map<String, dynamic> responseData = data['data'];
+        if (responseData.containsKey('user') && responseData['user'] != null) {
+          final User user = User.fromJson(responseData['user']);
+          print("luu user vao share preference ${user.toJson()}");
+          SharePreferenceUtil.saveUser(user);
+        }
+        if (responseData.containsKey('token') &&
+            responseData['token'] != null) {
+          final String token = responseData['token'];
+          print("luu login token vao share preference ${token}");
+          SharePreferenceUtil.saveLoginToken(token);
+        }
       }
       if (data.containsKey('message') && data['message'] != null) {
         message = data['message'].toString();
+      }
+    }
+    return (isSuccess, message);
+  }
+
+  // Quên mật khẩu
+  Future<(bool, String)> resetPassword({
+    required String phone,
+    required String otp,
+    required String password,
+  }) async {
+    final deviceId = await SharePreferenceUtil.getDeviceId();
+    final deviceToken = await SharePreferenceUtil.getDeviceToken();
+    final deviceType = await SharePreferenceUtil.getDeviceType();
+    final response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_FORGOT_PASSWORD,
+      body: {
+        "phone": phone,
+        "otp": otp,
+        "password": password,
+        "password_confirmation": password,
+        "device_id": deviceId,
+        "device_token": deviceToken,
+        "device_type": deviceType,
+      },
+    );
+    bool isSuccess = false;
+    String message = response.message ?? '';
+
+    if (response.data is Map<String, dynamic>) {
+      final Map<String, dynamic> data = response.data;
+      if (data.containsKey('success')) {
+        isSuccess = data['success'] == true;
+      }
+      if (data.containsKey('message') && data['message'] != null) {
+        message = data['message'].toString();
+      }
+    }
+    return (isSuccess, message);
+  }
+
+  // Lấy thông tin user hiện tại
+  Future<(bool, User?)> getMe() async {
+    final response = await ApiUtil.getInstance()!.get(
+      url: ApiEndPoint.DOMAIN_ME,
+    );
+    if (response.isSuccess) {
+      if (response.data is Map<String, dynamic>) {
+        final Map<String, dynamic> data = response.data;
+        if (data.containsKey('data') && data['data'] != null) {
+          final Map<String, dynamic> responseData = data['data'];
+          if (responseData.containsKey('user') &&
+              responseData['user'] != null) {
+            final user = User.fromJson(responseData['user']);
+            SharePreferenceUtil.saveUser(user);
+            return (data['success'] == true, user);
+          } else {
+            final user = User.fromJson(responseData);
+            SharePreferenceUtil.saveUser(user);
+            return (data['success'] == true, user);
+          }
+        }
+      }
+    }
+    return (false, null);
+  }
+
+  // Đăng xuất
+  Future<(bool, String)> logout({bool logoutAll = true}) async {
+    final token = await SharePreferenceUtil.getLoginToken();
+    await SharePreferenceUtil.saveLoginToken("");
+    await SharePreferenceUtil.saveUser(null);
+    final response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_LOGOUT,
+      body: {
+        "logout_all": logoutAll,
+      },
+      headers: {
+        "Authorization": "Bearer $token",
+      },
+    );
+    bool isSuccess = false;
+    String message = response.message ?? '';
+
+    if (response.data is Map<String, dynamic>) {
+      final Map<String, dynamic> data = response.data;
+      if (data.containsKey('success')) {
+        isSuccess = data['success'] == true;
+      }
+      if (data.containsKey('message') && data['message'] != null) {
+        message = data['message'].toString();
+      }
+    }
+
+    return (isSuccess, message);
+  }
+
+  // Đăng ký/đăng nhập Google
+  Future<(bool, String)> googleLogin({required String idToken}) async {
+    final deviceId = await SharePreferenceUtil.getDeviceId();
+    final deviceToken = await SharePreferenceUtil.getDeviceToken();
+    final deviceType = await SharePreferenceUtil.getDeviceType();
+
+    final response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_GOOGLE_LOGIN,
+      body: {
+        "device_id": deviceId,
+        "device_token": deviceToken,
+        "device_type": deviceType,
+        "id_token": idToken,
+      },
+    );
+    bool isSuccess = false;
+    String message = response.message ?? '';
+
+    if (response.data is Map<String, dynamic>) {
+      final Map<String, dynamic> data = response.data;
+      if (data.containsKey('success')) {
+        isSuccess = data['success'] == true;
+      }
+      if (data.containsKey('message') && data['message'] != null) {
+        message = data['message'].toString();
+      }
+      if (data.containsKey('data') && data['data'] != null) {
+        final Map<String, dynamic> responseData = data['data'];
+        if (responseData.containsKey('user') && responseData['user'] != null) {
+          final user = User.fromJson(responseData['user']);
+          SharePreferenceUtil.saveUser(user);
+        }
+      }
+    }
+    return (isSuccess, message);
+  }
+
+  // Đăng ký/đăng nhập Apple
+  Future<(bool, String)> appleLogin({
+    required String idToken,
+    required String userFullName,
+  }) async {
+    final deviceId = await SharePreferenceUtil.getDeviceId();
+    final deviceToken = await SharePreferenceUtil.getDeviceToken();
+    final deviceType = await SharePreferenceUtil.getDeviceType();
+
+    final response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_APPLE_LOGIN,
+      body: {
+        "id_token": idToken,
+        "user": userFullName,
+        "device_id": deviceId,
+        "device_token": deviceToken,
+        "device_type": deviceType,
+      },
+    );
+    bool isSuccess = false;
+    String message = response.message ?? '';
+
+    if (response.data is Map<String, dynamic>) {
+      final Map<String, dynamic> data = response.data;
+      if (data.containsKey('success')) {
+        isSuccess = data['success'] == true;
+      }
+      if (data.containsKey('message') && data['message'] != null) {
+        message = data['message'].toString();
+      }
+      if (data.containsKey('data') && data['data'] != null) {
+        final Map<String, dynamic> responseData = data['data'];
+        if (responseData.containsKey('user') && responseData['user'] != null) {
+          final user = User.fromJson(responseData['user']);
+          SharePreferenceUtil.saveUser(user);
+        }
       }
     }
     return (isSuccess, message);

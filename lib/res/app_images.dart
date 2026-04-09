@@ -133,6 +133,8 @@ class AppImages {
   static final String imgMap = 'assets/images/img_map.png';
   static final String imgInterprovince =
       'assets/images/img_interprovince_bg.png';
+  static final String imgProfileDefault =
+      'assets/images/img_profile_default.png';
   // chatbot
 
   static final String imgVnFlag = 'assets/images/img_vn.jpg';

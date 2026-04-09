@@ -9,7 +9,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeInitial()) {
     on<HomeLoaded>((event, emit) async {
       final user = await SharePreferenceUtil.getUser();
-      print(user);
+      print("lay user tu share preference ${user?.toJson()}");
       if (user != null) {
         emit(HomeLoadSuccess(user));
       } else {

@@ -14,10 +14,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     emit(SignupLoading());
 
     try {
-      print("goi api");
       final (isSuccess, message) =
-          await AuthRepository().sendOtp(phone: "0${event.phone}", type: 1);
-      print("goi api $isSuccess");
+          await AuthRepository().requestOtp(phone: "0${event.phone}", type: 1);
       if (event.fullName.isEmpty ||
           event.phone.isEmpty ||
           event.password.length < 8) {

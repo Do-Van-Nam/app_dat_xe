@@ -1,5 +1,6 @@
 import 'package:demo_app/main/base/base_response.dart';
 import 'package:demo_app/main/data/api/api_interceptors.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/utils/device_utils.dart';
 import 'package:dio/dio.dart';
 
@@ -31,6 +32,7 @@ class ApiUtil {
         'Content-Type': 'application/json',
         'Accept': 'application/json', // ← Header quan trọng nhất
         'X-Requested-With': 'XMLHttpRequest',
+        'Authorization': 'Bearer ${SharePreferenceUtil.getLoginToken()}',
       };
       dio!.options.persistentConnection = false;
       dio!.interceptors.add(ApiInterceptors(dio!));
@@ -260,9 +262,7 @@ class ApiUtil {
   BaseResponse getBaseResponse(Response response) {
     return BaseResponse.success(
         data: response.data ?? "",
-        code: response.data['code'],
         message: response.data['message'],
-        success: response.data['success'],
-        status: response.data['status']);
+        success: response.data['success']);
   }
 }

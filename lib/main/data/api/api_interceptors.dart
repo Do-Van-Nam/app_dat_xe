@@ -25,7 +25,7 @@ class ApiInterceptors extends InterceptorsWrapper {
     }
 
     AppLogger().logInfo(
-      "\n-------------------------------------------------------------------",
+      "\n-------------------------------------------------------------------\n ${options.headers["Authorization"]}",
     );
     if (method == 'GET') {
       AppLogger().logInfo(
@@ -134,8 +134,7 @@ class RetryOnConnectionChangeInterceptor extends Interceptor {
   bool _shouldRetryOnHttpException(DioError err) {
     retryCount++;
 
-    var rs =
-        (retryCount < maxRetries) &&
+    var rs = (retryCount < maxRetries) &&
         err.type == DioErrorType.unknown &&
         ((err.error is HttpException &&
             (err.message ?? "").contains(

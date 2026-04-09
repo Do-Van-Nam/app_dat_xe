@@ -6,19 +6,21 @@ import 'finding_driver_bloc.dart';
 // ═══════════════════════════════════════════════════════════════
 
 class FindingDriverPage extends StatelessWidget {
-  const FindingDriverPage({super.key});
+  const FindingDriverPage({super.key, required this.path});
+  final String path;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => FindingDriverBloc()..add(const FindingDriverStartSearch()),
-      child: const _FindingDriverView(),
+      child: _FindingDriverView(path: path),
     );
   }
 }
 
 class _FindingDriverView extends StatelessWidget {
-  const _FindingDriverView();
+  const _FindingDriverView({required this.path});
+  final String path;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class _FindingDriverView extends StatelessWidget {
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, state) {
         if (state.status == FindingDriverStatus.found) {
-          // TODO: navigate to tracking page
+          context.go(path);
         }
         if (state.status == FindingDriverStatus.cancelled) {
           context.pop();

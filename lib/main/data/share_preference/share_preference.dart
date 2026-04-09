@@ -21,6 +21,9 @@ class ShareKey {
   static const String KEY_DEVICE_ID = "KEY_DEVICE_ID";
   static const String KEY_DEVICE_NAME = "KEY_DEVICE_NAME";
   static const String KEY_DEVICE_TOKEN = "KEY_DEVICE_TOKEN";
+  static const String KEY_DEVICE_TYPE = "KEY_DEVICE_TYPE";
+  static const String KEY_OTP_CODE = "KEY_OTP_CODE";
+  static const String KEY_LOGIN_TOKEN = "KEY_LOGIN_TOKEN";
 }
 
 class SharePreferenceUtil {
@@ -135,6 +138,17 @@ class SharePreferenceUtil {
     );
   }
 
+  static Future saveDeviceType(String deviceType) async {
+    return setString(ShareKey.KEY_DEVICE_TYPE, deviceType);
+  }
+
+  static Future<String> getDeviceType() async {
+    return getString(
+      ShareKey.KEY_DEVICE_TYPE,
+      defaultValue: '',
+    );
+  }
+
   static Future<void> saveUser(User? model) async {
     if (model == null) return;
     final jsonString = jsonEncode(model.toJson());
@@ -157,6 +171,22 @@ class SharePreferenceUtil {
 
   static Future<String> getToken() async {
     return getString(ShareKey.KEY_FB_TOKEN);
+  }
+
+  static Future saveLoginToken(String token) async {
+    return setString(ShareKey.KEY_LOGIN_TOKEN, token);
+  }
+
+  static Future<String> getLoginToken() async {
+    return getString(ShareKey.KEY_LOGIN_TOKEN);
+  }
+
+  static Future saveOtpCode(String otpCode) async {
+    return setString(ShareKey.KEY_OTP_CODE, otpCode);
+  }
+
+  static Future<String> getOtpCode() async {
+    return getString(ShareKey.KEY_OTP_CODE);
   }
 
   static Future saveLogFile(bool enable) async {

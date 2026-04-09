@@ -2,21 +2,24 @@ import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:demo_app/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'otp_bloc.dart';
 
 class OtpPage extends StatelessWidget {
-  final String phoneNumber; // Ví dụ: "+84 9xx xxx 123"
-  final String password;
+  final String? phoneNumber; // Ví dụ: "+84 9xx xxx 123"
+  final String? password;
   final String? fullName;
+  final String type;
 
   const OtpPage({
     super.key,
-    required this.phoneNumber,
-    required this.password,
+    this.phoneNumber,
+    this.password,
     this.fullName,
+    this.type = "forget",
   });
 
   @override
@@ -27,21 +30,24 @@ class OtpPage extends StatelessWidget {
         phoneNumber: phoneNumber,
         password: password,
         fullName: fullName,
+        type: type,
       ),
     );
   }
 }
 
 class OtpView extends StatefulWidget {
-  final String phoneNumber;
-  final String password;
+  final String? phoneNumber;
+  final String? password;
   final String? fullName;
+  final String type;
 
   const OtpView({
     super.key,
-    required this.phoneNumber,
-    required this.password,
+    this.phoneNumber,
+    this.password,
     this.fullName,
+    this.type = "forget",
   });
 
   @override
@@ -179,7 +185,13 @@ class _OtpViewState extends State<OtpView> {
                         listener: (context, state) {
                           if (state is OtpSuccess) {
                             AppToast.show(context, 'Đăng ký thành công');
-                            // context.push(PATH_RESET_PASSWORD, extra: otpCode);
+                            context.go(PATH_HOME);
+                          }
+                          if (state is OtpForgetSuccess) {
+                            context.push(PATH_RESET_PASSWORD, extra: {
+                              "otpCode": otpCode ?? "",
+                              "phone": widget.phoneNumber ?? "",
+                            });
                           }
                           if (state is OtpInvalid) {
                             AppToast.show(context, state.message);
@@ -298,9 +310,10 @@ class _OtpViewState extends State<OtpView> {
                                 context.read<OtpBloc>().add(
                                       VerifyOtpSubmitted(
                                         otp: otpCode,
-                                        phone: widget.phoneNumber,
-                                        fullName: widget.fullName ?? '',
-                                        password: widget.password,
+                                        phone: widget.phoneNumber ?? "",
+                                        fullName: widget.fullName ?? "",
+                                        password: widget.password ?? "",
+                                        type: widget.type,
                                       ),
                                     );
                               }

@@ -1,82 +1,120 @@
+// user_repository.dart
+
+import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
+
+import '../../base/base_response.dart';
 
 class UserRepository {
   UserRepository._();
   static final UserRepository _instance = UserRepository._();
   factory UserRepository() => _instance;
 
-  static const String _userPath = 'https://jsonplaceholder.typicode.com/users';
+  // ============================================================
+  // HELPER
+  // ============================================================
 
-  /// GET danh sach user va parse thanh List<User>
-  Future<List<User>> getUsers() async {
-    return ApiUtil.getInstance()!.getParsed<List<User>>(
-      url: _userPath,
-      fromJson: (json) {
-        final dynamic usersData = json['data'] ?? json['result'] ?? json;
-        if (usersData is List) {
-          return usersData
-              .whereType<Map<String, dynamic>>()
-              .map(User.fromJson)
-              .toList();
-        }
-        return <User>[];
-      },
-    );
+  User? _parseAndSaveUser(dynamic data) {
+    if (data is! Map<String, dynamic>) return null;
+    try {
+      final user = User.fromJson(data);
+      SharePreferenceUtil.saveUser(user);
+      return user;
+    } catch (_) {
+      return null;
+    }
   }
 
-  /// GET chi tiet user theo id
-  Future<User> getUserDetail(String id) async {
-    return ApiUtil.getInstance()!.getParsed<User>(
-      url: '$_userPath/$id',
-      fromJson: (json) {
-        final dynamic userData = json['data'] ?? json['result'] ?? json;
-        if (userData is Map<String, dynamic>) {
-          return User.fromJson(userData);
-        }
-        return User.fromJson(const {});
+  // ============================================================
+  // UC-04: Lấy thông tin hồ sơ
+  // ============================================================
+
+  Future<(bool, User?)> getUserProfile() async {
+    final token = SharePreferenceUtil.getLoginToken();
+    final BaseResponse response = await ApiUtil.getInstance()!.get(
+      url: ApiEndPoint.DOMAIN_USER_PROFILE,
+      headers: {
+        "Authorization": "Bearer $token",
       },
     );
+
+    if (response.isSuccess) {
+      final user = _parseAndSaveUser(response.data);
+      if (user != null) return (true, user);
+    }
+
+    return (false, null);
   }
 
-  /// POST tao moi user
-  Future<User> createUser(User user) async {
-    return ApiUtil.getInstance()!.postParsed<User>(
-      url: _userPath,
-      body: user.toJson(),
-      fromJson: (json) {
-        final dynamic userData = json['data'] ?? json['result'] ?? json;
-        if (userData is Map<String, dynamic>) {
-          return User.fromJson(userData);
-        }
-        return User.fromJson(const {});
-      },
+  // ============================================================
+  // UC-05: Cập nhật thông tin hồ sơ
+  // ============================================================
+
+  /// Trả về:
+  /// - (true, user)  → cập nhật thành công
+  /// - (true, null)  → cần xác thực OTP (kiểm tra response.isOtpRequired ở UI)
+  /// - (false, null) → có lỗi
+  Future<(bool, User?)> updateUserProfile(Map<String, dynamic> fields) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.put(
+      url: ApiEndPoint.DOMAIN_USER_PROFILE,
+      body: fields,
     );
+
+    // HTTP 202 - Yêu cầu OTP, xử lý ở tầng UI/BLoC
+    // if (response.isOtpRequired) return (true, null);
+
+    if (response.isSuccess) {
+      final user = _parseAndSaveUser(response.data);
+      if (user != null) return (true, user);
+    }
+
+    return (false, null);
   }
 
-  /// PUT cap nhat user
-  Future<User> updateUser({
-    required String id,
-    required User user,
+  // ============================================================
+  // UC-05: Xác thực OTP
+  // ============================================================
+
+  Future<(bool, User?)> verifyProfileOtp({
+    required String otp,
+    Map<String, dynamic>? sensitiveData,
   }) async {
-    return ApiUtil.getInstance()!.putParsed<User>(
-      url: '$_userPath/$id',
-      body: user.toJson(),
-      fromJson: (json) {
-        final dynamic userData = json['data'] ?? json['result'] ?? json;
-        if (userData is Map<String, dynamic>) {
-          return User.fromJson(userData);
-        }
-        return User.fromJson(const {});
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_VERIFY_PROFILE_OTP,
+      body: {
+        'otp': otp,
+        'sensitive_data': sensitiveData ?? {},
       },
     );
+
+    if (response.isSuccess) {
+      final user = _parseAndSaveUser(response.data);
+      if (user != null) return (true, user);
+    }
+
+    return (false, null);
   }
 
-  /// DELETE user, tra ve true neu status success
-  Future<bool> deleteUser(String id) async {
-    final response = await ApiUtil.getInstance()!.delete(
-      url: '$_userPath/$id',
+  // ============================================================
+  // UC-05: Đổi mật khẩu
+  // ============================================================
+
+  Future<(bool, String?)> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String newPasswordConfirmation,
+  }) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_CHANGE_PASSWORD,
+      body: {
+        'current_password': currentPassword,
+        'new_password': newPassword,
+        'new_password_confirmation': newPasswordConfirmation,
+      },
     );
-    return response.isSuccess || response.isStatusSuccess;
+
+    return (response.isSuccess, response.message);
   }
 }

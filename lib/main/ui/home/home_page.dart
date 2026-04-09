@@ -1,4 +1,5 @@
 ﻿import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:demo_app/res/app_fonts.dart';
 import 'package:demo_app/router.dart';
@@ -28,10 +29,22 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+    return BlocConsumer<HomeBloc, HomeState>(listener: (context, state) {
+      if (state is HomeLoadFailure) {
+        AppToast.show(context, state.error);
+      }
+    }, builder: (context, state) {
       if (state is HomeLoadFailure) {
         return Center(
-          child: Text('Error: ${state.error}'),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Error: ${state.error}'),
+              OutlinedButton(
+                  onPressed: () => context.go(PATH_LOGIN), child: Text("Login"))
+            ],
+          ),
         );
       }
 
@@ -57,7 +70,7 @@ class HomeView extends StatelessWidget {
                   child: Row(
                     children: [
                       GestureDetector(
-                        onTap: () => context.push(PATH_LOGIN),
+                        onTap: () => context.go(PATH_PROFILE),
                         child: CircleAvatar(
                           radius: 22,
                           backgroundImage: const NetworkImage(
@@ -112,21 +125,6 @@ class HomeView extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_DRIVER_MAIN),
-                    child: Text("Driver Main")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_MAP_SAMPLE),
-                    child: Text("Map Sample")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_DRIVER_UPLOAD_RECORDS),
-                    child: Text("Upload Records")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_DRIVER_WALLET),
-                    child: Text("Driver Wallet")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_DRIVER_MEMBERSHIP),
-                    child: Text("Driver Membership")),
                 // Service Icons
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -137,9 +135,11 @@ class HomeView extends StatelessWidget {
                     childAspectRatio: 0.95,
                     children: [
                       _buildServiceItem(AppImages.icBike, l10n.motorcycle,
-                          Colors.blue.shade100, context),
+                          Colors.blue.shade100, context,
+                          path: PATH_SEARCH_DESTINATION),
                       _buildServiceItem(AppImages.icCar, l10n.car,
-                          Colors.blue.shade100, context),
+                          Colors.blue.shade100, context,
+                          path: PATH_SEARCH_DESTINATION),
                       _buildServiceItem(AppImages.icFood, l10n.food,
                           Colors.orange.shade100, context,
                           path: PATH_FOOD),
@@ -367,6 +367,21 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                 ),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_DRIVER_MAIN),
+                    child: Text("Driver Main")),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_MAP_SAMPLE),
+                    child: Text("Map Sample")),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_DRIVER_UPLOAD_RECORDS),
+                    child: Text("Upload Records")),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_DRIVER_WALLET),
+                    child: Text("Driver Wallet")),
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_DRIVER_MEMBERSHIP),
+                    child: Text("Driver Membership")),
 
                 const SizedBox(height: 100), // Space for bottom nav
               ],

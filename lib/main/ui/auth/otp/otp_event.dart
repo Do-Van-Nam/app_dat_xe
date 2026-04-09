@@ -12,11 +12,13 @@ class VerifyOtpSubmitted extends OtpEvent {
   final String phone;
   final String fullName;
   final String password;
+  final String type;
   VerifyOtpSubmitted({
     required this.otp,
     required this.phone,
     required this.fullName,
     required this.password,
+    required this.type,
   });
 }
 

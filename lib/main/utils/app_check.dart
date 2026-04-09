@@ -13,7 +13,7 @@ class AppCheck {
     if (!isLoggedIn) {
       await SharePreferenceUtil.setBool(ShareKey.KEY_FIRST_OPEN_APP, false);
       await SharePreferenceUtil.setBool(ShareKey.KEY_CHANGE_OPEN_APP, true);
-      context.push(PATH_LOGIN);
+      context.go(PATH_LOGIN);
       return false;
     }
     return true;
@@ -22,7 +22,8 @@ class AppCheck {
   static Future<bool> checkInternet(BuildContext context) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
-      AppToast.show(context, AppLocalizations.of(context)!.no_internet_connection);
+      AppToast.show(
+          context, AppLocalizations.of(context)!.no_internet_connection);
       return false;
     }
     return true;

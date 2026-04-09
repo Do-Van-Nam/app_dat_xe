@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'package:demo_app/main/data/repository/auth_repository.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'otp_event.dart';
@@ -31,6 +32,15 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     emit(OtpVerifying());
 
     try {
+      if (event.type == "forget") {
+        final otpCode = await SharePreferenceUtil.getOtpCode();
+        if (otpCode == event.otp) {
+          emit(OtpForgetSuccess());
+        } else {
+          emit(OtpInvalid('Mã OTP không chính xác'));
+        }
+        return;
+      }
       print("goi api");
       final (isSuccess, message) = await AuthRepository().register(
         phone: "0${event.phone}",

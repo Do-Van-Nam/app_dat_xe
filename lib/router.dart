@@ -143,7 +143,10 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const SplashPage(),
     ),
 
-    GoRoute(path: PATH_LOGIN, builder: (context, state) => LoginPage()),
+    GoRoute(
+        name: PATH_LOGIN,
+        path: PATH_LOGIN,
+        builder: (context, state) => LoginPage()),
     GoRoute(path: PATH_SIGNUP, builder: (context, state) => SignupPage()),
     GoRoute(
       path: PATH_FORGOT_PASSWORD,
@@ -152,11 +155,21 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_RESET_PASSWORD,
       builder: (context, state) {
-        final phone = state.extra as String?;
-        if (phone == null) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final phone = extra?['phone'] as String?;
+        final otpCode = extra?['otpCode'] as String?;
+
+        if (phone == null ||
+            otpCode == null ||
+            phone.isEmpty ||
+            otpCode.isEmpty) {
           return const SplashPage();
         }
-        return ResetPasswordPage(phoneNumber: phone);
+
+        return ResetPasswordPage(
+          phoneNumber: phone,
+          otpCode: otpCode,
+        );
       },
     ),
     GoRoute(
@@ -167,11 +180,18 @@ final GoRouter router = GoRouter(
         final phone = data?['phone'];
         final password = data?['password'];
         final fullName = data?['fullName'];
-        if (phone == null || password == null) {
+        final type = data?['type'] ?? "forget";
+        if ((phone == null || password == null) && type == "signup") {
+          return const SplashPage();
+        }
+        if (phone == null && type == "forget") {
           return const SplashPage();
         }
         return OtpPage(
-            phoneNumber: phone, password: password, fullName: fullName);
+            phoneNumber: phone,
+            password: password,
+            fullName: fullName,
+            type: type);
       },
     ),
     GoRoute(
@@ -225,7 +245,14 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_BOOKING,
-      builder: (context, state) => BookingPage(),
+      builder: (context, state) {
+        final data = state.extra as Map<String, String>;
+
+        final pickUp = data['pickUp']!;
+        final dropOff = data['dropOff']!;
+
+        return BookingPage(pickUp: pickUp, dropOff: dropOff);
+      },
     ),
     GoRoute(
       path: PATH_TRACKING,
@@ -249,7 +276,11 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_FINDING_DRIVER,
-      builder: (context, state) => FindingDriverPage(),
+      builder: (context, state) {
+        final path = state.extra as String;
+
+        return FindingDriverPage(path: path);
+      },
     ),
     GoRoute(
       path: PATH_WAITING_DRIVER,

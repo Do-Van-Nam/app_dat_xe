@@ -35,7 +35,7 @@ class _BookForFamilyView extends StatelessWidget {
         }
         if (state.status == BookForFamilyStatus.success) {
           // TODO: navigate to success screen
-          context.push(PATH_FINDING_DRIVER);
+          context.push(PATH_FINDING_DRIVER, extra: PATH_TRACKING);
         }
       },
       child: Scaffold(

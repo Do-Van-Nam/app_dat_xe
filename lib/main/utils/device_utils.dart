@@ -154,6 +154,8 @@ class DeviceUtils {
       await SharePreferenceUtil.saveDeviceId(deviceId);
       await SharePreferenceUtil.saveDeviceName(deviceName);
       await SharePreferenceUtil.saveDeviceToken(deviceToken ?? '');
+      await SharePreferenceUtil.saveDeviceType(
+          Platform.isAndroid ? 'android' : 'ios');
     } catch (e) {
       print('Error saving device info to SharedPreferences: $e');
     }

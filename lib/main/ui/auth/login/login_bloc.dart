@@ -42,21 +42,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       // .initialize(); // Khởi tạo lần đầu
 
       final idToken = await service.signInWithGoogle();
-
-      if (idToken != null) {
-        print("Đăng nhập thành công: ${idToken}");
-        print("Đăng nhập thành công: ${idToken}");
-        // context.go(PATH_HOME);
-      } else {
-        print("Đăng nhập fail");
-        // Thông báo lỗi
+      final (isSuccess, message) =
+          await AuthRepository().googleLogin(idToken: idToken!);
+      if (idToken.isEmpty) {
+        emit(LoginFailure('Vui lòng kiểm tra lại thông tin'));
+        return;
       }
-
-      // Giả lập đăng nhập thành công
-      if (90 >= 9) {
+      if (isSuccess) {
         emit(LoginSuccess());
       } else {
-        emit(LoginFailure('Số điện thoại không hợp lệ'));
+        emit(LoginFailure(message.isNotEmpty ? message : 'Đăng nhập thất bại'));
       }
     } catch (e) {
       emit(LoginFailure('Đăng nhập thất bại: ${e.toString()}'));

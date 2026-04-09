@@ -1,4 +1,5 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+﻿import 'package:demo_app/main/data/repository/auth_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 part 'forget_password_event.dart';
 part 'forget_password_state.dart';
 
@@ -13,15 +14,18 @@ class ForgetPasswordBloc
     emit(ForgetPasswordLoading());
 
     try {
-      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-
-      if (event.phone.isEmpty || event.phone.length < 9) {
-        emit(ForgetPasswordFailure('Vui lòng nhập số điện thoại hợp lệ'));
+      if (event.phone.isEmpty) {
+        emit(ForgetPasswordFailure('Vui lòng kiểm tra lại thông tin'));
         return;
       }
-
-      // Giả lập thành công → chuyển sang màn OTP
-      emit(ForgetPasswordSuccess(event.phone));
+      final (isSuccess, message) =
+          await AuthRepository().requestOtp(phone: "0${event.phone}", type: 3);
+      if (isSuccess) {
+        emit(ForgetPasswordSuccess(event.phone));
+      } else {
+        emit(ForgetPasswordFailure(
+            message.isNotEmpty ? message : 'Lỗi gửi OTP'));
+      }
     } catch (e) {
       emit(ForgetPasswordFailure('Có lỗi xảy ra. Vui lòng thử lại.'));
     }
