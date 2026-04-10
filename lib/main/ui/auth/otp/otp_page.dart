@@ -13,6 +13,7 @@ class OtpPage extends StatelessWidget {
   final String? password;
   final String? fullName;
   final String type;
+  final String? oldPhone;
 
   const OtpPage({
     super.key,
@@ -20,17 +21,23 @@ class OtpPage extends StatelessWidget {
     this.password,
     this.fullName,
     this.type = "forget",
+    this.oldPhone,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OtpBloc(),
+      create: (context) => OtpBloc()
+        ..add(ResendOtpRequested(
+            phone: type == "update_info" ? oldPhone ?? "0" : phoneNumber ?? "0",
+            type: type,
+            isFirstTime: true)),
       child: OtpView(
         phoneNumber: phoneNumber,
         password: password,
         fullName: fullName,
         type: type,
+        oldPhone: oldPhone,
       ),
     );
   }
@@ -41,6 +48,7 @@ class OtpView extends StatefulWidget {
   final String? password;
   final String? fullName;
   final String type;
+  final String? oldPhone;
 
   const OtpView({
     super.key,
@@ -48,6 +56,7 @@ class OtpView extends StatefulWidget {
     this.password,
     this.fullName,
     this.type = "forget",
+    this.oldPhone,
   });
 
   @override
@@ -156,7 +165,7 @@ class _OtpViewState extends State<OtpView> {
                 const SizedBox(height: 12),
 
                 Text(
-                  'Chúng tôi đã gửi mã xác thực 6 số đến số điện thoại\n${widget.phoneNumber}',
+                  'Chúng tôi đã gửi mã xác thực 6 số đến số điện thoại\n${widget.type == "update_info" ? widget.oldPhone ?? "" : widget.phoneNumber}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
@@ -180,8 +189,7 @@ class _OtpViewState extends State<OtpView> {
                   child: Column(
                     children: [
                       BlocListener<OtpBloc, OtpState>(
-                        listenWhen: (previous, current) =>
-                            previous != current, // chỉ lắng nghe khi thành công
+                        listenWhen: (previous, current) => previous != current,
                         listener: (context, state) {
                           if (state is OtpSuccess) {
                             AppToast.show(context, 'Đăng ký thành công');
@@ -189,16 +197,25 @@ class _OtpViewState extends State<OtpView> {
                           }
                           if (state is OtpForgetSuccess) {
                             context.push(PATH_RESET_PASSWORD, extra: {
-                              "otpCode": otpCode ?? "",
+                              "otpCode": otpCode,
                               "phone": widget.phoneNumber ?? "",
                             });
                           }
-                          if (state is OtpInvalid) {
-                            AppToast.show(context, state.message);
+                          if (state is OtpUpdateInfoSuccess) {
+                            context.go(PATH_PROFILE);
+                          }
+                          // Hiển thị toast khi OTP sai
+                          if (state is OtpLoaded && state.otpInvalid) {
+                            AppToast.show(context, 'Mã OTP không chính xác');
+                          }
+                          if (state is OtpLoaded && state.resendOtpFailed) {
+                            AppToast.show(context, 'Gửi lại mã OTP thất bại');
                           }
                         },
                         child: BlocBuilder<OtpBloc, OtpState>(
                           builder: (context, state) {
+                            final isInvalid =
+                                state is OtpLoaded && state.otpInvalid;
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: List.generate(6, (index) {
@@ -206,16 +223,15 @@ class _OtpViewState extends State<OtpView> {
                                   child: Container(
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 4),
-                                    // width: 44,
                                     height: 48,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color: state is OtpInvalid &&
-                                                otpCode.length == 6
+                                        color: isInvalid
                                             ? Colors.red
                                             : Colors.transparent,
+                                        width: isInvalid ? 1.5 : 1,
                                       ),
                                     ),
                                     child: TextField(
@@ -224,10 +240,8 @@ class _OtpViewState extends State<OtpView> {
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
                                       maxLength: 1,
-                                      enableInteractiveSelection:
-                                          false, // Bỏ chọn đoạn text và di chuyển con trỏ
+                                      enableInteractiveSelection: false,
                                       onTap: () {
-                                        // Luôn trỏ tới ô trống đầu tiên (hoặc ô cuối nếu đã điền hết)
                                         int targetIndex = 5;
                                         for (int i = 0; i < 6; i++) {
                                           if (_controllers[i].text.isEmpty) {
@@ -269,17 +283,23 @@ class _OtpViewState extends State<OtpView> {
                       const SizedBox(height: 8),
                       BlocBuilder<OtpBloc, OtpState>(
                         builder: (context, state) {
-                          final canResend = state is OtpResendAvailable;
+                          final loaded =
+                              state is OtpLoaded ? state : OtpLoaded();
+                          final canResend = loaded.remainingSeconds <= 0;
                           return GestureDetector(
                             onTap: canResend
-                                ? () {
-                                    context
-                                        .read<OtpBloc>()
-                                        .add(ResendOtpRequested());
-                                  }
+                                ? () => context.read<OtpBloc>().add(
+                                    ResendOtpRequested(
+                                        phone: widget.type == "update_info"
+                                            ? widget.oldPhone ?? "0"
+                                            : widget.phoneNumber ?? "0",
+                                        type: widget.type,
+                                        isFirstTime: false))
                                 : null,
                             child: Text(
-                              canResend ? 'Gửi lại mã' : 'Gửi lại mã (30s)',
+                              canResend
+                                  ? 'Gửi lại mã'
+                                  : 'Gửi lại mã (${loaded.remainingSeconds}s)',
                               style: TextStyle(
                                 color: canResend
                                     ? const Color(0xFF1E40AF)
@@ -297,10 +317,9 @@ class _OtpViewState extends State<OtpView> {
                 // Tiếp tục Button
                 BlocBuilder<OtpBloc, OtpState>(
                   builder: (context, state) {
-                    final isLoading = state is OtpVerifying;
-                    final isEnabled = state is OtpFullLength && !isLoading;
-                    print('otpCode.length: ${otpCode.length}');
-                    print('isLoading: $isLoading');
+                    final loaded = state is OtpLoaded ? state : OtpLoaded();
+                    final isVerifying = loaded.otpVerifying;
+                    final isEnabled = loaded.otpFullLength && !isVerifying;
                     return SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -325,7 +344,7 @@ class _OtpViewState extends State<OtpView> {
                           ),
                           disabledBackgroundColor: Colors.grey[300],
                         ),
-                        child: isLoading
+                        child: isVerifying
                             ? const CircularProgressIndicator(
                                 color: Colors.white)
                             : const Text(

@@ -178,17 +178,19 @@ final GoRouter router = GoRouter(
         final data = state.extra as Map<String, String>?;
 
         final phone = data?['phone'];
+        final oldPhone = data?['oldPhone'];
         final password = data?['password'];
         final fullName = data?['fullName'];
         final type = data?['type'] ?? "forget";
         if ((phone == null || password == null) && type == "signup") {
           return const SplashPage();
         }
-        if (phone == null && type == "forget") {
+        if (phone == null && (type == "forget" || type == "update_info")) {
           return const SplashPage();
         }
         return OtpPage(
             phoneNumber: phone,
+            oldPhone: oldPhone,
             password: password,
             fullName: fullName,
             type: type);

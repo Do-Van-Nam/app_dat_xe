@@ -1,3 +1,6 @@
+import 'package:demo_app/main/data/model/user/user.dart';
+import 'package:demo_app/main/data/repository/auth_repository.dart';
+import 'package:demo_app/main/data/repository/user_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -15,17 +18,18 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       LoadProfileEvent event, Emitter<EditProfileState> emit) async {
     emit(EditProfileLoading());
     try {
-      await Future.delayed(const Duration(milliseconds: 600));
-
-      emit(EditProfileLoaded(
-        fullName: "Nguyễn Minh Anh",
-        phone: "090 123 4567",
-        email: "minhanh.nguyen@example.com",
-        birthDate: "05/20/1995",
-        gender: "Nam",
-      ));
+      final (isSuccess, user) = await UserRepository().getUserProfile();
+      if (isSuccess) {
+        print("user: ${user?.toJson()}");
+        print("emit success");
+        emit(EditProfileLoaded(user: user!));
+      } else {
+        print("emit error");
+        emit(EditProfileError("Không thể tải thông tin cá nhân"));
+      }
     } catch (e) {
-      emit(EditProfileError("Không thể tải thông tin"));
+      print("emit error");
+      emit(EditProfileError("Không thể tải thông tin cá nhân"));
     }
   }
 
@@ -33,11 +37,60 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       UpdateProfileEvent event, Emitter<EditProfileState> emit) async {
     emit(EditProfileUpdating());
     try {
-      // Giả lập gọi API cập nhật
-      await Future.delayed(const Duration(seconds: 1));
-      emit(EditProfileSuccess());
+      final (isSuccess, user) = await UserRepository().updateUserProfile(
+        {
+          'full_name': event.fullName,
+          'phone': event.phone,
+          'email': event.email,
+          'birthday': event.birthDate,
+          'gender': event.gender == "Nam"
+              ? 1
+              : event.gender == "Nữ"
+                  ? 2
+                  : 3,
+        },
+      );
+      if (event.currentPassword.isNotEmpty && event.newPassword.isNotEmpty) {
+        final (isSuccessChangePassword, messageChangePassword) =
+            await UserRepository().changePassword(
+          currentPassword: event.currentPassword,
+          newPassword: event.newPassword,
+          newPasswordConfirmation: event.newPassword,
+        );
+        if (isSuccessChangePassword) {
+          print("emit success change password");
+          // emit(EditProfileSuccess());
+        } else {
+          print("emit error change password");
+          emit(UpdateProfileError(
+              messageChangePassword ?? "Cập nhật thất bại. Vui lòng thử lại!"));
+          return;
+        }
+      }
+      if (isSuccess) {
+        if (user == null) {
+          // yeu cau otp goi api lay otp sau do chuyen sang man otp
+          print("emit need otp");
+          final (isSuccess, message) = await AuthRepository()
+              .requestOtp(phone: "${event.oldPhone}", type: 4);
+
+          if (isSuccess) {
+            emit(EditProfileNeedOtp());
+          } else {
+            emit(UpdateProfileError(
+                message.isNotEmpty ? message : 'Cập nhật thất bại'));
+          }
+        } else {
+          print("emit success");
+          emit(EditProfileSuccess());
+        }
+      } else {
+        print("emit error");
+        emit(UpdateProfileError("Cập nhật thất bại. Vui lòng thử lại!"));
+      }
     } catch (e) {
-      emit(EditProfileError("Cập nhật thất bại. Vui lòng thử lại!"));
+      print("emit error catch");
+      emit(UpdateProfileError("Cập nhật thất bại. Vui lòng thử lại!"));
     }
   }
 
@@ -46,12 +99,8 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     if (state is EditProfileLoaded) {
       final current = state as EditProfileLoaded;
       emit(EditProfileLoaded(
-        fullName: current.fullName,
-        phone: current.phone,
-        email: current.email,
-        birthDate: current.birthDate,
-        gender: event.gender,
-        isPhoneVerified: current.isPhoneVerified,
+        // user: current.user.copyWith(gender: event.gender),
+        user: current.user,
       ));
     }
   }

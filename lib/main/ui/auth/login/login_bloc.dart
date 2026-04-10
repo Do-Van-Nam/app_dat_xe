@@ -13,21 +13,32 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _onLoginSubmitted(
       LoginSubmitted event, Emitter<LoginState> emit) async {
+    // KIỂM TRA TRƯỚC khi gọi API
+    if (event.phone.trim().isEmpty) {
+      emit(LoginFailure('Vui lòng nhập số điện thoại'));
+      return;
+    }
+    if (event.password.length < 6) {
+      // Thường mật khẩu tối thiểu 6-8 ký tự
+      emit(LoginFailure('Mật khẩu phải có ít nhất 6 ký tự'));
+      return;
+    }
+
     emit(LoginLoading());
 
     try {
       final (isSuccess, message) = await AuthRepository()
-          .login(phone: "0${event.phone}", password: event.password);
-      if (event.phone.isEmpty || event.password.length < 8) {
-        emit(LoginFailure('Vui lòng kiểm tra lại thông tin'));
-        return;
-      }
+          .login(phone: "0${event.phone.trim()}", password: event.password);
+
       if (isSuccess) {
+        print("emit login success");
         emit(LoginSuccess());
       } else {
+        print("emit login fail");
         emit(LoginFailure(message.isNotEmpty ? message : 'Đăng nhập thất bại'));
       }
     } catch (e) {
+      print("emit login fail: $e");
       emit(LoginFailure('Đăng nhập thất bại: ${e.toString()}'));
     }
   }

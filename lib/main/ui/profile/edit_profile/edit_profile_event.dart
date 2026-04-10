@@ -9,7 +9,10 @@ class UpdateProfileEvent extends EditProfileEvent {
   final String phone;
   final String email;
   final String birthDate;
-  final String gender;
+  String gender;
+  final String currentPassword;
+  final String newPassword;
+  final String oldPhone;
 
   UpdateProfileEvent({
     required this.fullName,
@@ -17,6 +20,9 @@ class UpdateProfileEvent extends EditProfileEvent {
     required this.email,
     required this.birthDate,
     required this.gender,
+    required this.currentPassword,
+    required this.newPassword,
+    required this.oldPhone,
   });
 }
 

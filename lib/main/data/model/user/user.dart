@@ -6,7 +6,7 @@ class User {
   final String? roleLabel;
   final Detail? avatar;
   final Detail? fullName;
-  final Detail? gender;
+  final Gender? gender;
   final String? genderLabel;
   final Detail? address;
   final Detail? citizenId;
@@ -57,7 +57,7 @@ class User {
       avatar: json['avatar'] != null ? Detail.fromJson(json['avatar']) : null,
       fullName:
           json['full_name'] != null ? Detail.fromJson(json['full_name']) : null,
-      gender: json['gender'] != null ? Detail.fromJson(json['gender']) : null,
+      gender: json['gender'] != null ? Gender.fromJson(json['gender']) : null,
       genderLabel: json['gender_label']?.toString(),
       address:
           json['address'] != null ? Detail.fromJson(json['address']) : null,
@@ -110,18 +110,20 @@ class User {
   String get displayAddress => address?.display ?? 'Chưa cập nhật';
   String get displayCitizenId => citizenId?.display ?? 'Chưa cập nhật';
   String? get avatarUrl => avatar?.value;
-  String? get birthday => customerSpecific?.birthday;
+  String? get birthday => customerSpecific?.birthday?.value;
 }
 
 class Detail {
   final String value;
   final String display;
   final String field;
+  final bool isPending;
 
   Detail({
     required this.value,
     required this.display,
     required this.field,
+    required this.isPending,
   });
 
   factory Detail.fromJson(Map<String, dynamic> json) {
@@ -129,6 +131,7 @@ class Detail {
       value: json['value']?.toString() ?? '',
       display: json['display']?.toString() ?? '',
       field: json['field']?.toString() ?? '',
+      isPending: json['is_pending'] == true,
     );
   }
 
@@ -137,6 +140,39 @@ class Detail {
       'value': value,
       'display': display,
       'field': field,
+      'is_pending': isPending,
+    };
+  }
+}
+
+class Gender {
+  final int value;
+  final String display;
+  final String field;
+  final bool isPending;
+
+  Gender({
+    required this.value,
+    required this.display,
+    required this.field,
+    required this.isPending,
+  });
+
+  factory Gender.fromJson(Map<String, dynamic> json) {
+    return Gender(
+      value: json['value'] ?? 1,
+      display: json['display']?.toString() ?? '',
+      field: json['field']?.toString() ?? '',
+      isPending: json['is_pending'] == true,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'value': value,
+      'display': display,
+      'field': field,
+      'is_pending': isPending,
     };
   }
 }
@@ -170,7 +206,7 @@ class CitizenId {
 }
 
 class CustomerSpecific {
-  final String? birthday;
+  final Detail? birthday;
 
   CustomerSpecific({
     this.birthday,
@@ -178,7 +214,8 @@ class CustomerSpecific {
 
   factory CustomerSpecific.fromJson(Map<String, dynamic> json) {
     return CustomerSpecific(
-      birthday: json['birthday']?.toString(),
+      birthday:
+          json['birthday'] != null ? Detail.fromJson(json['birthday']) : null,
     );
   }
 

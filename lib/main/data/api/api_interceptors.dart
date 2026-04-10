@@ -83,7 +83,7 @@ class ApiInterceptors extends InterceptorsWrapper {
     await SharePreferenceUtil.removeKey(ShareKey.KEY_REFRESH_TOKEN);
     await SharePreferenceUtil.removeKey(ShareKey.KEY_PHONE_NUMBER);
     UserInfoModel.instance.clear();
-    router.pushReplacement(PATH_HOME);
+    // router.pushReplacement(PATH_HOME);
   }
 
   // Hàm refresh token

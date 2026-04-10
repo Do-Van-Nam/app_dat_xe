@@ -7,28 +7,23 @@ final class EditProfileInitial extends EditProfileState {}
 final class EditProfileLoading extends EditProfileState {}
 
 final class EditProfileLoaded extends EditProfileState {
-  final String fullName;
-  final String phone;
-  final String email;
-  final String birthDate;
-  final String gender;
-  final bool isPhoneVerified;
+  final User user;
 
-  EditProfileLoaded({
-    required this.fullName,
-    required this.phone,
-    required this.email,
-    required this.birthDate,
-    required this.gender,
-    this.isPhoneVerified = true,
-  });
+  EditProfileLoaded({required this.user});
 }
 
 final class EditProfileUpdating extends EditProfileState {}
+
+final class EditProfileNeedOtp extends EditProfileState {}
 
 final class EditProfileSuccess extends EditProfileState {}
 
 final class EditProfileError extends EditProfileState {
   final String message;
   EditProfileError(this.message);
+}
+
+final class UpdateProfileError extends EditProfileState {
+  final String message;
+  UpdateProfileError(this.message);
 }

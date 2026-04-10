@@ -1,4 +1,5 @@
 ﻿import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
 import 'profile_bloc.dart';
@@ -42,6 +43,7 @@ class ProfilePage extends StatelessWidget {
             }
 
             if (state is ProfileLoaded) {
+              final User user = state.user;
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -74,9 +76,9 @@ class ProfilePage extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                     radius: 40,
-                                    backgroundImage: NetworkImage(
-                                        state.avatarUrl), // hoặc AssetImage
-                                    child: state.avatarUrl.isEmpty
+                                    backgroundImage:
+                                        NetworkImage(user.avatar?.value ?? ""),
+                                    child: user.avatar?.value.isEmpty ?? true
                                         ? const Icon(Icons.person, size: 40)
                                         : null,
                                   ),
@@ -105,13 +107,13 @@ class ProfilePage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    state.name,
+                                    user.fullName?.display ?? "",
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleLarge
                                         ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
-                                  Text(state.phone),
+                                  Text(user.phone),
                                   const SizedBox(height: 8),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
@@ -124,7 +126,7 @@ class ProfilePage extends StatelessWidget {
                                       ),
                                     ),
                                     child: Text(
-                                      state.membership,
+                                      user.roleLabel ?? "",
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -149,7 +151,7 @@ class ProfilePage extends StatelessWidget {
                             child: _buildStatCard(context,
                                 icon: AppImages.icWallet,
                                 title: l10n.regularPoints, // "ĐIỂM THƯỜNG"
-                                value: "${state.points} ${l10n.points}",
+                                value: "${"10000"} ${l10n.points}",
                                 path: PATH_POINTS_WALLET),
                           ),
                           const SizedBox(width: 12),
@@ -158,7 +160,7 @@ class ProfilePage extends StatelessWidget {
                               context,
                               icon: AppImages.icVoucher2,
                               title: l10n.vouchers,
-                              value: "${state.vouchers} Voucher",
+                              value: "${"100"} Voucher",
                               color: Colors.orange,
                               path: PATH_VOUCHER,
                             ),
@@ -189,7 +191,7 @@ class ProfilePage extends StatelessWidget {
                           _buildMenuItem(context, AppImages.icPerson2,
                               l10n.accountInfo, PATH_EDIT_PROFILE),
                           _buildMenuItem(context, AppImages.icBookmark,
-                              l10n.savedAddresses, "() {}"),
+                              l10n.savedAddresses, PATH_EDIT_PROFILE),
                           _buildMenuItem(context, AppImages.icCard,
                               l10n.expenseManagement, PATH_EXPENSE_MANAGEMENT),
                           _buildMenuItem(context, AppImages.icGift,

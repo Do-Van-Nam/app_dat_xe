@@ -22,4 +22,18 @@ class VerifyOtpSubmitted extends OtpEvent {
   });
 }
 
-class ResendOtpRequested extends OtpEvent {}
+class ResendOtpRequested extends OtpEvent {
+  final String phone;
+  final String type;
+  final bool isFirstTime;
+  ResendOtpRequested({
+    required this.phone,
+    required this.type,
+    required this.isFirstTime,
+  });
+}
+
+class _OtpTimerTick extends OtpEvent {
+  final int remainingSeconds;
+  _OtpTimerTick(this.remainingSeconds);
+}

@@ -19,6 +19,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       final (isSuccess, user) = await UserRepository().getUserProfile();
       if (isSuccess) {
+        print("user: ${user?.toJson()}");
         emit(ProfileLoaded(user: user!));
       } else {
         emit(ProfileError("Không thể tải thông tin cá nhân"));
