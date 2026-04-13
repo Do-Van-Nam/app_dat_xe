@@ -10,6 +10,8 @@ final class BookingLoading extends BookingState {}
 final class BookingLoaded extends BookingState {
   final String pickupAddress;
   final String destinationAddress;
+  final String? rideId;
+  final Price? price;
   final List<VehicleOption> vehicles;
   final String selectedVehicleId;
   final String? promoCode;
@@ -22,7 +24,31 @@ final class BookingLoaded extends BookingState {
     this.selectedVehicleId = "car4",
     this.promoCode,
     required this.totalAmount,
+    this.rideId,
+    this.price,
   });
+
+  BookingLoaded copyWith({
+    String? pickupAddress,
+    String? destinationAddress,
+    String? rideId,
+    Price? price,
+    List<VehicleOption>? vehicles,
+    String? selectedVehicleId,
+    String? promoCode,
+    int? totalAmount,
+  }) {
+    return BookingLoaded(
+      pickupAddress: pickupAddress ?? this.pickupAddress,
+      destinationAddress: destinationAddress ?? this.destinationAddress,
+      vehicles: vehicles ?? this.vehicles,
+      selectedVehicleId: selectedVehicleId ?? this.selectedVehicleId,
+      promoCode: promoCode ?? this.promoCode,
+      totalAmount: totalAmount ?? this.totalAmount,
+      rideId: rideId ?? this.rideId,
+      price: price ?? this.price,
+    );
+  }
 }
 
 final class BookingError extends BookingState {

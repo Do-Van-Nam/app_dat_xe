@@ -32,4 +32,20 @@ class ApiEndPoint {
 
   static String DOMAIN_USER_ADDRESS_DEFAULT(dynamic id) =>
       "$DOMAIN_USER_ADDRESSES/$id/default";
+
+  // goong
+  // https://rsapi.goong.io/place/autocomplete
+  static String get DOMAIN_GOONG => "https://rsapi.goong.io";
+  static String get DOMAIN_GOONG_PLACE_AUTOCOMPLETE =>
+      "$DOMAIN_GOONG/place/autocomplete";
+  static String get DOMAIN_GOONG_PLACE_DETAIL => "$DOMAIN_GOONG/place/detail";
+
+// chuyen xe
+  static String get DOMAIN_RIDE_DRAFT => "$DOMAIN_API/ride/draft";
+  static String DOMAIN_RIDE_VEHICLES(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/vehicles";
+  static String DOMAIN_RIDE_PRICE(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/price";
+  static String DOMAIN_RIDE_VOUCHER(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/voucher";
 }

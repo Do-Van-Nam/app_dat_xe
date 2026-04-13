@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:demo_app/main/data/model/goong/location.dart';
 import 'search_destination_bloc.dart';
 
 class SearchDestinationPage extends StatefulWidget {
@@ -19,18 +20,37 @@ class SearchDestinationPage extends StatefulWidget {
 class _SearchDestinationPageState extends State<SearchDestinationPage> {
   final TextEditingController _destinationController = TextEditingController();
   final TextEditingController _pickUpController = TextEditingController();
+  final FocusNode _destinationFocus = FocusNode();
+  final FocusNode _pickUpFocus = FocusNode();
 
   @override
   void dispose() {
     _destinationController.dispose();
     _pickUpController.dispose();
+    _destinationFocus.dispose();
+    _pickUpFocus.dispose();
     super.dispose();
   }
 
-  void _onSelectDestination(PopularDestination dest) {
-    // Ưu tiên hiển thị địa chỉ chi tiết, nếu không có thì lấy tên
-    _destinationController.text =
-        dest.address.isNotEmpty ? dest.address : dest.name;
+  void _onSelectDestination(dynamic dest, BuildContext context) {
+    String address = "";
+    if (dest is PopularDestination) {
+      address = dest.address.isNotEmpty ? dest.address : dest.name;
+    } else if (dest is GoongLocation) {
+      address = dest.description;
+    }
+
+    if (_pickUpFocus.hasFocus) {
+      _pickUpController.text = address;
+      context
+          .read<SearchDestinationBloc>()
+          .add(SavePickupPlaceIdEvent(dest.placeId));
+    } else {
+      _destinationController.text = address;
+      context
+          .read<SearchDestinationBloc>()
+          .add(SaveDestinationPlaceIdEvent(dest.placeId));
+    }
   }
 
   @override
@@ -50,7 +70,33 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
             ),
           ],
         ),
-        body: BlocBuilder<SearchDestinationBloc, SearchDestinationState>(
+        body: BlocConsumer<SearchDestinationBloc, SearchDestinationState>(
+          listenWhen: (previous, current) {
+            if (previous is SearchDestinationLoaded &&
+                current is SearchDestinationLoaded) {
+              return previous.currentLocation != current.currentLocation;
+            }
+            return current is SearchDestinationLoaded ||
+                current is SearchDestinationSubmit;
+          },
+          // Cập nhật pickUpController mỗi khi currentLocation thay đổi
+          listener: (context, state) {
+            if (state is SearchDestinationLoaded &&
+                !state.isLoadingLocation &&
+                state.currentLocation != "Vị trí của bạn") {
+              _pickUpController.text = state.currentLocation;
+            }
+            if (state is SearchDestinationSubmit) {
+              print("push booking");
+              context.push(
+                PATH_BOOKING,
+                extra: {
+                  "pickUp": state.pickupLocation,
+                  "dropOff": state.destinationLocation,
+                },
+              );
+            }
+          },
           builder: (context, state) {
             if (state is SearchDestinationLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -80,6 +126,9 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                             l10n: l10n,
                             destinationController: _destinationController,
                             pickUpController: _pickUpController,
+                            destinationFocus: _destinationFocus,
+                            pickUpFocus: _pickUpFocus,
+                            isLoadingLocation: state.isLoadingLocation,
                           ),
 
                           const SizedBox(height: 24),
@@ -90,28 +139,32 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 32),
-
-                    // 3. Popular Destinations
-                    _PopularDestinationsSection(
-                      destinations: state.popularDestinations,
-                      l10n: l10n,
-                      onSelect: _onSelectDestination,
-                    ),
-
-                    const SizedBox(height: 40),
-
-                    // 4. Recent Searches
-                    _RecentSearchesSection(
-                      searches: state.recentSearches,
-                      l10n: l10n,
-                      onSelect: _onSelectDestination,
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    // 5. Map Section
-                    _MapSection(l10n: l10n),
+                    if (state.isSearching) ...[
+                      const SizedBox(height: 32),
+                      _SearchResultsSection(
+                        results: state.searchResults,
+                        l10n: l10n,
+                        onSelect: (dest) => _onSelectDestination(dest, context),
+                      ),
+                    ] else ...[
+                      const SizedBox(height: 32),
+                      // 3. Popular Destinations
+                      _PopularDestinationsSection(
+                        destinations: state.popularDestinations,
+                        l10n: l10n,
+                        onSelect: (dest) => _onSelectDestination(dest, context),
+                      ),
+                      const SizedBox(height: 40),
+                      // 4. Recent Searches
+                      _RecentSearchesSection(
+                        searches: state.recentSearches,
+                        l10n: l10n,
+                        onSelect: (dest) => _onSelectDestination(dest, context),
+                      ),
+                      const SizedBox(height: 32),
+                      // 5. Map Section
+                      _MapSection(l10n: l10n),
+                    ],
                   ],
                 ),
               );
@@ -131,11 +184,17 @@ class _SearchInputsSection extends StatelessWidget {
   final AppLocalizations l10n;
   final TextEditingController destinationController;
   final TextEditingController pickUpController;
+  final FocusNode destinationFocus;
+  final FocusNode pickUpFocus;
+  final bool isLoadingLocation;
 
   const _SearchInputsSection({
     required this.l10n,
     required this.destinationController,
     required this.pickUpController,
+    required this.destinationFocus,
+    required this.pickUpFocus,
+    this.isLoadingLocation = false,
   });
 
   @override
@@ -179,27 +238,54 @@ class _SearchInputsSection extends StatelessWidget {
                 // Vị trí hiện tại
                 TextField(
                   controller: pickUpController,
+                  focusNode: pickUpFocus,
+                  onChanged: (value) {
+                    context
+                        .read<SearchDestinationBloc>()
+                        .add(SearchQueryChangedEvent(value));
+                  },
                   decoration: InputDecoration(
                     hintText: l10n.yourLocation,
-                    // prefixIcon: const Icon(Icons.location_on, color: Colors.blue),
-                    suffixIcon:
-                        const Icon(Icons.my_location, color: Colors.blue),
+                    suffixIcon: GestureDetector(
+                      onTap: isLoadingLocation
+                          ? null
+                          : () => context
+                              .read<SearchDestinationBloc>()
+                              .add(FetchCurrentLocationEvent()),
+                      child: Tooltip(
+                        message: "Lấy vị trí hiện tại",
+                        child: isLoadingLocation
+                            ? const Padding(
+                                padding: EdgeInsets.all(12),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              )
+                            : const Icon(
+                                Icons.my_location,
+                                color: Colors.blue,
+                              ),
+                      ),
+                    ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12)),
                     filled: true,
                     fillColor: Colors.grey[100],
                   ),
-                  // enabled: false,
                 ),
                 const SizedBox(height: 12),
 
                 // Điểm đến
                 TextField(
                   controller: destinationController,
+                  focusNode: destinationFocus,
                   decoration: InputDecoration(
                     hintText: l10n.whereToGo,
-                    // prefixIcon:
-                    //    const Icon(Icons.location_on, color: Colors.orange),
                     suffixIcon: const Icon(Icons.map, color: Colors.orange),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12)),
@@ -211,13 +297,25 @@ class _SearchInputsSection extends StatelessWidget {
                         .read<SearchDestinationBloc>()
                         .add(SearchQueryChangedEvent(value));
                   },
-                  onSubmitted: (value) => context.push(
-                    PATH_BOOKING,
-                    extra: {
-                      'pickUp': pickUpController.text,
-                      'dropOff': value,
-                    },
-                  ),
+                  onSubmitted: (value) {
+                    final state = context.read<SearchDestinationBloc>().state;
+                    if (state is SearchDestinationLoaded) {
+                      context.read<SearchDestinationBloc>().add(
+                          SubmitSearchEvent(
+                              pickupPlaceId: state.pickupPlaceId ?? "",
+                              destinationPlaceId:
+                                  state.destinationPlaceId ?? "",
+                              onSuccess: (pickupLocation, destinationLocation) {
+                                context.push(
+                                  PATH_BOOKING,
+                                  extra: {
+                                    "pickUp": pickupLocation,
+                                    "dropOff": destinationLocation,
+                                  },
+                                );
+                              }));
+                    }
+                  },
                 ),
               ],
             ),
@@ -436,6 +534,67 @@ class _MapSection extends StatelessWidget {
             style: AppStyles.inter14Medium.copyWith(color: Colors.white),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _SearchResultsSection extends StatelessWidget {
+  final List<GoongLocation> results;
+  final AppLocalizations l10n;
+  final Function(dynamic) onSelect;
+
+  const _SearchResultsSection({
+    required this.results,
+    required this.l10n,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (results.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32),
+        child: Center(
+          child: Text(
+            "Không tìm thấy kết quả",
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Kết quả tìm kiếm",
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        ...results.map((loc) {
+          return ListTile(
+            onTap: () => onSelect(loc),
+            contentPadding: EdgeInsets.zero,
+            leading: const CircleAvatar(
+              backgroundColor: AppColors.color_E8E8EA,
+              child: Icon(Icons.location_on, color: Colors.grey),
+            ),
+            title: Text(
+              loc.structuredFormatting.mainText.isNotEmpty
+                  ? loc.structuredFormatting.mainText
+                  : loc.description,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+            subtitle: loc.structuredFormatting.secondaryText.isNotEmpty
+                ? Text(loc.structuredFormatting.secondaryText,
+                    maxLines: 2, overflow: TextOverflow.ellipsis)
+                : null,
+          );
+        }),
       ],
     );
   }

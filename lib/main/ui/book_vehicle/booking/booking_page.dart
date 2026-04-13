@@ -1,5 +1,6 @@
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/main/data/model/goong/place_detail.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:demo_app/res/app_fonts.dart';
 import 'package:demo_app/router.dart';
@@ -10,16 +11,27 @@ import 'package:go_router/go_router.dart';
 import 'booking_bloc.dart';
 
 class BookingPage extends StatelessWidget {
-  final String pickUp;
-  final String dropOff;
+  final GoongPlaceDetail pickUp;
+  final GoongPlaceDetail dropOff;
   const BookingPage({super.key, required this.pickUp, required this.dropOff});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final request = CreateRideRequest(
+      pickupAddress: pickUp.formattedAddress ?? "",
+      pickupLat: pickUp.geometry?.location?.lat.toString() ?? "",
+      pickupLng: pickUp.geometry?.location?.lng.toString() ?? "",
+      destinationAddress: dropOff.formattedAddress ?? "",
+      destinationLat: dropOff.geometry?.location?.lat.toString() ?? "",
+      destinationLng: dropOff.geometry?.location?.lng.toString() ?? "",
+      vehicleType: 1,
+    );
 
     return BlocProvider(
-      create: (_) => BookingBloc()..add(LoadBookingOptionsEvent()),
+      create: (_) => BookingBloc()
+        // ..add(LoadBookingOptionsEvent())
+        ..add(LoadInitialBookingData(request)),
       child: Scaffold(
         body: BlocBuilder<BookingBloc, BookingState>(
           builder: (context, state) {
@@ -32,9 +44,7 @@ class BookingPage extends StatelessWidget {
             }
 
             if (state is BookingLoaded) {
-              final selectedVehicle = state.vehicles.firstWhere(
-                (v) => v.id == state.selectedVehicleId,
-              );
+              // final selectedVehicle = "1";
 
               return Stack(
                 children: [
@@ -70,8 +80,8 @@ class BookingPage extends StatelessWidget {
                               // Addresses
                               Expanded(
                                 child: _AddressSection(
-                                  pickup: pickUp,
-                                  destination: dropOff,
+                                  pickup: pickUp.formattedAddress ?? "",
+                                  destination: dropOff.formattedAddress ?? "",
                                   l10n: l10n,
                                 ),
                               ),
@@ -143,7 +153,7 @@ class BookingPage extends StatelessWidget {
                                                   onTap: () => context
                                                       .read<BookingBloc>()
                                                       .add(SelectVehicleEvent(
-                                                          vehicle.id)),
+                                                          vehicle.id, request)),
                                                 )),
 
                                         const SizedBox(height: 24),
@@ -243,12 +253,13 @@ class _AddressSection extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(pickup),
+                  Text(pickup, maxLines: 1, overflow: TextOverflow.ellipsis),
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
                     child: Divider(),
                   ),
-                  Text(destination, style: AppStyles.inter14Medium),
+                  Text(destination,
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
                 ],
               ),
             ),
@@ -339,41 +350,44 @@ class _VehicleOptionCard extends StatelessWidget {
                   Row(
                     children: [
                       if (vehicle.tag.isNotEmpty)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: vehicle.tagColor?.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            vehicle.tag,
-                            style: TextStyle(
-                              color: vehicle.tagColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            // width: 60,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: vehicle.tagColor?.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              vehicle.tag,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: vehicle.tagColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
                       const SizedBox(width: 12),
                       SvgPicture.asset(AppImages.icClock, height: 16),
                       const SizedBox(width: 4),
-                      Text(vehicle.time,
-                          style: const TextStyle(color: Colors.grey)),
+                      Flexible(
+                        flex: 1,
+                        child: Text(vehicle.time,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: Colors.grey)),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  "${vehicle.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')}đ",
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
+            Text(
+              "${vehicle.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')}đ",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
         ),

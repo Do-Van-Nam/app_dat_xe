@@ -29,7 +29,7 @@ class ApiInterceptors extends InterceptorsWrapper {
     );
     if (method == 'GET') {
       AppLogger().logInfo(
-        "✈️ REQUEST[$method] => PATH: $uri \n Token: ${options.headers}",
+        "✈️ REQUEST[$method] => PATH: $uri \n Token: ${options.headers}\n DATA: ${jsonEncode(data)}",
       );
     } else {
       try {

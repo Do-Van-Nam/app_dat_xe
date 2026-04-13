@@ -1,3 +1,4 @@
+import 'package:demo_app/main/data/model/goong/place_detail.dart';
 import 'package:demo_app/main/ui/activity/activity_page.dart';
 import 'package:demo_app/main/ui/activity/trip_detail/trip_detail_page.dart';
 import 'package:demo_app/main/ui/auth/driver_register/service_register/service_register_page.dart';
@@ -38,6 +39,7 @@ import 'package:go_router/go_router.dart';
 import 'main/ui/auth/driver_register/waiting_approval/waiting_approval_page.dart';
 import 'main/ui/auth/login/login_page.dart';
 import 'main/ui/driver/main/driver_page.dart';
+import 'main/ui/driver/map_background.dart';
 import 'main/ui/driver/payment_success/payment_success_page.dart';
 import 'main/ui/driver/rating/rate_trip_page.dart';
 import 'main/ui/driver/top_up/topup_page.dart';
@@ -100,6 +102,7 @@ const String PATH_ORDER_TRACKING = "/order-tracking";
 const String PATH_DRIVER_MAIN = "/driver-main";
 const String PATH_RATE_TRIP = "/rate-trip";
 const String PATH_MAP_SAMPLE = "/map-sample";
+const String PATH_MAP_BG = "/map-background";
 const String PATH_DRIVER_WALLET = "/driver-wallet";
 const String PATH_DRIVER_MEMBERSHIP = "/driver-membership";
 const String PATH_DRIVER_TOPUP = "/driver-topup";
@@ -248,10 +251,23 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_BOOKING,
       builder: (context, state) {
-        final data = state.extra as Map<String, String>;
+        // Lấy extra một cách an toàn
+        final extra = state.extra as Map<String, dynamic>?;
 
-        final pickUp = data['pickUp']!;
-        final dropOff = data['dropOff']!;
+        if (extra == null) {
+          return const Scaffold(
+            body: Center(child: Text('Không có dữ liệu đặt chuyến')),
+          );
+        }
+
+        final pickUp = extra['pickUp'] as GoongPlaceDetail?;
+        final dropOff = extra['dropOff'] as GoongPlaceDetail?;
+
+        if (pickUp == null || dropOff == null) {
+          return const Scaffold(
+            body: Center(child: Text('Thiếu thông tin điểm đón hoặc điểm đến')),
+          );
+        }
 
         return BookingPage(pickUp: pickUp, dropOff: dropOff);
       },
@@ -342,6 +358,10 @@ final GoRouter router = GoRouter(
       builder: (context, state) => MyHomePage(
         title: "test",
       ),
+    ),
+    GoRoute(
+      path: PATH_MAP_BG,
+      builder: (context, state) => MapBackground(),
     ),
     GoRoute(
       path: PATH_DRIVER_MEMBERSHIP,

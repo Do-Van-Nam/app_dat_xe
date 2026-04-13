@@ -374,6 +374,9 @@ class HomeView extends StatelessWidget {
                     onPressed: () => context.push(PATH_MAP_SAMPLE),
                     child: Text("Map Sample")),
                 OutlinedButton(
+                    onPressed: () => context.push(PATH_MAP_BG),
+                    child: Text("Map background")),
+                OutlinedButton(
                     onPressed: () => context.push(PATH_DRIVER_UPLOAD_RECORDS),
                     child: Text("Upload Records")),
                 OutlinedButton(

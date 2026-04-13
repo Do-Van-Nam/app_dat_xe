@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:geolocator/geolocator.dart';
 import 'dart:ui';
 import 'package:demo_app/app.dart';
 import 'package:demo_app/config/app_config.dart';
@@ -59,9 +60,38 @@ void main() async {
   // Lưu device info (ID, name, token) vào SharedPreferences
   await DeviceUtils.saveDeviceInfoToPrefs();
 
+  // ====================== LOCATION PERMISSION ======================
+  await _requestLocationPermission();
+
   // Chạy app
   runApp(
       App(config: devConfig)); // ← Dùng appConfig thay vì hard-code devConfig
+}
+
+/// Yêu cầu quyền vị trí khi mở app.
+/// Nếu đã bị từ chối vĩnh viễn thì bỏ qua (không force mở Settings).
+Future<void> _requestLocationPermission() async {
+  try {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      print('⚠️ Location services are disabled.');
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      print('⚠️ Location permission permanently denied.');
+      return;
+    }
+
+    print('✅ Location permission: $permission');
+  } catch (e) {
+    print('❌ _requestLocationPermission error: $e');
+  }
 }
 
 @pragma('vm:entry-point')
