@@ -143,7 +143,7 @@ class _SignupViewState extends State<SignupView> {
                           child: Column(
                             children: [
                               // Họ và tên
-                              _buildTextField(
+                              buildTextField(
                                 controller: fullNameController,
                                 label: 'HỌ VÀ TÊN',
                                 hint: 'Nhập họ và tên đầy đủ',
@@ -182,7 +182,7 @@ class _SignupViewState extends State<SignupView> {
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
-                                    child: _buildTextField(
+                                    child: buildTextField(
                                       controller: phoneController,
                                       label: '',
                                       hint: '9xx xxx xxx',
@@ -196,7 +196,7 @@ class _SignupViewState extends State<SignupView> {
                               const SizedBox(height: 20),
 
                               // Email
-                              _buildTextField(
+                              buildTextField(
                                 controller: emailController,
                                 label: 'EMAIL',
                                 hint: 'example@gmail.com',
@@ -359,44 +359,6 @@ class _SignupViewState extends State<SignupView> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        label.isNotEmpty
-            ? Text(
-                label,
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600, color: Colors.black87),
-              )
-            : const SizedBox(),
-        SizedBox(height: label.isNotEmpty ? 8 : 0),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.color_E2E2E5,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: TextField(
-            controller: controller,
-            keyboardType: keyboardType,
-            decoration: InputDecoration(
-              prefixIcon: Icon(icon, color: Colors.grey),
-              hintText: hint,
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-          ),
-        ),
-      ],
     );
   }
 

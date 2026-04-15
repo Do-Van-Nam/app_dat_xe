@@ -203,8 +203,16 @@ class _DocumentListSection extends StatelessWidget {
     return BlocBuilder<UploadRecordsBloc, UploadRecordsState>(
       buildWhen: (p, c) => p.documents != c.documents,
       builder: (context, state) {
-        return Column(
-          children: state.documents.asMap().entries.map((entry) {
+        return Column(children: [
+          buildTextField(
+            controller: TextEditingController(),
+            label: 'So CCCD',
+            hint: 'Nhập số CCCD',
+            icon: Icons.person_outline,
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 12),
+          ...state.documents.asMap().entries.map((entry) {
             final doc = entry.value;
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -221,7 +229,7 @@ class _DocumentListSection extends StatelessWidget {
               ),
             );
           }).toList(),
-        );
+        ]);
       },
     );
   }

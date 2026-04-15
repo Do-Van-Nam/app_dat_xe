@@ -5,11 +5,11 @@ import 'bloc/driver_bloc.dart';
 import 'driver_models.dart';
 import 'driver_widgets.dart';
 // import 'sections/arrived_dest_section.dart';
-import 'sections/going_to_pickup_section.dart';
-import 'sections/new_ride_section.dart';
-import 'sections/offline_section.dart';
-import 'sections/online_section.dart';
-import 'sections/start_trip_section.dart';
+import 'sections/ride/going_to_pickup_section.dart';
+import 'sections/ride/new_ride_section.dart';
+import 'sections/ride/offline_section.dart';
+import 'sections/ride/online_section.dart';
+import 'sections/ride/start_trip_section.dart';
 
 class DriverPage extends StatelessWidget {
   const DriverPage({super.key});

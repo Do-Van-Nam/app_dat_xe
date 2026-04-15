@@ -65,7 +65,7 @@ class ApiUtil {
 
   Future<BaseResponse> post({
     required String url,
-    Map<String, dynamic>? body,
+    dynamic body,
     Map<String, dynamic> params = const {},
     Map<String, dynamic>? headers = const {
       'Content-Type': 'application/json',

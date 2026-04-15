@@ -73,4 +73,11 @@ class ApiEndPoint {
       "$DOMAIN_API/finance/rewards/history";
   static String DOMAIN_REWARDS_HISTORY_DETAIL(dynamic id) =>
       "$DOMAIN_API/finance/rewards/history/$id";
+
+  // Driver Registration
+  static String get DOMAIN_DRIVER_REGISTER => "$DOMAIN_API/driver/register";
+  static String get DOMAIN_DRIVER_REGISTER_SEND_OTP =>
+      "$DOMAIN_DRIVER_REGISTER/send-otp";
+  static String get DOMAIN_DRIVER_REGISTER_SUBMIT =>
+      "$DOMAIN_DRIVER_REGISTER/submit";
 }
