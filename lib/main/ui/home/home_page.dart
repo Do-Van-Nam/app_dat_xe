@@ -1,12 +1,6 @@
-﻿import 'package:demo_app/generated/app_localizations.dart';
+﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:demo_app/main/data/model/homepage/homepage.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
-import 'package:demo_app/res/app_colors.dart';
-import 'package:demo_app/res/app_fonts.dart';
-import 'package:demo_app/router.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'home_bloc.dart';
 import 'package:demo_app/core/app_export.dart';
 
@@ -55,7 +49,13 @@ class HomeView extends StatelessWidget {
       }
 
       final user = state.user;
-
+      final homeData = state.homeData;
+      final List<ServiceItem> services = homeData?.services ?? <ServiceItem>[];
+      final List<BannerItem> banners = homeData?.banners ?? <BannerItem>[];
+      final List<NewsPromotion> newsPromotions =
+          homeData?.newsPromotions ?? <NewsPromotion>[];
+      final RestaurantSuggestions restaurantSuggestions =
+          homeData?.restaurantSuggestions ?? RestaurantSuggestions();
       return Scaffold(
         backgroundColor: Colors.grey[50],
         body: SafeArea(
@@ -254,20 +254,18 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _buildNewsItem(
-                  l10n.newTag,
-                  'Ra mắt dịch vụ "Đi tỉnh" giá siêu tiết kiệm cho mùa lễ',
-                  'Khám phá các điểm du lịch mới với ưu đãi...',
-                  'https://picsum.photos/id/201/300/180',
-                ),
-                const SizedBox(height: 12),
 
-                _buildNewsItem(
-                  l10n.promotionTag,
-                  'Mời bạn mới, nhận ngay voucher 50k đặt đồ ăn',
-                  'Cùng bạn bè thưởng thức ẩm thực với giá 0đ...',
-                  'https://picsum.photos/id/292/300/180',
-                ),
+                ...newsPromotions.map((e) => Column(
+                      children: [
+                        _buildNewsItem(
+                          e.tag ?? '',
+                          e.title ?? '',
+                          e.description ?? '',
+                          "https://picsum.photos/id/1080/400/200",
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                    )),
 
                 const SizedBox(height: 28),
 
@@ -464,30 +462,48 @@ class HomeView extends StatelessWidget {
       width: 280,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        image:
-            DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.transparent, Colors.black54],
-          ),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
           children: [
-            Text(title,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16)),
-            Text(subtitle,
-                style: const TextStyle(color: Colors.white70, fontSize: 13)),
+            if (imageUrl.isNotEmpty)
+              CachedNetworkImage(
+                imageUrl: imageUrl,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    Container(color: Colors.grey[300]),
+                errorWidget: (context, url, error) =>
+                    Container(color: Colors.grey[300]),
+              )
+            else
+              Container(color: Colors.grey[300]),
+            Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black54],
+                ),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(title,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16)),
+                  Text(subtitle,
+                      style:
+                          const TextStyle(color: Colors.white70, fontSize: 13)),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -508,8 +524,22 @@ class HomeView extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(imageUrl,
-                width: 90, height: 90, fit: BoxFit.cover),
+            child: imageUrl.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) {
+                      return Image.asset(AppImages.icBag,
+                          width: 90, height: 90);
+                    },
+                    placeholder: (context, url) {
+                      return Image.asset(AppImages.icBag,
+                          width: 90, height: 90);
+                    },
+                  )
+                : Image.asset(AppImages.icBag, width: 90, height: 90),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -556,8 +586,18 @@ class HomeView extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(imageUrl,
-                width: 80, height: 80, fit: BoxFit.cover),
+            child: imageUrl.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        Container(color: Colors.grey[200]),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.restaurant, color: Colors.grey),
+                  )
+                : Container(width: 80, height: 80, color: Colors.grey[200]),
           ),
           const SizedBox(width: 12),
           Expanded(

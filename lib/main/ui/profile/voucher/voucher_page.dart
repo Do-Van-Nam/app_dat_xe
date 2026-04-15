@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/main/data/model/finance/voucher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -232,7 +233,7 @@ class _VoucherTabs extends StatelessWidget {
 }
 
 class _ExpiringVoucherCard extends StatelessWidget {
-  final VoucherItem voucher;
+  final Voucher voucher;
   final AppLocalizations l10n;
 
   const _ExpiringVoucherCard({required this.voucher, required this.l10n});
@@ -245,7 +246,8 @@ class _ExpiringVoucherCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border(left: BorderSide(color: Color(0xFF805600), width: 4)),
+        border:
+            const Border(left: BorderSide(color: Color(0xFF805600), width: 4)),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0C000000),
@@ -261,33 +263,18 @@ class _ExpiringVoucherCard extends StatelessWidget {
             Container(
               width: 100,
               height: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.color_FFDDB0,
                 borderRadius:
-                    const BorderRadius.horizontal(left: Radius.circular(12)),
+                    BorderRadius.horizontal(left: Radius.circular(12)),
               ),
-              child: voucher.imageUrl != null
-                  ? Transform.rotate(
-                      angle: (Random().nextDouble() - 0.5) * 0.2,
-                      child: Center(
-                        child: SizedBox(
-                          width: 76,
-                          height: 76,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: CachedNetworkImage(
-                              imageUrl: voucher.imageUrl!,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator()),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  : Icon(voucher.icon, size: 50, color: Colors.amber),
+              child: Center(
+                child: Icon(
+                  _getVoucherIcon(voucher.serviceType),
+                  size: 50,
+                  color: Colors.amber,
+                ),
+              ),
             ),
             Expanded(
               child: Padding(
@@ -295,28 +282,30 @@ class _ExpiringVoucherCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(voucher.subtitle,
+                    Text(voucher.serviceType ?? "Voucher",
                         style:
                             const TextStyle(fontSize: 13, color: Colors.grey)),
                     const SizedBox(height: 4),
-                    Text(voucher.title,
+                    Text(voucher.description ?? voucher.code ?? "",
                         style: const TextStyle(fontWeight: FontWeight.bold)),
-                    if (voucher.expiry != null) ...[
+                    if (voucher.validUntil != null) ...[
                       const SizedBox(height: 8),
-                      Text(voucher.expiry!,
-                          style: const TextStyle(fontSize: 13)),
+                      Text("HSD: ${voucher.validUntil}",
+                          style:
+                              const TextStyle(fontSize: 13, color: Colors.red)),
                     ],
+                    const SizedBox(height: 12),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange),
-                          child: Text(l10n.useNow,
-                              style: const TextStyle(color: Colors.white)),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
                         ),
+                        child: Text(l10n.useNow,
+                            style: const TextStyle(color: Colors.white)),
                       ),
                     ),
                   ],
@@ -331,7 +320,7 @@ class _ExpiringVoucherCard extends StatelessWidget {
 }
 
 class _MyVoucherCard extends StatelessWidget {
-  final VoucherItem voucher;
+  final Voucher voucher;
   final AppLocalizations l10n;
 
   const _MyVoucherCard({required this.voucher, required this.l10n});
@@ -339,7 +328,7 @@ class _MyVoucherCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         margin: const EdgeInsets.only(bottom: 12),
         clipBehavior: Clip.antiAlias,
         decoration: ShapeDecoration(
@@ -347,7 +336,7 @@ class _MyVoucherCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          shadows: [
+          shadows: const [
             BoxShadow(
               color: Color(0x0A1A1C1E),
               blurRadius: 16,
@@ -365,7 +354,8 @@ class _MyVoucherCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 color: AppColors.color_D9E2FF,
-                child: Icon(voucher.icon, color: AppColors.colorMain),
+                child: Icon(_getVoucherIcon(voucher.serviceType),
+                    color: AppColors.colorMain),
               ),
             ),
             const SizedBox(width: 12),
@@ -373,15 +363,21 @@ class _MyVoucherCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(voucher.title,
+                  Text(voucher.description ?? voucher.code ?? "",
                       style: const TextStyle(fontWeight: FontWeight.w600)),
-                  Text(voucher.expiry ?? "",
-                      style: const TextStyle(fontSize: 13)),
+                  if (voucher.validUntil != null)
+                    Text("HSD: ${voucher.validUntil}",
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey)),
                   const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
                       onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
                       child: Text(l10n.useNow),
                     ),
                   ),
@@ -390,6 +386,22 @@ class _MyVoucherCard extends StatelessWidget {
             ),
           ],
         ));
+  }
+}
+
+IconData _getVoucherIcon(String? serviceType) {
+  switch (serviceType?.toLowerCase()) {
+    case 'ride':
+    case 'di chuyển':
+      return Icons.local_taxi;
+    case 'food':
+    case 'ẩm thực':
+      return Icons.restaurant;
+    case 'delivery':
+    case 'vận chuyển':
+      return Icons.local_shipping;
+    default:
+      return Icons.confirmation_number;
   }
 }
 

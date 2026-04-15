@@ -1,6 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
 import 'package:demo_app/main/data/model/goong/place_detail.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:demo_app/res/app_fonts.dart';
 import 'package:demo_app/router.dart';
@@ -167,9 +168,21 @@ class BookingPage extends StatelessWidget {
                                 SizedBox(height: 8),
                                 commonButton(
                                     text: l10n.confirmBooking,
-                                    onPressed: () => context.push(
-                                        PATH_FINDING_DRIVER,
-                                        extra: PATH_TRACKING)),
+                                    onPressed: () {
+                                      context.read<BookingBloc>().add(
+                                          ConfirmRideEvent(
+                                              int.parse(state.rideId ?? "0"),
+                                              state.totalAmount,
+                                              (String path, Ride ride) =>
+                                                  context.push(
+                                                      PATH_FINDING_DRIVER,
+                                                      extra: {
+                                                        'path': path,
+                                                        'ride': ride
+                                                      })));
+                                      // context.push(PATH_FINDING_DRIVER,
+                                      //     extra: PATH_TRACKING);
+                                    }),
                                 // _ConfirmButton(
                                 //   totalAmount: state.totalAmount,
                                 //   l10n: l10n,

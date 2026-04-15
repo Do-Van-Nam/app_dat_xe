@@ -1,0 +1,10 @@
+# Claude Code settings
+settings.local.json
+
+# Memory files (contains project-specific information)
+memory/*.md
+
+# Auto-generated files
+*.log
+tmp/
+temp/

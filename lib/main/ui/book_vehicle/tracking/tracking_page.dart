@@ -4,6 +4,7 @@ import 'package:demo_app/res/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../driver/map_background.dart';
 import 'tracking_bloc.dart';
 
 class TrackingPage extends StatelessWidget {
@@ -42,17 +43,15 @@ class TrackingPage extends StatelessWidget {
                 children: [
                   // Map Background
                   Positioned.fill(
-                    child: Image.network(
-                      "https://picsum.photos/id/1015/800/1200",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-
-                  // Route Polyline Overlay (giả lập)
-                  Positioned.fill(
-                    child: CustomPaint(
-                      painter: RoutePainter(),
-                    ),
+                    child: BlocSelector<TrackingBloc, TrackingState, bool>(
+                        selector: (state) {
+                      return true;
+                    }, builder: (context, state) {
+                      return MapBackground(
+                        followUserLocation: true,
+                        autoFetchRoute: true,
+                      );
+                    }),
                   ),
 
                   // Driver Arriving Info

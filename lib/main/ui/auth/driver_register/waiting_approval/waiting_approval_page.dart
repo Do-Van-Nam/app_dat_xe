@@ -255,7 +255,7 @@ class _MainButtonSection extends StatelessWidget {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: () => context.push(PATH_HOME),
+        onPressed: () => context.go(PATH_HOME),
         // context
         //     .read<WaitingApprovalBloc>()
         //     .add(const WaitingApprovalGoHomeTapped()),

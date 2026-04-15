@@ -1,3 +1,4 @@
+import 'package:demo_app/main/data/repository/finance_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
@@ -6,6 +7,8 @@ part 'points_wallet_event.dart';
 part 'points_wallet_state.dart';
 
 class PointsWalletBloc extends Bloc<PointsWalletEvent, PointsWalletState> {
+  final FinanceRepository _financeRepository = FinanceRepository();
+
   PointsWalletBloc() : super(PointsWalletInitial()) {
     on<LoadPointsWalletEvent>(_onLoadPointsWallet);
   }
@@ -62,13 +65,23 @@ class PointsWalletBloc extends Bloc<PointsWalletEvent, PointsWalletState> {
           isPositive: true,
         ),
       ];
-
-      emit(PointsWalletLoaded(
-        totalPoints: 1250,
-        membershipTier: "Vàng (Gold)",
-        redeemItems: redeemList,
-        recentActivities: activityList,
-      ));
+      final (success, pointWallet) = await _financeRepository.getPointWallet();
+      if (success && pointWallet != null) {
+        emit(PointsWalletLoaded(
+          totalPoints: pointWallet.currentBalance,
+          membershipTier: "Vàng (Gold)",
+          redeemItems: redeemList,
+          recentActivities: activityList,
+        ));
+      } else {
+        emit(PointsWalletError("Không thể tải ví điểm thưởng"));
+      }
+      // emit(PointsWalletLoaded(
+      //   totalPoints: 1250,
+      //   membershipTier: "Vàng (Gold)",
+      //   redeemItems: redeemList,
+      //   recentActivities: activityList,
+      // ));
     } catch (e) {
       emit(PointsWalletError("Không thể tải ví điểm thưởng"));
     }

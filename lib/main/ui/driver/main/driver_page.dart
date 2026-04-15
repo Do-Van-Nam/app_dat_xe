@@ -1,5 +1,6 @@
 import 'package:demo_app/core/app_export.dart';
 
+import '../map_background.dart';
 import 'bloc/driver_bloc.dart';
 import 'driver_models.dart';
 import 'driver_widgets.dart';
@@ -29,39 +30,63 @@ class _DriverView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocConsumer<DriverBloc, DriverState>(
-      listenWhen: (prev, curr) => prev.screen != curr.screen,
-      listener: (context, state) {
-        if (state.screen == DriverScreen.online && state.totalTrips > 0) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Hoàn thành chuyến! +29.000đ 🎉'),
-              backgroundColor: AppColors.color27AE60,
-              duration: const Duration(seconds: 2),
+    return Scaffold(
+      backgroundColor: AppColors.colorF0F2F5,
+      // Sử dụng BlocBuilder riêng cho AppBar để tối ưu
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: BlocBuilder<DriverBloc, DriverState>(
+          builder: (context, state) => _buildAppBar(context, state, l10n),
+        ),
+      ),
+      body: SafeArea(
+        top: false,
+        child: Stack(
+          children: [
+            // BlocSelector chỉ rebuild Map khi các thuộc tính liên quan thay đổi
+            Positioned.fill(
+              child: BlocSelector<DriverBloc, DriverState, DriverScreen>(
+                selector: (state) => state.screen,
+                builder: (context, screen) {
+                  return MapBackground(
+                    followUserLocation: true,
+                    autoFetchRoute: true,
+                  );
+                },
+              ),
             ),
-          );
-        } else if (state.screen == DriverScreen.arrivedDest) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Đã đến điểm trả!'),
-              backgroundColor: AppColors.color27AE60,
-              duration: const Duration(seconds: 2),
+
+            // BlocConsumer (con summer) bao lấy phần thân để xử lý Logic (Listen) và UI (Build)
+            BlocConsumer<DriverBloc, DriverState>(
+              listenWhen: (prev, curr) => prev.screen != curr.screen,
+              listener: (context, state) {
+                if (state.screen == DriverScreen.online &&
+                    state.totalTrips > 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Hoàn thành chuyến! +29.000đ 🎉'),
+                      backgroundColor: AppColors.color27AE60,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                } else if (state.screen == DriverScreen.arrivedDest) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Đã đến điểm trả!'),
+                      backgroundColor: AppColors.color27AE60,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                  context.push(PATH_RATE_TRIP);
+                }
+              },
+              builder: (context, state) {
+                return _buildBody(state);
+              },
             ),
-          );
-          context.push(PATH_RATE_TRIP);
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: AppColors.colorF0F2F5,
-          appBar: _buildAppBar(context, state, l10n),
-          body: SafeArea(
-            top: false,
-            child: _buildBody(state),
-          ),
-          // bottomNavigationBar: _buildBottomNav(context, state, l10n),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 
@@ -156,22 +181,27 @@ class _DriverView extends StatelessWidget {
 
   // ── Body ────────────────────────────────────────────────────────────────
   Widget _buildBody(DriverState state) {
-    switch (state.screen) {
-      case DriverScreen.offline:
-        return const OfflineSection();
-      case DriverScreen.online:
-        return const OnlineSection();
-      case DriverScreen.newRide:
-        return const NewRideSection();
-      case DriverScreen.goingToPickup:
-        return const GoingToPickupSection();
-      case DriverScreen.startTrip:
-        return const StartTripSection();
-      case DriverScreen.arrivedPickup:
-        return const StartTripSection();
-      case DriverScreen.arrivedDest:
-        return const SizedBox.shrink();
-      // return const ArrivedDestSection();
-    }
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 300),
+      child: () {
+        switch (state.screen) {
+          case DriverScreen.offline:
+            return const OfflineSection();
+          case DriverScreen.online:
+            return const OnlineSection();
+          case DriverScreen.newRide:
+            return const NewRideSection();
+          case DriverScreen.goingToPickup:
+            return const GoingToPickupSection();
+          case DriverScreen.startTrip:
+            return const StartTripSection();
+          case DriverScreen.arrivedPickup:
+            return const StartTripSection();
+          case DriverScreen.arrivedDest:
+            return const OnlineSection();
+          // return const ArrivedDestSection();
+        }
+      }(),
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
 
-import '../bloc/driver_bloc.dart';
-import '../driver_widgets.dart';
+import '../../bloc/driver_bloc.dart';
+import '../../driver_widgets.dart';
 
 class GoingToPickupSection extends StatelessWidget {
   const GoingToPickupSection({super.key});
@@ -17,7 +17,7 @@ class GoingToPickupSection extends StatelessWidget {
         Expanded(
           child: Stack(
             children: [
-              const Positioned.fill(child: MapBackground(dark: true)),
+              // const Positioned.fill(child: MapBackground(dark: true)),
 
               // Distance / ETA card
               Positioned(
@@ -100,51 +100,6 @@ class GoingToPickupSection extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-              ),
-
-              // "Bạn đang ở đây" marker
-              Positioned(
-                bottom: 280,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppColors.colorFFFFFF,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: const [
-                          BoxShadow(blurRadius: 6, color: Color(0x22000000))
-                        ],
-                      ),
-                      child: Text(
-                        l10n.youAreHere,
-                        style: AppStyles.inter13SemiBold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.color1A56DB,
-                        border:
-                            Border.all(color: AppColors.colorFFFFFF, width: 3),
-                      ),
-                      alignment: Alignment.center,
-                      child: SvgPicture.asset(
-                        AppImages.icNavigate,
-                        width: 18,
-                        height: 18,
-                        colorFilter: const ColorFilter.mode(
-                            AppColors.colorFFFFFF, BlendMode.srcIn),
-                      ),
-                    ),
-                  ],
                 ),
               ),
 

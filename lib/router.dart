@@ -1,4 +1,5 @@
 import 'package:demo_app/main/data/model/goong/place_detail.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/ui/activity/activity_page.dart';
 import 'package:demo_app/main/ui/activity/trip_detail/trip_detail_page.dart';
 import 'package:demo_app/main/ui/auth/driver_register/service_register/service_register_page.dart';
@@ -35,6 +36,7 @@ import 'package:demo_app/main/ui/shipping/delivery_info/delivery_info_page.dart'
 import 'package:demo_app/main/ui/shipping/shipping_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 
 import 'main/ui/auth/driver_register/waiting_approval/waiting_approval_page.dart';
 import 'main/ui/auth/login/login_page.dart';
@@ -295,9 +297,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_FINDING_DRIVER,
       builder: (context, state) {
-        final path = state.extra as String;
+        final extras = state.extra as Map;
+        final path = extras['path'] as String;
+        final ride = extras['ride'] as Ride;
 
-        return FindingDriverPage(path: path);
+        return FindingDriverPage(path: path, ride: ride);
       },
     ),
     GoRoute(
@@ -361,7 +365,11 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_MAP_BG,
-      builder: (context, state) => MapBackground(),
+      builder: (context, state) => MapBackground(
+        destinationPoint: LatLng(21.039084136645137, 105.7813970879256),
+        followUserLocation: true,
+        autoFetchRoute: true,
+      ),
     ),
     GoRoute(
       path: PATH_DRIVER_MEMBERSHIP,

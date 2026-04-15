@@ -144,4 +144,48 @@ class RideRepository {
     }
     return (false, null);
   }
+
+  // ============================================================
+  // Xác nhận đặt chuyến
+  // POST /api/v1/ride/{rideId}/confirm
+  // ============================================================
+  Future<(bool, Ride?)> confirmRide(dynamic rideId, int expectedPrice) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_RIDE_CONFIRM(rideId),
+      body: {"expected_price": expectedPrice},
+      headers: await _authHeader(),
+    );
+
+    if (response.isSuccess && response.data != null) {
+      try {
+        final data = response.data['data'] ?? response.data;
+        return (true, Ride.fromJson(data as Map<String, dynamic>));
+      } catch (e) {
+        print('❌ confirmRide parse error: $e');
+      }
+    }
+    return (false, null);
+  }
+
+  // ============================================================
+  // Hủy chuyến xe
+  // POST /api/v1/ride/{id}/cancel
+  // ============================================================
+  Future<(bool, Ride?)> cancelRide(dynamic rideId, String reason) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_RIDE_CANCEL(rideId),
+      body: {"reason": reason},
+      headers: await _authHeader(),
+    );
+
+    if (response.isSuccess && response.data != null) {
+      try {
+        final data = response.data['data'] ?? response.data;
+        return (true, Ride.fromJson(data as Map<String, dynamic>));
+      } catch (e) {
+        print('❌ cancelRide parse error: $e');
+      }
+    }
+    return (false, null);
+  }
 }

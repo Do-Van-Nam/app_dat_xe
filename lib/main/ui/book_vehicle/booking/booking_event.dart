@@ -92,3 +92,16 @@ class GetPriceEvent extends BookingEvent {
   final CreateRideRequest request;
   GetPriceEvent(this.request);
 }
+
+class ConfirmRideEvent extends BookingEvent {
+  final int rideId;
+  final int expectedPrice;
+  final Function onSuccess;
+  ConfirmRideEvent(this.rideId, this.expectedPrice, this.onSuccess);
+}
+
+class CancelRideEvent extends BookingEvent {
+  final int rideId;
+  final String cancelReason;
+  CancelRideEvent(this.rideId, this.cancelReason);
+}

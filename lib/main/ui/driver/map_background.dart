@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_svg/svg.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:http/http.dart' as http;
 
 /// Widget MapBackground — dùng làm lớp nền bản đồ cho các trang khác.
 ///
@@ -50,7 +54,7 @@ class MapBackground extends StatefulWidget {
   final void Function(Position position)? onLocationUpdate;
 
   /// Callback khi bản đồ đã sẵn sàng (trả về controller).
-  final void Function(MaplibreMapController controller)? onMapReady;
+  final void Function(MapLibreMapController controller)? onMapReady;
 
   /// Zoom khởi động.
   final double initialZoom;
@@ -82,7 +86,7 @@ class MapBackground extends StatefulWidget {
     this.routeColor = '#2563EB',
     this.routeWidth = 6.0,
     this.autoFetchRoute = false,
-    this.goongApiKey,
+    this.goongApiKey = "nyVhuiUNsZl54qCI9eYVCNpN43qUa1SEuMui6KVS",
   });
 
   @override
@@ -91,7 +95,7 @@ class MapBackground extends StatefulWidget {
 
 class _MapBackgroundState extends State<MapBackground> {
   // ─── Map ────────────────────────────────────────────────────────────────────
-  MaplibreMapController? _mapController;
+  MapLibreMapController? _mapController;
 
   // ─── Vị trí ─────────────────────────────────────────────────────────────────
   LatLng _currentPosition = const LatLng(21.03357551700003, 105.81911236900004);
@@ -103,6 +107,7 @@ class _MapBackgroundState extends State<MapBackground> {
 
   // ─── Trạng thái ─────────────────────────────────────────────────────────────
   bool _imagesLoaded = false;
+  bool _hasCenteredOnStart = false;
 
   // ─── Vòng đời ───────────────────────────────────────────────────────────────
 
@@ -144,6 +149,7 @@ class _MapBackgroundState extends State<MapBackground> {
   Future<void> _initLocation() async {
     // Lấy vị trí ban đầu
     try {
+      print("khoi tao vi tri ban dau");
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) return;
 
@@ -157,8 +163,23 @@ class _MapBackgroundState extends State<MapBackground> {
       final pos = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+      print(
+          " gan current position vi tri ban dau: ${pos.latitude}, ${pos.longitude}");
+      _currentPosition = LatLng(pos.latitude, pos.longitude);
       _onNewPosition(pos);
+      // Vẽ route nếu được truyền vào ngay khi khởi tạo
+      if (widget.routeCoordinates != null) {
+        _drawRoute(widget.routeCoordinates!);
+      } else if (widget.encodedPolyline != null) {
+        _decodeAndDraw(widget.encodedPolyline!);
+      } else if (widget.autoFetchRoute &&
+          widget.destinationPoint != null &&
+          widget.goongApiKey != null) {
+        print("ve map route khi khoi tao ");
+        await _autoFetchAndDraw();
+      }
     } catch (_) {
+      print("loi khoi tao vi tri ban dau nen dung toa do mac dinh");
       // Dùng tọa độ mặc định nếu lỗi
     }
 
@@ -182,12 +203,20 @@ class _MapBackgroundState extends State<MapBackground> {
 
     if (_mapController != null && _imagesLoaded) {
       _updateOriginMarker(newLatLng);
+
+      // Chỉ zoom vào vị trí hiện tại một lần duy nhất khi khởi tạo
+      if (!_hasCenteredOnStart) {
+        _mapController?.animateCamera(
+          CameraUpdate.newLatLngZoom(newLatLng, widget.initialZoom),
+        );
+        _hasCenteredOnStart = true;
+      }
     }
   }
 
   // ─── Sự kiện bản đồ ─────────────────────────────────────────────────────────
 
-  void _onMapCreated(MaplibreMapController controller) {
+  void _onMapCreated(MapLibreMapController controller) {
     _mapController = controller;
     widget.onMapReady?.call(controller);
   }
@@ -205,30 +234,52 @@ class _MapBackgroundState extends State<MapBackground> {
       _updateDestinationMarker();
     }
 
-    // Vẽ route nếu được truyền vào ngay khi khởi tạo
-    if (widget.routeCoordinates != null) {
-      _drawRoute(widget.routeCoordinates!);
-    } else if (widget.encodedPolyline != null) {
-      _decodeAndDraw(widget.encodedPolyline!);
-    } else if (widget.autoFetchRoute &&
-        widget.destinationPoint != null &&
-        widget.goongApiKey != null) {
-      await _autoFetchAndDraw();
-    }
+    // // Vẽ route nếu được truyền vào ngay khi khởi tạo
+    // if (widget.routeCoordinates != null) {
+    //   _drawRoute(widget.routeCoordinates!);
+    // } else if (widget.encodedPolyline != null) {
+    //   _decodeAndDraw(widget.encodedPolyline!);
+    // } else if (widget.autoFetchRoute &&
+    //     widget.destinationPoint != null &&
+    //     widget.goongApiKey != null) {
+    //   print("ve map route khi khoi tao ");
+    //   await _autoFetchAndDraw();
+    // }
   }
 
   // ─── Ảnh marker ─────────────────────────────────────────────────────────────
+  Future<Uint8List?> _loadSvgAsImage(
+    String assetPath, {
+    required int width,
+    required int height,
+  }) async {
+    try {
+      final pictureInfo = await vg.loadPicture(
+        SvgAssetLoader(assetPath),
+        null,
+      );
+
+      final image = await pictureInfo.picture.toImage(width, height);
+      final byteData = await image.toByteData(format: ImageByteFormat.png);
+
+      return byteData?.buffer.asUint8List();
+    } catch (e) {
+      print('Error loading SVG $assetPath: $e');
+      return null;
+    }
+  }
 
   Future<void> _loadImages() async {
     try {
-      final ByteData originBytes = await rootBundle.load('assets/location.png');
+      final ByteData originBytes =
+          await rootBundle.load('assets/images/img_origin.png');
       await _mapController?.addImage(
           'location', originBytes.buffer.asUint8List());
-
-      final ByteData destBytes =
-          await rootBundle.load('assets/locationEnd.png');
+      // Load và resize icon điểm đến
+      final ByteData destinationBytes =
+          await rootBundle.load('assets/images/img_dest.png');
       await _mapController?.addImage(
-          'locationEnd', destBytes.buffer.asUint8List());
+          'locationEnd', destinationBytes.buffer.asUint8List());
     } catch (_) {
       // Asset không tồn tại, bỏ qua (dùng icon mặc định)
     }
@@ -246,21 +297,11 @@ class _MapBackgroundState extends State<MapBackground> {
           SymbolOptions(geometry: pos),
         );
       } else {
-        // Vẽ vòng tròn chính xác
-        await _mapController!.addCircle(CircleOptions(
-          geometry: pos,
-          circleRadius: 80.0,
-          circleColor: '#3B82F6',
-          circleOpacity: 0.15,
-          circleStrokeWidth: 1.5,
-          circleStrokeColor: '#3B82F6',
-        ));
-
         _originMarker = await _mapController!.addSymbol(SymbolOptions(
           geometry: pos,
           iconImage: 'location',
-          iconSize: 0.3,
-          zIndex: 2,
+          iconSize: 1.3,
+          zIndex: 999,
         ));
       }
     } catch (_) {}
@@ -287,8 +328,8 @@ class _MapBackgroundState extends State<MapBackground> {
         _destinationMarker = await _mapController!.addSymbol(SymbolOptions(
           geometry: dest,
           iconImage: 'locationEnd',
-          iconSize: 0.3,
-          zIndex: 2,
+          iconSize: 1.3,
+          zIndex: 999,
         ));
       }
 
@@ -305,8 +346,11 @@ class _MapBackgroundState extends State<MapBackground> {
 
   /// Vẽ đường từ danh sách tọa độ [[lng, lat], ...]
   Future<void> _drawRoute(List<List<double>> coordinates) async {
-    if (_mapController == null) return;
-
+    if (_mapController == null) {
+      print("map controller null");
+      return;
+    }
+    print("ve duong di");
     try {
       await _mapController!.removeLayer('mb_route_layer');
       await _mapController!.removeSource('mb_route_source');
@@ -376,24 +420,24 @@ class _MapBackgroundState extends State<MapBackground> {
     final dest = widget.destinationPoint!;
 
     try {
+      print("bat dau goi api tim duong di");
+      print("origin: ${origin.latitude}, ${origin.longitude}");
+      print("destination: ${dest.latitude}, ${dest.longitude}");
       final url = Uri.parse(
-        'https://rsapi.goong.io/Direction'
-        '?origin=${origin.latitude},${origin.longitude}'
-        '&destination=${dest.latitude},${dest.longitude}'
-        '&vehicle=bike'
-        '&api_key=${widget.goongApiKey}',
-      );
+          'https://rsapi.goong.io/Direction?origin=${origin.latitude},${origin.longitude}&destination=${dest.latitude},${dest.longitude}&vehicle=bike&api_key=${widget.goongApiKey}');
 
-      // ignore: depend_on_referenced_packages
-      final response = await (throw UnimplementedError(
-          'Thêm import http và gọi http.get(url) ở đây'));
-      // Ví dụ khi đã có http:
-      // final response = await http.get(url);
-      // final json = jsonDecode(response.body);
-      // final encoded = json['routes'][0]['overview_polyline']['points'];
-      // _decodeAndDraw(encoded);
+      var response = await http.get(url);
+      final jsonResponse = jsonDecode(response.body);
+      var route = jsonResponse['routes'][0]['overview_polyline']['points'];
+
+      List<PointLatLng> result = PolylinePoints.decodePolyline(route);
+      List<List<double>> coordinates =
+          result.map((point) => [point.longitude, point.latitude]).toList();
+      _drawRoute(coordinates);
       // _ = response;
-    } catch (_) {}
+    } catch (e) {
+      print("loi khi auto fetch and draw: $e");
+    }
   }
 
   // ─── Xoá route ──────────────────────────────────────────────────────────────

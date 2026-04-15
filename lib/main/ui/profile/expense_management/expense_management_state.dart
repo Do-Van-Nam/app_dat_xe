@@ -21,6 +21,22 @@ final class ExpenseManagementLoaded extends ExpenseManagementState {
     required this.recentTransactions,
     this.selectedPeriodIndex = 0,
   });
+
+  ExpenseManagementLoaded copyWith({
+    int? totalExpense,
+    double? growthPercent,
+    List<CategorySpending>? categories,
+    List<Transaction>? recentTransactions,
+    int? selectedPeriodIndex,
+  }) {
+    return ExpenseManagementLoaded(
+      totalExpense: totalExpense ?? this.totalExpense,
+      growthPercent: growthPercent ?? this.growthPercent,
+      categories: categories ?? this.categories,
+      recentTransactions: recentTransactions ?? this.recentTransactions,
+      selectedPeriodIndex: selectedPeriodIndex ?? this.selectedPeriodIndex,
+    );
+  }
 }
 
 final class ExpenseManagementError extends ExpenseManagementState {

@@ -1,7 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
 
-import '../bloc/driver_bloc.dart';
-import '../driver_widgets.dart';
+import '../../bloc/driver_bloc.dart';
+import '../../driver_widgets.dart';
 
 class OnlineSection extends StatelessWidget {
   const OnlineSection({super.key});
@@ -14,44 +14,7 @@ class OnlineSection extends StatelessWidget {
     return Stack(
       children: [
         // ── Full-screen map with driver marker ───────────────────────────
-        const Positioned.fill(child: MapBackground()),
-
-        // ── Driver marker ────────────────────────────────────────────────
-        Positioned(
-          left: 0,
-          right: 0,
-          top: MediaQuery.of(context).size.height * 0.38,
-          child: Center(
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.color1A56DB.withOpacity(0.15),
-                  ),
-                  child: Container(
-                    width: 48,
-                    height: 48,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.color1A56DB,
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        AppImages.icNavigate,
-                        width: 24,
-                        height: 24,
-                        colorFilter: const ColorFilter.mode(
-                            AppColors.colorFFFFFF, BlendMode.srcIn),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        // const Positioned.fill(child: MapBackground()),
 
         // ── Stats card ───────────────────────────────────────────────────
         Positioned(
@@ -87,7 +50,9 @@ class OnlineSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 // Stats chart icon
-                Container(
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
@@ -117,7 +82,9 @@ class OnlineSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Row(
               children: [
-                Container(
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
@@ -152,7 +119,9 @@ class OnlineSection extends StatelessWidget {
           left: 16,
           right: 16,
           child: GestureDetector(
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: AppColors.colorF5A623,
@@ -206,7 +175,9 @@ class OnlineSection extends StatelessWidget {
           child: GestureDetector(
             onTap: () =>
                 context.read<DriverBloc>().add(const ToggleOnlineStatus()),
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
               height: 52,
               decoration: BoxDecoration(
                 color: AppColors.colorFF3B30,

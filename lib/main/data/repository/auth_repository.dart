@@ -46,12 +46,12 @@ class AuthRepository {
     return (isSuccess, message);
   }
 
-  Future<(bool, String)> register({
-    required String phone,
-    required String password,
-    required String fullName,
-    required String otp,
-  }) async {
+  Future<(bool, String)> register(
+      {required String phone,
+      required String password,
+      required String fullName,
+      required String otp,
+      int role = 2}) async {
     final deviceId = await SharePreferenceUtil.getDeviceId();
     final deviceToken = await SharePreferenceUtil.getDeviceToken();
     final deviceType = await SharePreferenceUtil.getDeviceType();
@@ -66,6 +66,7 @@ class AuthRepository {
         "device_id": deviceId,
         "device_token": deviceToken,
         "device_type": deviceType,
+        "role": role,
       },
     );
     print("response.data ${response.data}");

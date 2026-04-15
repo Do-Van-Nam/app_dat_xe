@@ -1,7 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
 
-import '../bloc/driver_bloc.dart';
-import '../driver_widgets.dart';
+import '../../bloc/driver_bloc.dart';
+import '../../driver_widgets.dart';
 
 class OfflineSection extends StatelessWidget {
   const OfflineSection({super.key});
@@ -14,7 +14,7 @@ class OfflineSection extends StatelessWidget {
     return Stack(
       children: [
         // ── Full-screen map ──────────────────────────────────────────────
-        const Positioned.fill(child: MapBackground()),
+        // const Positioned.fill(child: MapBackground()),
 
         // ── Stats card (top) ─────────────────────────────────────────────
         Positioned(
@@ -58,7 +58,9 @@ class OfflineSection extends StatelessWidget {
           left: 0,
           right: 0,
           child: Center(
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: AppColors.color_E2E2E5,

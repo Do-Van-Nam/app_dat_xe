@@ -1,11 +1,21 @@
 import 'package:bloc/bloc.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/utils/service/local_notification_service.dart';
 import 'package:equatable/equatable.dart';
 
 part 'finding_driver_event.dart';
 part 'finding_driver_state.dart';
 
 class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
-  FindingDriverBloc() : super(const FindingDriverState()) {
+  final Ride? ride;
+  FindingDriverBloc({this.ride})
+      : super(FindingDriverState(
+          pickupAddress: ride?.pickupAddress ?? '',
+          destinationAddress: ride?.destinationAddress ?? '',
+          estimatedPrice:
+              double.tryParse(ride?.totalPrice ?? '0')?.toInt() ?? 0,
+          distance: (ride?.distance?.toDouble() ?? 0.0) / 1000,
+        )) {
     on<FindingDriverStartSearch>(_onStartSearch);
     on<FindingDriverCancelSearch>(_onCancelSearch);
     on<FindingDriverFound>(_onDriverFound);
@@ -37,7 +47,11 @@ class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
   void _onDriverFound(
     FindingDriverFound event,
     Emitter<FindingDriverState> emit,
-  ) {
+  ) async {
+    await LocalNotificationService.instance.showNotification(
+      title: "Đặt xe thành công",
+      body: "Chuyến đi của bạn đã được xác nhận",
+    );
     emit(state.copyWith(status: FindingDriverStatus.found));
   }
 

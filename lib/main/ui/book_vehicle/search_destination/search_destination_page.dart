@@ -150,17 +150,27 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                       const SizedBox(height: 32),
                       // 3. Popular Destinations
                       _PopularDestinationsSection(
-                        destinations: state.popularDestinations,
-                        l10n: l10n,
-                        onSelect: (dest) => _onSelectDestination(dest, context),
-                      ),
+                          destinations: state.popularDestinations,
+                          l10n: l10n,
+                          onSelect: (dest) => {
+                                print("click popular destination"),
+                              }
+
+                          // (dest) =>
+
+                          // _onSelectDestination(dest, context),
+                          ),
                       const SizedBox(height: 40),
                       // 4. Recent Searches
                       _RecentSearchesSection(
-                        searches: state.recentSearches,
-                        l10n: l10n,
-                        onSelect: (dest) => _onSelectDestination(dest, context),
-                      ),
+                          searches: state.recentSearches,
+                          l10n: l10n,
+                          onSelect: (dest) => {
+                                print("click popular destination"),
+                              }
+
+                          // (dest) => _onSelectDestination(dest, context),
+                          ),
                       const SizedBox(height: 32),
                       // 5. Map Section
                       _MapSection(l10n: l10n),

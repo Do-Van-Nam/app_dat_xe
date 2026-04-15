@@ -1,7 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
 
-import '../bloc/driver_bloc.dart';
-import '../driver_widgets.dart';
+import '../../bloc/driver_bloc.dart';
+import '../../driver_widgets.dart';
 
 class NewRideSection extends StatelessWidget {
   const NewRideSection({super.key});
@@ -20,7 +20,7 @@ class NewRideSection extends StatelessWidget {
     return Stack(
       children: [
         // Map background
-        const Positioned.fill(child: MapBackground()),
+        // const Positioned.fill(child: MapBackground()),
 
         // Ride popup
         Center(

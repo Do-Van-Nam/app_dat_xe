@@ -4,6 +4,7 @@ import 'package:demo_app/main/data/model/ride/price.dart';
 import 'package:demo_app/main/data/model/ride/vehicle.dart';
 import 'package:demo_app/main/data/repository/ride_repository.dart';
 import 'package:demo_app/res/app_images.dart';
+import 'package:demo_app/router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     on<ApplyPromoCodeEvent>(_onApplyPromoCode);
     on<UnApplyPromoCodeEvent>(_onUnApplyPromoCode);
     on<LoadInitialBookingData>(_onLoadInitialBookingData);
+    on<ConfirmRideEvent>(_onConfirmRide);
+    on<CancelRideEvent>(_onCancelRide);
   }
 
   Future<void> _onLoadInitialBookingData(
@@ -31,11 +34,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     await _onLoadOptions(LoadBookingOptionsEvent(), emit);
     try {
       print("bat dau load");
-      await Future.wait([
-        _onCreateRide(CreateRideEvent(event.request), emit),
-        _onGetVehicles(GetVehiclesEvent(event.request), emit),
-        _onGetPrice(GetPriceEvent(event.request), emit),
-      ]);
+      // Gọi tuần tự để tránh race condition ghi đè state lẫn nhau
+      await _onCreateRide(CreateRideEvent(event.request), emit);
+      await _onGetVehicles(GetVehiclesEvent(event.request), emit);
+      await _onGetPrice(GetPriceEvent(event.request), emit);
+
       print("ket thuc load");
     } catch (e) {
       print("loi load: $e");
@@ -50,7 +53,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
       final vehicles = [
         VehicleOption(
-          id: "bike",
+          id: "1",
           name: "Xe máy",
           price: 12000,
           time: "3p",
@@ -59,7 +62,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           tagColor: Colors.green,
         ),
         VehicleOption(
-          id: "car4",
+          id: "2",
           name: "Ô tô 4 chỗ",
           price: 45000,
           time: "5p",
@@ -68,7 +71,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           tagColor: Colors.blue,
         ),
         VehicleOption(
-          id: "car7",
+          id: "3",
           name: "Ô tô 7 chỗ",
           price: 60000,
           time: "8p",
@@ -98,7 +101,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           current.vehicles.firstWhere((v) => v.id == event.vehicleId);
       await _onGetPrice(
           GetPriceEvent(event.request
-              .copyWith(vehicleType: int.parse(selectedVehicle.id))),
+              .copyWith(vehicleType: int.tryParse(selectedVehicle.id) ?? 1)),
           emit);
 
       emit(current.copyWith(
@@ -146,6 +149,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     final (successVehicles, list) = await RideRepository().getVehicles(rId);
 
     if (successVehicles && list.isNotEmpty) {
+      print("list vehicle lay thanh cong ${list.length}");
       final options = list.map((v) {
         String iconAsset = AppImages.icCar;
         if (v.vehicleType == 1) iconAsset = AppImages.icBike2;
@@ -191,6 +195,45 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         price: price,
         totalAmount: price.finalFare?.toInt() ?? 0,
       ));
+    }
+  }
+
+  Future<void> _onConfirmRide(
+      ConfirmRideEvent event, Emitter<BookingState> emit) async {
+    if (state is! BookingLoaded) return;
+    BookingLoaded current = state as BookingLoaded;
+
+    String? rId = current.rideId;
+    if (rId == null) {
+      return;
+    }
+
+    final (success, price) =
+        await RideRepository().confirmRide(rId, event.expectedPrice);
+
+    if (success) {
+      event.onSuccess(PATH_TRACKING, price);
+    }
+  }
+
+  Future<void> _onCancelRide(
+      CancelRideEvent event, Emitter<BookingState> emit) async {
+    if (state is! BookingLoaded) return;
+    BookingLoaded current = state as BookingLoaded;
+
+    String? rId = current.rideId;
+    if (rId == null) {
+      return;
+    }
+
+    final (success, ride) =
+        await RideRepository().cancelRide(event.rideId, event.cancelReason);
+    if (success && ride != null) {
+      rId = ride.id?.toString();
+      current = current.copyWith(rideId: rId);
+      emit(current);
+    } else {
+      return;
     }
   }
 

@@ -21,7 +21,7 @@ final class BookingLoaded extends BookingState {
     required this.pickupAddress,
     required this.destinationAddress,
     required this.vehicles,
-    this.selectedVehicleId = "car4",
+    this.selectedVehicleId = "1",
     this.promoCode,
     required this.totalAmount,
     this.rideId,

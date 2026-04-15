@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:demo_app/main/utils/service/firebase_messaging_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:ui';
 import 'package:demo_app/app.dart';
@@ -49,8 +50,23 @@ void main() async {
     print("GoogleAuthService initialize error: $e");
   }
 
-  // ====================== BACKGROUND MESSAGING ======================
+  // ====================== LOCAL NOTIFICATION ======================
+  try {
+    await LocalNotificationService.instance.init();
+    print("Local notification initialized");
+  } catch (e) {
+    print("Local notification init error: $e");
+  }
+
+  // ====================== FIREBASE MESSAGING ======================
+  await FirebaseMessagingService.initialize();
+
+  // ====================== FOREGROUND & BACKGROUND MESSAGING ======================
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('🔔 Foreground message: ${message.toString()}');
+    LocalNotificationService.instance.showFromFCM(message);
+  });
 
   // ====================== APP CONFIG ======================
   final AppConfig appConfig = _getCurrentConfig();

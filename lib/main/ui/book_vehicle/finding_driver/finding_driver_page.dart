@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'finding_driver_bloc.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -6,13 +7,15 @@ import 'finding_driver_bloc.dart';
 // ═══════════════════════════════════════════════════════════════
 
 class FindingDriverPage extends StatelessWidget {
-  const FindingDriverPage({super.key, required this.path});
+  const FindingDriverPage({super.key, required this.path, this.ride});
   final String path;
+  final Ride? ride;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => FindingDriverBloc()..add(const FindingDriverStartSearch()),
+      create: (_) =>
+          FindingDriverBloc(ride: ride)..add(const FindingDriverStartSearch()),
       child: _FindingDriverView(path: path),
     );
   }
@@ -70,7 +73,7 @@ class _FindingDriverAppBar extends StatelessWidget
       backgroundColor: AppColors.colorWhite,
       elevation: 0,
       leading: GestureDetector(
-        onTap: () => context.pop(),
+        onTap: () => context.go(PATH_HOME),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SvgPicture.asset(

@@ -63,8 +63,8 @@ class SosBadge extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // MapBackground — light green city map placeholder
 // ─────────────────────────────────────────────────────────────────────────────
-class MapBackground extends StatelessWidget {
-  const MapBackground({super.key, this.dark = false});
+class MapBackground1 extends StatelessWidget {
+  const MapBackground1({super.key, this.dark = false});
   final bool dark;
 
   @override

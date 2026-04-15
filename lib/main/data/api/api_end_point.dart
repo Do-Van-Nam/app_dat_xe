@@ -48,4 +48,29 @@ class ApiEndPoint {
       "$DOMAIN_API/ride/$rideId/price";
   static String DOMAIN_RIDE_VOUCHER(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/voucher";
+  static String DOMAIN_RIDE_CONFIRM(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/confirm";
+
+  static String DOMAIN_RIDE_CANCEL(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/cancel";
+
+  // homepage
+  static String get DOMAIN_HOME_PAGE => "$DOMAIN_API/homepage";
+
+  // Finance
+  static String get DOMAIN_SPENDING_SUMMARY =>
+      "$DOMAIN_API/finance/spending-summary";
+
+  // Vouchers
+  static String get DOMAIN_VOUCHERS => "$DOMAIN_API/vouchers";
+  static String DOMAIN_VOUCHER_DETAIL(dynamic id) => "$DOMAIN_VOUCHERS/$id";
+  static String DOMAIN_SAVE_VOUCHER(dynamic id) => "$DOMAIN_VOUCHERS/$id/save";
+  static String DOMAIN_APPLY_QUICK_VOUCHER(dynamic id) =>
+      "$DOMAIN_VOUCHERS/$id/apply-quick";
+  static String get DOMAIN_REWARDS_OVERVIEW =>
+      "$DOMAIN_API/finance/rewards/overview";
+  static String get DOMAIN_REWARDS_HISTORY =>
+      "$DOMAIN_API/finance/rewards/history";
+  static String DOMAIN_REWARDS_HISTORY_DETAIL(dynamic id) =>
+      "$DOMAIN_API/finance/rewards/history/$id";
 }
