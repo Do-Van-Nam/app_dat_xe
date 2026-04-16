@@ -50,3 +50,5 @@ app.*.map.json
 lib/generated/
 ios2
 ios3
+
+lib/draft.txt

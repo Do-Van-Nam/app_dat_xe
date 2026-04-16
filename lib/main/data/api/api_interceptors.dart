@@ -61,6 +61,14 @@ class ApiInterceptors extends InterceptorsWrapper {
     final statusCode = err.response?.statusCode;
     final uri = err.requestOptions.path;
     var data = "";
+    try {
+      if (err.response?.data != null) {
+        data = jsonEncode(err.response?.data);
+      }
+    } catch (e) {
+      data = err.response?.data?.toString() ?? "";
+    }
+
     // if (err.response?.statusCode == 401 || err.response?.statusCode == 403) {
     if (err.response?.statusCode == 401) {
       // bool success = await _createToken();

@@ -196,15 +196,15 @@ class _SignupViewState extends State<SignupView> {
                               const SizedBox(height: 20),
 
                               // Email
-                              buildTextField(
-                                controller: emailController,
-                                label: 'EMAIL',
-                                hint: 'example@gmail.com',
-                                icon: Icons.email_outlined,
-                                keyboardType: TextInputType.emailAddress,
-                              ),
+                              // buildTextField(
+                              //   controller: emailController,
+                              //   label: 'EMAIL',
+                              //   hint: 'example@gmail.com',
+                              //   icon: Icons.email_outlined,
+                              //   keyboardType: TextInputType.emailAddress,
+                              // ),
 
-                              const SizedBox(height: 20),
+                              // const SizedBox(height: 20),
 
                               // Mật khẩu
                               _buildPasswordField(),
@@ -264,7 +264,7 @@ class _SignupViewState extends State<SignupView> {
                               Builder(builder: (context) {
                                 final bool isFormValid = _agreeToTerms &&
                                     phoneController.text.trim().isNotEmpty &&
-                                    emailController.text.trim().isNotEmpty &&
+                                    // emailController.text.trim().isNotEmpty &&
                                     passwordController.text.isNotEmpty &&
                                     fullNameController.text.trim().isNotEmpty;
 
@@ -298,38 +298,38 @@ class _SignupViewState extends State<SignupView> {
                         ),
                         const SizedBox(height: 24),
                         // Hoặc kết nối qua
-                        const Row(
-                          children: [
-                            Expanded(child: Divider()),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Text(
-                                'HOẶC KẾT NỐI QUA',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                            Expanded(child: Divider()),
-                          ],
-                        ),
+                        // const Row(
+                        //   children: [
+                        //     Expanded(child: Divider()),
+                        //     Padding(
+                        //       padding: EdgeInsets.symmetric(horizontal: 16),
+                        //       child: Text(
+                        //         'HOẶC KẾT NỐI QUA',
+                        //         style: TextStyle(color: Colors.grey),
+                        //       ),
+                        //     ),
+                        //     Expanded(child: Divider()),
+                        //   ],
+                        // ),
 
-                        const SizedBox(height: 24),
+                        // const SizedBox(height: 24),
 
-                        // Google & Apple
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _socialButton(
-                                  'Google', Icons.g_mobiledata, Colors.red),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _socialButton(
-                                  'Apple', Icons.apple, Colors.black),
-                            ),
-                          ],
-                        ),
+                        // // Google & Apple
+                        // Row(
+                        //   children: [
+                        //     Expanded(
+                        //       child: _socialButton(
+                        //           'Google', Icons.g_mobiledata, Colors.red),
+                        //     ),
+                        //     const SizedBox(width: 12),
+                        //     Expanded(
+                        //       child: _socialButton(
+                        //           'Apple', Icons.apple, Colors.black),
+                        //     ),
+                        //   ],
+                        // ),
 
-                        const SizedBox(height: 40),
+                        // const SizedBox(height: 40),
 
                         // Đã có tài khoản?
                         Row(

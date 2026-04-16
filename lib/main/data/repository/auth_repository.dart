@@ -90,6 +90,12 @@ class AuthRepository {
         final User user = User.fromJson(userData);
         print("user ${user.toJson()}");
         SharePreferenceUtil.saveUser(user);
+        if (data['data'].containsKey('token') &&
+            data['data']['token'] != null) {
+          final String token = data['data']['token'];
+          print("signup luu  token vao share preference ${token}");
+          SharePreferenceUtil.saveLoginToken(token);
+        }
       }
       if (data.containsKey('message') && data['message'] != null) {
         message = data['message'].toString();
@@ -354,6 +360,7 @@ class AuthRepository {
   // ============================================================
   Future<(bool, String, User?)> submitDriverRegister(
       Map<String, dynamic> body) async {
+    final token = await SharePreferenceUtil.getLoginToken();
     // Để upload file với Dio, ta cần gói body vào FormData
     // Body giả định chứa các trường text và các trường file (đã được convert qua MultipartFile)
     final formData = FormData.fromMap(body);
@@ -363,6 +370,7 @@ class AuthRepository {
       body: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
+        "Authorization": "Bearer $token",
       },
     );
 

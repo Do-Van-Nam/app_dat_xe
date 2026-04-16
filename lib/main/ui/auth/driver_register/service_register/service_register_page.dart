@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
 import 'bloc/service_register_bloc.dart';
 import 'widgets/notice_card.dart';
@@ -33,12 +34,11 @@ class _ServiceRegisterView extends StatelessWidget {
       listener: (context, state) {
         if (state.status == ServiceRegisterStatus.error &&
             state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.show(context, state.errorMessage!);
         }
         if (state.status == ServiceRegisterStatus.submitted) {
-          // TODO: navigate to next step / success screen
+          AppToast.show(context, "Đăng ký thành công");
+          context.go(PATH_WAITING_APPROVAL);
         }
       },
       child: Scaffold(

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:demo_app/main/data/model/unique_error.dart';
+import 'package:demo_app/main/data/repository/driver_repository.dart';
 import 'package:equatable/equatable.dart';
 
 import '../driver_models.dart';
@@ -26,30 +28,50 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
 
   Timer? _countdownTimer;
   Timer? _mockRideTimer;
+  final DriverRepository _driverRepository = DriverRepository();
 
-  void _onToggleOnline(ToggleOnlineStatus event, Emitter<DriverState> emit) {
-    if (state.screen == DriverScreen.offline) {
-      // Go online
-      emit(state.copyWith(screen: DriverScreen.online));
-      // Mock: simulate an incoming ride after 2 seconds
-      _mockRideTimer = Timer(const Duration(seconds: 2), () {
-        if (!isClosed) {
-          add(const NewRideArrived(RideOffer(
-            distanceKm: 1.2,
-            estimatedEarning: 29000,
-            pickupAddress: '123 Lê Lợi, Q1',
-            dropoffAddress: '456 Nguyễn Huệ, Q1',
-          )));
-        }
-      });
-    } else {
-      // Go offline
-      _cancelTimers();
-      emit(state.copyWith(
-        screen: DriverScreen.offline,
-        clearOffer: true,
-      ));
+  Future<void> _onToggleOnline(
+      ToggleOnlineStatus event, Emitter<DriverState> emit) async {
+    final bool isOnline = state.screen == DriverScreen.offline;
+    final DriverScreen nextScreen =
+        isOnline ? DriverScreen.online : DriverScreen.offline;
+    // if (state.screen == DriverScreen.offline) {
+    // Go online
+
+    try {
+      final (isSuccess, message) = await _driverRepository.updateStatus(
+          isOnline: isOnline, lat: 0, lng: 0);
+
+      if (isSuccess) {
+        print("emit  success");
+        emit(state.copyWith(screen: nextScreen));
+      } else {
+        print("emit  fail");
+        emit(state.copyWith(error: UniqueError(message)));
+      }
+    } catch (e) {
+      print("emit  fail: $e");
+      emit(state.copyWith(error: UniqueError(e.toString())));
     }
+    // Mock: simulate an incoming ride after 2 seconds
+    _mockRideTimer = Timer(const Duration(seconds: 2), () {
+      if (!isClosed) {
+        add(const NewRideArrived(RideOffer(
+          distanceKm: 1.2,
+          estimatedEarning: 29000,
+          pickupAddress: '123 Lê Lợi, Q1',
+          dropoffAddress: '456 Nguyễn Huệ, Q1',
+        )));
+      }
+    });
+    // } else {
+    //   // Go offline
+    //   _cancelTimers();
+    //   emit(state.copyWith(
+    //     screen: DriverScreen.offline,
+    //     clearOffer: true,
+    //   ));
+    // }
   }
 
   void _onNewRide(NewRideArrived event, Emitter<DriverState> emit) {
@@ -79,16 +101,52 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
     }
   }
 
-  void _onRideAccepted(RideAccepted event, Emitter<DriverState> emit) {
+  Future<void> _onRideAccepted(
+      RideAccepted event, Emitter<DriverState> emit) async {
     _countdownTimer?.cancel();
+    try {
+      final (isSuccess, message) =
+          await _driverRepository.acceptRide(rideId: 123, lat: 1, lng: 1);
+
+      if (isSuccess) {
+        print("emit  success");
+        emit(state.copyWith(
+          screen: DriverScreen.goingToPickup,
+          clearOffer: true,
+        ));
+      } else {
+        print("emit  fail");
+        emit(state.copyWith(error: UniqueError(message)));
+      }
+    } catch (e) {
+      print("emit  fail: $e");
+      emit(state.copyWith(error: UniqueError(e.toString())));
+    }
+    // bat de test, sau nay xoa di
     emit(state.copyWith(
       screen: DriverScreen.goingToPickup,
       clearOffer: true,
     ));
   }
 
-  void _onRideRejected(RideRejected event, Emitter<DriverState> emit) {
+  Future<void> _onRideRejected(
+      RideRejected event, Emitter<DriverState> emit) async {
     _countdownTimer?.cancel();
+    try {
+      final (isSuccess, message) = await _driverRepository.rejectRide(123);
+
+      if (isSuccess) {
+        print("emit  success");
+        emit(state.copyWith(screen: DriverScreen.online, clearOffer: true));
+      } else {
+        print("emit  fail");
+        emit(state.copyWith(error: UniqueError(message)));
+      }
+    } catch (e) {
+      print("emit  fail: $e");
+      emit(state.copyWith(error: UniqueError(e.toString())));
+    }
+    // bat de test sau nay xoa di
     emit(state.copyWith(screen: DriverScreen.online, clearOffer: true));
   }
 

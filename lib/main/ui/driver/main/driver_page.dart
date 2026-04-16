@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
 import '../map_background.dart';
 import 'bloc/driver_bloc.dart';
@@ -55,7 +56,15 @@ class _DriverView extends StatelessWidget {
                 },
               ),
             ),
-
+            BlocListener<DriverBloc, DriverState>(
+              listenWhen: (prev, curr) => prev.error != curr.error,
+              listener: (context, state) {
+                if (state.error != null) {
+                  AppToast.show(context, state.error!.message);
+                }
+              },
+              child: SizedBox(),
+            ),
             // BlocConsumer (con summer) bao lấy phần thân để xử lý Logic (Listen) và UI (Build)
             BlocConsumer<DriverBloc, DriverState>(
               listenWhen: (prev, curr) => prev.screen != curr.screen,

@@ -1,4 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/ui/auth/driver_register/upload_records/widgets/dropdown.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 import 'bloc/upload_records_bloc.dart';
 import 'widgets/document_item_card.dart';
@@ -10,19 +13,47 @@ import 'widgets/sample_image_grid.dart';
 // ═══════════════════════════════════════════════════════════════
 
 class UploadRecordsPage extends StatelessWidget {
-  const UploadRecordsPage({super.key});
+  const UploadRecordsPage(
+      {super.key, required this.phone, required this.fullName});
+  final String phone;
+  final String fullName;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => UploadRecordsBloc(),
+      create: (_) => UploadRecordsBloc(
+        phone: phone,
+        fullName: fullName,
+      ),
       child: const _UploadRecordsView(),
     );
   }
 }
 
-class _UploadRecordsView extends StatelessWidget {
+class _UploadRecordsView extends StatefulWidget {
   const _UploadRecordsView();
+
+  @override
+  State<_UploadRecordsView> createState() => _UploadRecordsViewState();
+}
+
+class _UploadRecordsViewState extends State<_UploadRecordsView> {
+  final _cccdController = TextEditingController();
+  final _vehicleNameController = TextEditingController();
+  final _plateController = TextEditingController();
+  final _yearController = TextEditingController();
+
+  int? _selectedVehicleType;
+  int? _selectedColor;
+
+  @override
+  void dispose() {
+    _cccdController.dispose();
+    _vehicleNameController.dispose();
+    _plateController.dispose();
+    _yearController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +65,10 @@ class _UploadRecordsView extends StatelessWidget {
       listener: (context, state) {
         if (state.pageStatus == UploadRecordsPageStatus.error &&
             state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.show(context, state.errorMessage!);
         }
         if (state.pageStatus == UploadRecordsPageStatus.submitted) {
-          // TODO: navigate to next onboarding step
+          context.push(PATH_DRIVER_SERVICE_REGISTER);
         }
       },
       child: Scaffold(
@@ -57,13 +86,24 @@ class _UploadRecordsView extends StatelessWidget {
                   children: [
                     const _HeroBannerSection(),
                     const _HintSection(),
-                    const _DocumentListSection(),
+                    _DocumentListSection(
+                      cccdController: _cccdController,
+                      vehicleNameController: _vehicleNameController,
+                      plateController: _plateController,
+                      yearController: _yearController,
+                      selectedVehicleType: _selectedVehicleType,
+                      selectedColor: _selectedColor,
+                      onVehicleTypeChanged: (val) =>
+                          setState(() => _selectedVehicleType = val),
+                      onColorChanged: (val) =>
+                          setState(() => _selectedColor = val),
+                    ),
                     _SampleSection(l10n: l10n),
                   ],
                 ),
               ),
             ),
-            const _BottomSection(),
+            _BottomSection(),
           ],
         ),
       ),
@@ -92,21 +132,21 @@ class _UploadRecordsAppBar extends StatelessWidget
         preferredSize: const Size.fromHeight(1),
         child: Container(height: 1, color: AppColors.colorAppBarDivider),
       ),
-      leading: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: SvgPicture.asset(
-            AppImages.icArrowBack,
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(
-              AppColors.colorAppBarTitle,
-              BlendMode.srcIn,
-            ),
-          ),
-        ),
-      ),
+      // leading: GestureDetector(
+      //   onTap: () => Navigator.of(context).pop(),
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(16),
+      //     child: SvgPicture.asset(
+      //       AppImages.icArrowBack,
+      //       width: 24,
+      //       height: 24,
+      //       colorFilter: const ColorFilter.mode(
+      //         AppColors.colorAppBarTitle,
+      //         BlendMode.srcIn,
+      //       ),
+      //     ),
+      //   ),
+      // ),
       title: Text(
         title,
         style: AppStyles.inter18SemiBold.copyWith(
@@ -194,7 +234,25 @@ class _HintSection extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════
 
 class _DocumentListSection extends StatelessWidget {
-  const _DocumentListSection();
+  const _DocumentListSection({
+    required this.cccdController,
+    required this.vehicleNameController,
+    required this.plateController,
+    required this.yearController,
+    this.selectedVehicleType,
+    this.selectedColor,
+    required this.onVehicleTypeChanged,
+    required this.onColorChanged,
+  });
+
+  final TextEditingController cccdController;
+  final TextEditingController vehicleNameController;
+  final TextEditingController plateController;
+  final TextEditingController yearController;
+  final int? selectedVehicleType;
+  final int? selectedColor;
+  final ValueChanged<int?> onVehicleTypeChanged;
+  final ValueChanged<int?> onColorChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -203,33 +261,110 @@ class _DocumentListSection extends StatelessWidget {
     return BlocBuilder<UploadRecordsBloc, UploadRecordsState>(
       buildWhen: (p, c) => p.documents != c.documents,
       builder: (context, state) {
-        return Column(children: [
-          buildTextField(
-            controller: TextEditingController(),
-            label: 'So CCCD',
-            hint: 'Nhập số CCCD',
-            icon: Icons.person_outline,
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 12),
-          ...state.documents.asMap().entries.map((entry) {
-            final doc = entry.value;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: DocumentItemCard(
-                item: doc,
-                uploadLabel: l10n.xacThucBtnUpload,
-                cameraLabel: l10n.xacThucBtnCamera,
-                onUpload: () => context
-                    .read<UploadRecordsBloc>()
-                    .add(UploadRecordsUploadTapped(doc.id)),
-                onCamera: () => context
-                    .read<UploadRecordsBloc>()
-                    .add(UploadRecordsCameraTapped(doc.id)),
-              ),
-            );
-          }).toList(),
-        ]);
+        return Column(
+          spacing: 12,
+          children: [
+            buildTextField(
+              controller: cccdController,
+              label: 'Số CCCD',
+              hint: 'Nhập số CCCD',
+              icon: Icons.person_outline,
+              keyboardType: TextInputType.number,
+              onChanged: (val) => context
+                  .read<UploadRecordsBloc>()
+                  .add(UploadRecordsInfoChanged(type: 'cccd', value: val)),
+            ),
+            dropdownField<int>(
+              label: 'Loại xe',
+              value: selectedVehicleType,
+              icon: Icons.directions_car,
+              items: {
+                1: 'Bike',
+                2: 'Car 4 seats',
+                3: 'Car 7 seats',
+                4: 'Car 9 seats',
+              },
+              onChanged: (val) {
+                onVehicleTypeChanged(val);
+                if (val != null) {
+                  context.read<UploadRecordsBloc>().add(
+                      UploadRecordsInfoChanged(
+                          type: 'vehicleType', value: val.toString()));
+                }
+              },
+            ),
+            buildTextField(
+              controller: vehicleNameController,
+              label: 'Tên xe',
+              hint: 'Nhập tên xe',
+              icon: Icons.car_rental,
+              keyboardType: TextInputType.text,
+              onChanged: (val) => context.read<UploadRecordsBloc>().add(
+                  UploadRecordsInfoChanged(type: 'vehicleName', value: val)),
+            ),
+            dropdownField<int>(
+              label: 'Màu xe',
+              value: selectedColor,
+              icon: Icons.palette_outlined,
+              items: {
+                0: 'Khác',
+                1: 'Đỏ',
+                2: 'Xanh lá',
+                3: 'Xanh dương',
+                4: 'Vàng',
+                5: 'Cam',
+                6: 'Tím',
+                7: 'Nâu',
+                8: 'Đen',
+                9: 'Trắng',
+              },
+              onChanged: (val) {
+                onColorChanged(val);
+                if (val != null) {
+                  context.read<UploadRecordsBloc>().add(
+                      UploadRecordsInfoChanged(
+                          type: 'vehicleColor', value: val.toString()));
+                }
+              },
+            ),
+            buildTextField(
+              controller: plateController,
+              label: 'Biển số xe',
+              hint: 'Nhập biển số xe',
+              icon: Icons.confirmation_number_outlined,
+              keyboardType: TextInputType.text,
+              onChanged: (val) => context.read<UploadRecordsBloc>().add(
+                  UploadRecordsInfoChanged(type: 'vehicleNumber', value: val)),
+            ),
+            buildTextField(
+              controller: yearController,
+              label: 'Năm sản xuất',
+              hint: 'Nhập năm sản xuất',
+              icon: Icons.calendar_today,
+              keyboardType: TextInputType.number,
+              onChanged: (val) => context.read<UploadRecordsBloc>().add(
+                  UploadRecordsInfoChanged(type: 'vehicleYear', value: val)),
+            ),
+            const SizedBox(height: 12),
+            ...state.documents.asMap().entries.map((entry) {
+              final doc = entry.value;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: DocumentItemCard(
+                  item: doc,
+                  uploadLabel: l10n.xacThucBtnUpload,
+                  cameraLabel: l10n.xacThucBtnCamera,
+                  onUpload: () => context
+                      .read<UploadRecordsBloc>()
+                      .add(UploadRecordsUploadTapped(doc.id)),
+                  onCamera: () => context
+                      .read<UploadRecordsBloc>()
+                      .add(UploadRecordsCameraTapped(doc.id)),
+                ),
+              );
+            }).toList(),
+          ],
+        );
       },
     );
   }
@@ -289,9 +424,18 @@ class _BottomSection extends StatelessWidget {
             p.completedCount != c.completedCount ||
             p.pageStatus != c.pageStatus,
         builder: (context, state) {
-          final canGo = state.canProceed;
+          final isDocsUploaded = state.canProceed;
           final isSubmitting =
               state.pageStatus == UploadRecordsPageStatus.submitting;
+
+          // Enable button if docs are ready AND vehicle info is selected
+          final canGo = isDocsUploaded &&
+              state.info?.vehicleType != 0 &&
+              state.info?.vehicleColor != 0 &&
+              (state.info?.vehicleName ?? "").isNotEmpty &&
+              (state.info?.vehicleNumber ?? "").isNotEmpty &&
+              (state.info?.vehicleYear ?? 0) != 0 &&
+              (state.info?.cccd ?? "").isNotEmpty;
 
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -302,11 +446,10 @@ class _BottomSection extends StatelessWidget {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: (canGo && !isSubmitting)
-                      ? () => context
-                          .read<UploadRecordsBloc>()
-                          .add(const UploadRecordsNextTapped())
-                      // : null,
-                      : () => context.push(PATH_DRIVER_SERVICE_REGISTER),
+                      ? () => context.read<UploadRecordsBloc>().add(
+                            UploadRecordsNextTapped(),
+                          )
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: canGo
                         ? AppColors.colorNextBtnBgActive

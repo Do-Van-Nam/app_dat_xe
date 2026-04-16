@@ -206,14 +206,22 @@ final GoRouter router = GoRouter(
       builder: (context, state) => LanguagePage(),
     ),
 //driver auth
-    GoRoute(
-      path: PATH_DRIVER_REGISTER,
-      // builder: (context, state) => DriverRegisterPage(),
-      builder: (context, state) => UploadRecordsPage(),
-    ),
+    // GoRoute(
+    //   path: PATH_DRIVER_REGISTER,
+    //   // builder: (context, state) => DriverRegisterPage(),
+    //   builder: (context, state) => UploadRecordsPage(),
+    // ),
     GoRoute(
       path: PATH_DRIVER_UPLOAD_RECORDS,
-      builder: (context, state) => UploadRecordsPage(),
+      builder: (context, state) {
+        final extras = state.extra as Map;
+        final phone = extras['phone'] as String;
+        final fullName = extras['fullName'] as String;
+        return UploadRecordsPage(
+          phone: phone,
+          fullName: fullName,
+        );
+      },
     ),
     GoRoute(
       path: PATH_DRIVER_SERVICE_REGISTER,

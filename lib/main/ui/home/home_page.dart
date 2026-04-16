@@ -1,5 +1,7 @@
 ﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:demo_app/main/data/model/homepage/homepage.dart';
+import 'package:demo_app/main/data/model/user/user.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 import 'home_bloc.dart';
 import 'package:demo_app/core/app_export.dart';
@@ -375,7 +377,20 @@ class HomeView extends StatelessWidget {
                     onPressed: () => context.push(PATH_MAP_BG),
                     child: Text("Map background")),
                 OutlinedButton(
-                    onPressed: () => context.push(PATH_DRIVER_UPLOAD_RECORDS),
+                    onPressed: () async {
+                      final User? user = await SharePreferenceUtil.getUser();
+                      if (user != null) {
+                        context.push(PATH_DRIVER_UPLOAD_RECORDS, extra: {
+                          "phone": user.phone ?? "",
+                          "fullName": user.fullName?.value ?? "test"
+                        });
+                      } else {
+                        context.push(PATH_DRIVER_UPLOAD_RECORDS, extra: {
+                          "phone": "961597099",
+                          "fullName": "test Driver"
+                        });
+                      }
+                    },
                     child: Text("Upload Records")),
                 OutlinedButton(
                     onPressed: () => context.push(PATH_DRIVER_WALLET),

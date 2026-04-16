@@ -85,6 +85,7 @@ Widget buildTextField({
   required String hint,
   required IconData icon,
   TextInputType keyboardType = TextInputType.text,
+  ValueChanged<String>? onChanged,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,6 +106,7 @@ Widget buildTextField({
         child: TextField(
           controller: controller,
           keyboardType: keyboardType,
+          onChanged: onChanged,
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: Colors.grey),
             hintText: hint,

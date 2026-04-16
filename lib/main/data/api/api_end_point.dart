@@ -41,6 +41,7 @@ class ApiEndPoint {
   static String get DOMAIN_GOONG_PLACE_DETAIL => "$DOMAIN_GOONG/place/detail";
 
 // chuyen xe
+// khach hang
   static String get DOMAIN_RIDE_DRAFT => "$DOMAIN_API/ride/draft";
   static String DOMAIN_RIDE_VEHICLES(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/vehicles";
@@ -50,9 +51,18 @@ class ApiEndPoint {
       "$DOMAIN_API/ride/$rideId/voucher";
   static String DOMAIN_RIDE_CONFIRM(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/confirm";
-
   static String DOMAIN_RIDE_CANCEL(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/cancel";
+
+// chuyen xe
+// tai xe
+  static String get DOMAIN_DRIVER_STATUS => "$DOMAIN_API/driver/status";
+  static String DOMAIN_DRIVER_RIDE_ACCEPT(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/accept";
+  static String DOMAIN_DRIVER_RIDE_REJECT(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/reject";
+  static String DOMAIN_DRIVER_RIDE_CANCEL(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/cancel";
 
   // homepage
   static String get DOMAIN_HOME_PAGE => "$DOMAIN_API/homepage";
