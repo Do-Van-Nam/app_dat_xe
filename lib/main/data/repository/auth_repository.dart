@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
+import 'package:demo_app/main/data/service/socket_service.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:dio/dio.dart';
 
@@ -244,6 +245,8 @@ class AuthRepository {
         message = data['message'].toString();
       }
     }
+    // dispose SocketService khi logout thanh cong
+    if (isSuccess) SocketService().dispose();
 
     return (isSuccess, message);
   }

@@ -1,6 +1,9 @@
-﻿import 'package:demo_app/main/data/model/user/user.dart';
+﻿import 'dart:async';
+
+import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/data/repository/auth_repository.dart';
 import 'package:demo_app/main/data/repository/user_repository.dart';
+import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -8,9 +11,18 @@ part 'profile_event.dart';
 part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  late StreamSubscription _sub;
+
   ProfileBloc() : super(ProfileInitial()) {
     on<LoadProfileEvent>(_onLoadProfile);
     on<LogoutEvent>(_onLogout);
+
+    _sub = UserSocketService().onRideEvent.listen((data) {
+      // if(data["event"] == "DRIVER_FOUND"){
+      //   add(const FindingDriverFound());
+      // }
+      print("data tu user socket service $data");
+    });
   }
 
   Future<void> _onLoadProfile(

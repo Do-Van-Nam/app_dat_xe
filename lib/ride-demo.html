@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Ride Cycle Demo</title>
+    <link rel="stylesheet" href="./styles.css">
+    <style>
+        .ride-layout {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            gap: 24px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            background: rgba(var(--accent-rgb), 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .connection-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background: #ccc;
+        }
+
+        .connection-indicator.online {
+            background: #2ecc71;
+            box-shadow: 0 0 8px #2ecc71;
+        }
+
+        .connection-indicator.offline {
+            background: #e74c3c;
+        }
+
+        .log-item {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.03);
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.8rem;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-badge.pending {
+            background: #f1c40f;
+            color: #fff;
+        }
+
+        .status-badge.accepted {
+            background: #2ecc71;
+            color: #fff;
+        }
+
+        .status-badge.cancelled {
+            background: #e74c3c;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ride-layout">
+        <div class="header-section">
+            <p class="eyebrow">UC-32 | UC-33 Realtime Demo</p>
+            <h1>Vòng Đời Chuyến Xe</h1>
+            <p class="subtle">Quản lý nhận đơn, từ chối hoặc hủy chuyến từ phía tài xế.</p>
+        </div>
+
+        <div class="demo-grid">
+            <!-- Cột 1: Thông tin kết nối -->
+            <section class="panel">
+                <div class="log-header">
+                    <h2>Tham Gia Room Chuyến Xe</h2>
+                </div>
+
+                <form id="join-form" class="form">
+                    <label>
+                        <span>Ride ID (Mã chuyến xe)</span>
+                        <input id="ride-id" type="number" placeholder="Ví dụ: 123">
+                    </label>
+                    <label>
+                        <span>Realtime Server URL</span>
+                        <input id="realtime-url" type="url" value="http://160.30.173.186:8002">
+                    </label>
+
+                    <div class="info-box">
+                        <strong>Lưu ý:</strong> Khi tài xế nhận đơn, hệ thống sẽ phát tín hiệu tới các thành viên đang
+                        tham gia "phòng" của chuyến xe này.
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" id="connect-btn">Kết Nối & Vào Phòng</button>
+                        <button type="button" id="disconnect-btn" class="ghost">Rời Phòng</button>
+                    </div>
+                </form>
+
+                <div class="status-grid" style="margin-top: 20px;">
+                    <article class="status-card" style="grid-column: span 3;">
+                        <span class="label">Trạng thái phòng: <strong id="room-name">Chưa vào</strong></span>
+                        <strong>
+                            <span id="conn-indicator" class="connection-indicator"></span>
+                            <span id="conn-text">Disconnected</span>
+                        </strong>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Cột 2: Thao tác tài xế -->
+            <section class="panel">
+                <div class="log-header">
+                    <h2>Giả lập Thao tác Tài xế</h2>
+                </div>
+
+                <form id="action-form" class="form">
+                    <label>
+                        <span>Backend URL</span>
+                        <input id="backend-url" type="url" value="http://localhost:8000">
+                    </label>
+                    <label>
+                        <span>Bearer Token (Tài xế)</span>
+                        <textarea id="driver-token" rows="2" placeholder="Dán token tài xế"></textarea>
+                    </label>
+
+                    <div class="info-box">
+                        Sử dụng các nút bên dưới để gọi API Backend điều khiển chuyến xe.
+                    </div>
+
+                    <div class="actions" style="flex-direction: column;">
+                        <button type="button" id="accept-btn" style="width: 100%;" class="success">Chấp Nhận Chuyến
+                            Xe</button>
+                        <div style="display: flex; gap: 10px; width: 100%;">
+                            <button type="button" id="reject-btn" style="flex: 1;" class="ghost">Từ Chối Đơn</button>
+                            <button type="button" id="cancel-btn" style="flex: 1;" class="danger">Hủy Chuyến (Sau
+                                nhận)</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <!-- Log Sự kiện toàn màn hình ngang -->
+        <section class="log-card">
+            <div class="log-header">
+                <h2>Lịch Sử Sự Kiện (Ride Events)</h2>
+                <button id="clear-btn" class="ghost">Xóa Log</button>
+            </div>
+            <ul id="log-list" class="event-log" style="max-height: 400px; min-height: 200px;">
+                <li class="subtle" style="text-align: center; border: none;">Vui lòng vào phòng để bắt đầu nhận sự
+                    kiện...</li>
+            </ul>
+        </section>
+    </div>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="./ride-app.js"></script>
+</body>
+
+</html>

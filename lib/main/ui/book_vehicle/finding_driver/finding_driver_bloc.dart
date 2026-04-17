@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:demo_app/main/utils/service/local_notification_service.dart';
 import 'package:equatable/equatable.dart';
 
@@ -8,6 +11,8 @@ part 'finding_driver_state.dart';
 
 class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
   final Ride? ride;
+  late StreamSubscription _sub;
+
   FindingDriverBloc({this.ride})
       : super(FindingDriverState(
           pickupAddress: ride?.pickupAddress ?? '',
@@ -20,6 +25,12 @@ class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
     on<FindingDriverCancelSearch>(_onCancelSearch);
     on<FindingDriverFound>(_onDriverFound);
     on<FindingDriverTimeout>(_onTimeout);
+    _sub = UserSocketService().onRideEvent.listen((data) {
+      // if(data["event"] == "DRIVER_FOUND"){
+      //   add(const FindingDriverFound());
+      // }
+      print("data tu user socket service $data");
+    });
   }
 
   Future<void> _onStartSearch(

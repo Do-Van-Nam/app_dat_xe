@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
 import 'bloc/waiting_approval_bloc.dart';
 import 'widgets/support_card.dart';
@@ -32,6 +33,8 @@ class _WaitingApprovalView extends StatelessWidget {
       listener: (context, state) {
         if (state.pageStatus == WaitingApprovalPageStatus.approved) {
           // TODO: navigate to home / dashboard screen
+          AppToast.show(context, "HO so da duoc duyet");
+          context.go(PATH_HOME);
         }
       },
       child: Scaffold(

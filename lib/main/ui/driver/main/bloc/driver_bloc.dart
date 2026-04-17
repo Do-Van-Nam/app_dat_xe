@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:demo_app/main/data/model/unique_error.dart';
 import 'package:demo_app/main/data/repository/driver_repository.dart';
+import 'package:demo_app/main/data/service/socket_service/socket_service.dart';
 import 'package:equatable/equatable.dart';
 
 import '../driver_models.dart';
@@ -10,6 +11,7 @@ part 'driver_event.dart';
 part 'driver_state.dart';
 
 class DriverBloc extends Bloc<DriverEvent, DriverState> {
+  final SocketService _socketService = SocketService();
   DriverBloc() : super(const DriverState()) {
     on<ToggleOnlineStatus>(_onToggleOnline);
     on<NewRideArrived>(_onNewRide);
@@ -24,6 +26,17 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
     on<SosTapped>(_onSos);
     on<ChatTapped>(_onChat);
     on<CallTapped>(_onCall);
+
+    print("bloc log bat dau khoi tao socket");
+    // connectToRealtime();
+    // Khởi tạo Socket khi Bloc được tạo
+    _socketService.init();
+
+    // Lắng nghe từ SocketService
+    _socketService.onApplicationApproved.listen((data) {
+      // add(WaitingApprovalStatusUpdated(WaitingApprovalPageStatus.approved));
+      print("data: $data");
+    });
   }
 
   Timer? _countdownTimer;

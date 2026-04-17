@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:demo_app/main/data/model/ride/price.dart';
 import 'package:demo_app/main/data/model/ride/vehicle.dart';
 import 'package:demo_app/main/data/repository/ride_repository.dart';
+import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:demo_app/res/app_images.dart';
 import 'package:demo_app/router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -213,6 +214,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
     if (success) {
       event.onSuccess(PATH_TRACKING, price);
+      UserSocketService().joinRide(rId);
     }
   }
 

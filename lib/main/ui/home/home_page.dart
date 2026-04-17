@@ -371,6 +371,9 @@ class HomeView extends StatelessWidget {
                     onPressed: () => context.push(PATH_DRIVER_MAIN),
                     child: Text("Driver Main")),
                 OutlinedButton(
+                    onPressed: () => context.push(PATH_WAITING_APPROVAL),
+                    child: Text("Waiting Approval")),
+                OutlinedButton(
                     onPressed: () => context.push(PATH_MAP_SAMPLE),
                     child: Text("Map Sample")),
                 OutlinedButton(
@@ -546,15 +549,15 @@ class HomeView extends StatelessWidget {
                     height: 90,
                     fit: BoxFit.cover,
                     errorWidget: (context, url, error) {
-                      return Image.asset(AppImages.icBag,
+                      return SvgPicture.asset(AppImages.icBag,
                           width: 90, height: 90);
                     },
                     placeholder: (context, url) {
-                      return Image.asset(AppImages.icBag,
+                      return SvgPicture.asset(AppImages.icBag,
                           width: 90, height: 90);
                     },
                   )
-                : Image.asset(AppImages.icBag, width: 90, height: 90),
+                : SvgPicture.asset(AppImages.icBag, width: 90, height: 90),
           ),
           const SizedBox(width: 12),
           Expanded(
