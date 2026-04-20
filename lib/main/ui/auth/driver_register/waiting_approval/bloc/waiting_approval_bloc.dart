@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:demo_app/core/app_export.dart';
-import 'package:demo_app/main/data/service/approval_socket_service.dart';
-import 'package:demo_app/main/data/service/socket_service.dart';
+import 'package:demo_app/main/data/service/socket_service/approval_socket_service.dart';
+import 'package:demo_app/main/data/service/socket_service/socket_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'waiting_approval_event.dart';

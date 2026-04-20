@@ -27,19 +27,23 @@ class ApiInterceptors extends InterceptorsWrapper {
     AppLogger().logInfo(
       "\n-------------------------------------------------------------------\n ${options.headers["Authorization"]}",
     );
-    if (method == 'GET') {
-      AppLogger().logInfo(
-        "✈️ REQUEST[$method] => PATH: $uri \n Token: ${options.headers}\n DATA: ${jsonEncode(data)}",
-      );
+    String requestBody = "";
+    if (data is FormData) {
+      final fields = data.fields.map((e) => "${e.key}: ${e.value}").join(", ");
+      final files =
+          data.files.map((e) => "${e.key}: ${e.value.filename}").join(", ");
+      requestBody = "FormData(fields: [$fields], files: [$files])";
     } else {
       try {
-        AppLogger().logInfo(
-          "✈️ REQUEST[$method] => PATH: $uri \n DATA: ${jsonEncode(data)}",
-        );
+        requestBody = jsonEncode(data);
       } catch (e) {
-        AppLogger().logInfo("✈️ REQUEST[$method] => PATH: $uri \n DATA: $data");
+        requestBody = data.toString();
       }
     }
+
+    AppLogger().logInfo(
+      "✈️ REQUEST[$method] => PATH: $uri \n DATA: $requestBody",
+    );
 
     super.onRequest(options, handler);
   }

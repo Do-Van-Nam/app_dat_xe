@@ -1,4 +1,5 @@
 ﻿import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
 
 import 'activity_bloc.dart';
 
@@ -240,9 +241,37 @@ class ActivityPage extends StatelessWidget {
 
   Widget _buildActivityItem(
       BuildContext context, ActivityItem item, AppLocalizations l10n) {
+    final Ride ride = Ride(
+      id: "1",
+      customerId: "1",
+      driverId: "1",
+      pickupAddress: "1",
+      pickupLat: "1",
+      pickupLng: "1",
+      destinationAddress: "1",
+      destinationLat: "1",
+      destinationLng: "1",
+      distance: 1,
+      duration: 1,
+      vehicleType: 1,
+      status: 1,
+      basePrice: "1",
+      distancePrice: "1",
+      totalPrice: "1",
+      voucherId: "1",
+      voucherCode: "1",
+      discountAmount: "1",
+      isPaid: true,
+      cancelReason: "1",
+      cancellationFee: "1",
+      timeFare: "1",
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      deletedAt: DateTime.now(),
+    );
     return GestureDetector(
       onTap: () {
-        context.push(PATH_ACTIVITY_TRIP_DETAIL);
+        context.push(PATH_ACTIVITY_TRIP_DETAIL, extra: {"ride": ride});
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),

@@ -53,7 +53,8 @@ class ApiEndPoint {
       "$DOMAIN_API/ride/$rideId/confirm";
   static String DOMAIN_RIDE_CANCEL(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/cancel";
-
+  static String DOMAIN_RIDE_CANCEL_REQUEST(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/cancel-request";
 // chuyen xe
 // tai xe
   static String get DOMAIN_DRIVER_STATUS => "$DOMAIN_API/driver/status";
@@ -63,6 +64,22 @@ class ApiEndPoint {
       "$DOMAIN_API/driver/ride/$rideId/reject";
   static String DOMAIN_DRIVER_RIDE_CANCEL(dynamic rideId) =>
       "$DOMAIN_API/driver/ride/$rideId/cancel";
+  static String DOMAIN_DRIVER_RIDE_START(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/start";
+  static String DOMAIN_DRIVER_RIDE_COMPLETE(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/complete";
+  static String DOMAIN_DRIVER_RIDE_ARRIVED(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/arrived";
+  static String DOMAIN_DRIVER_RIDE_PICKUP(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/pickup";
+  static String DOMAIN_DRIVER_RIDE_CANCEL_RESPOND(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/cancel-respond";
+
+  // Operation
+  static String get DOMAIN_OPERATION_LOCATION =>
+      "$DOMAIN_API/operation/location";
+  static String DOMAIN_OPERATION_NAVIGATION(dynamic rideId) =>
+      "$DOMAIN_API/operation/navigation/$rideId";
 
   // homepage
   static String get DOMAIN_HOME_PAGE => "$DOMAIN_API/homepage";

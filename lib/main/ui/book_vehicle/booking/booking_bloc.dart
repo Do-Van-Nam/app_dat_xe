@@ -4,6 +4,7 @@ import 'package:demo_app/main/data/model/ride/price.dart';
 import 'package:demo_app/main/data/model/ride/vehicle.dart';
 import 'package:demo_app/main/data/repository/ride_repository.dart';
 import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/res/app_images.dart';
 import 'package:demo_app/router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -209,11 +210,15 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       return;
     }
 
-    final (success, price) =
+    final (success, ride) =
         await RideRepository().confirmRide(rId, event.expectedPrice);
 
     if (success) {
-      event.onSuccess(PATH_TRACKING, price);
+      // luu chuyen da dat vao
+      await SharePreferenceUtil.saveCurrentRide(ride);
+      event.onSuccess(PATH_TRACKING, ride);
+      print(
+          "tai booking bloc sau khi goi api confirm dat chuyen bat dau join ride $rId");
       UserSocketService().joinRide(rId);
     }
   }

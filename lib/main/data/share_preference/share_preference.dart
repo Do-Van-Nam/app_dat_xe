@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/data/model/user_info_model.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/remote_config_model.dart';
@@ -24,6 +26,8 @@ class ShareKey {
   static const String KEY_DEVICE_TYPE = "KEY_DEVICE_TYPE";
   static const String KEY_OTP_CODE = "KEY_OTP_CODE";
   static const String KEY_LOGIN_TOKEN = "KEY_LOGIN_TOKEN";
+  static const String KEY_CURRENT_RIDE = "KEY_CURRENT_RIDE";
+  static const String KEY_CURRENT_POSITION = "KEY_CURRENT_POSITION";
 }
 
 class SharePreferenceUtil {
@@ -163,6 +167,38 @@ class SharePreferenceUtil {
     final user = User.fromJson(jsonMap);
 
     return user;
+  }
+
+  static Future<void> saveCurrentRide(Ride? model) async {
+    if (model == null) return;
+    final jsonString = jsonEncode(model.toJson());
+    await setString(ShareKey.KEY_CURRENT_RIDE, jsonString);
+  }
+
+  static Future<Ride?> getCurrentRide() async {
+    final jsonString = await getString(ShareKey.KEY_CURRENT_RIDE);
+    if (jsonString.isEmpty) return null;
+
+    final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+    final ride = Ride.fromJson(jsonMap);
+
+    return ride;
+  }
+
+  static Future<void> saveCurrentPosition(Position? model) async {
+    if (model == null) return;
+    final jsonString = jsonEncode(model.toJson());
+    await setString(ShareKey.KEY_CURRENT_POSITION, jsonString);
+  }
+
+  static Future<Position?> getCurrentPosition() async {
+    final jsonString = await getString(ShareKey.KEY_CURRENT_POSITION);
+    if (jsonString.isEmpty) return null;
+
+    final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+    final position = Position.fromMap(jsonMap);
+
+    return position;
   }
 
   static Future saveToken(String token) async {

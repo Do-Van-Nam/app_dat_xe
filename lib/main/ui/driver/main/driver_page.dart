@@ -1,5 +1,10 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/ui/driver/main/sections/shipping/going_to_pickup_shipping_order_section.dart';
+import 'package:demo_app/main/ui/driver/main/sections/shipping/new_shipping_order_section.dart';
+import 'package:demo_app/main/ui/driver/main/sections/shipping/start_shipping_section.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../map_background.dart';
 import 'bloc/driver_bloc.dart';
@@ -46,12 +51,21 @@ class _DriverView extends StatelessWidget {
           children: [
             // BlocSelector chỉ rebuild Map khi các thuộc tính liên quan thay đổi
             Positioned.fill(
-              child: BlocSelector<DriverBloc, DriverState, DriverScreen>(
-                selector: (state) => state.screen,
-                builder: (context, screen) {
-                  return MapBackground(
-                    followUserLocation: true,
-                    autoFetchRoute: true,
+              child: BlocSelector<DriverBloc, DriverState,
+                  ({bool isAutoFetchRoute, LatLng? destinationPoint})>(
+                selector: (state) => (
+                  isAutoFetchRoute: state.isAutoFetchRoute,
+                  destinationPoint: state.destinationPoint,
+                ),
+                builder: (context, record) {
+                  // return MapBackground(
+                  //   followUserLocation: true,
+                  //   destinationPoint: record.destinationPoint,
+                  //   autoFetchRoute: record.isAutoFetchRoute,
+                  // );
+                  return SizedBox(
+                    height: 100,
+                    width: 100,
                   );
                 },
               ),
@@ -90,7 +104,46 @@ class _DriverView extends StatelessWidget {
                 }
               },
               builder: (context, state) {
-                return _buildBody(state);
+                return Stack(
+                  children: [
+                    _buildBody(state),
+
+                    // dropdown doi giao dien de debug
+                    Positioned(
+                      top: 100,
+                      left: 20,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.red, width: 2),
+                        ),
+                        child: DropdownButton<DriverScreen>(
+                          value: state.screen,
+                          items: DriverScreen.values.map((screen) {
+                            return DropdownMenuItem(
+                              value: screen,
+                              child: Text(
+                                screen.name,
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.black),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            if (val != null) {
+                              context
+                                  .read<DriverBloc>()
+                                  .add(DebugChangeScreen(val));
+                            }
+                          },
+                          underline: const SizedBox(),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               },
             ),
           ],
@@ -185,6 +238,12 @@ class _DriverView extends StatelessWidget {
         return l10n.startTrip;
       case DriverScreen.arrivedDest:
         return l10n.arrivedDest;
+      case DriverScreen.newShippingOrder:
+        return l10n.arrivedDest;
+      case DriverScreen.goingToPickupShippingOrder:
+        return l10n.arrivedDest;
+      case DriverScreen.startTripShippingOrder:
+        return l10n.arrivedDest;
     }
   }
 
@@ -208,6 +267,14 @@ class _DriverView extends StatelessWidget {
             return const StartTripSection();
           case DriverScreen.arrivedDest:
             return const OnlineSection();
+          case DriverScreen.newShippingOrder:
+            return const NewShippingOrderSection();
+          case DriverScreen.goingToPickupShippingOrder:
+            return const GoingToPickupShippingOrderSection();
+
+          case DriverScreen.startTripShippingOrder:
+            return const StartShippingSection();
+
           // return const ArrivedDestSection();
         }
       }(),

@@ -16,12 +16,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc() : super(ProfileInitial()) {
     on<LoadProfileEvent>(_onLoadProfile);
     on<LogoutEvent>(_onLogout);
+    on<ChangePaymentMethodEvent>(_onChangePaymentMethod);
 
     _sub = UserSocketService().onRideEvent.listen((data) {
       // if(data["event"] == "DRIVER_FOUND"){
       //   add(const FindingDriverFound());
       // }
-      print("data tu user socket service $data");
+      print("data tu user socket service trong profile bloc $data");
     });
   }
 
@@ -32,7 +33,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final (isSuccess, user) = await UserRepository().getUserProfile();
       if (isSuccess) {
         print("user: ${user?.toJson()}");
-        emit(ProfileLoaded(user: user!));
+        emit(ProfileLoaded(user: user!, isCredit: true));
       } else {
         emit(ProfileError("Không thể tải thông tin cá nhân"));
       }
@@ -55,5 +56,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoggedOut());
       // emit(ProfileError('Đăng xuất thất bại: ${e.toString()}'));
     }
+  }
+
+  Future<void> _onChangePaymentMethod(
+      ChangePaymentMethodEvent event, Emitter<ProfileState> emit) async {
+    emit((state as ProfileLoaded).copyWith(isCredit: event.isCredit));
   }
 }

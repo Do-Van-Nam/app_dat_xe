@@ -691,6 +691,46 @@
   "napTienBtnHome": "Quay lại trang chủ",
   "napTienBtnHistory": "Xem lịch sử giao dịch",
   "tripDetail": "Chi tiết chuyến đi",
+    "totalIncome": "TỔNG THU NHẬP",
+  "totalCreditRemaining": "TỔNG CREDIT CÒN LẠI",
+  "paymentConfiguration": "CẤU HÌNH THANH TOÁN",
+  "chooseDiscountMethod": "Chọn hình thức chiết khấu",
+
+  "creditWallet": "Ví tín dụng (Credit)",
+  "creditWalletDescription": "Khấu trừ % theo từng cuốc xe phát sinh. Phù hợp cho tài xế chạy không thường xuyên.",
+  "recommendedMdc": "MDC ĐINH",
+
+  "subscriptionPackage": "Gói thành viên (Subscription)",
+  "subscriptionDescription": "0% chiết khấu khi mua gói. Tối ưu thu nhập cho tài xế chuyên nghiệp.",
+  "recommended": "KHUYÊN DÙNG",
+
+  "accountAndUtilities": "TÀI KHOẢN & TIỆN ÍCH",
+  "accountInformation": "Thông tin tài khoản",
+  "contactSupport": "Liên hệ hỗ trợ",
+  "accountIssues": "Các vấn đề về tài khoản",
+    "expressDelivery": "GIAO HÀNG SIÊU TỐC",
+  "incomeLabel": "Thu nhập dự kiến",
+
+  "pickupLocation": "ĐIỂM LẤY HÀNG",
+  "dropoffLocation": "ĐIỂM GIAO HÀNG",
+  "arrivedShippingPickup": "ĐÃ ĐẾN ĐIỂM LẤY HÀNG",
+
+  "acceptRide": "NHẬN ĐƠN",
+  "skipRide": "BỎ QUA",
+    "orderCodeLabel": "MÃ ĐƠN HÀNG",
+  "paymentLabel": "THANH TOÁN",
+
+  "imageProof": "Minh chứng hình ảnh",
+  "takePhoto": "Chụp ảnh gói hàng",
+  "photoRequirement": "Yêu cầu ảnh rõ nét, thấy được mã vạch",
+
+  "completeDelivery": "HOÀN THÀNH GIAO HÀNG",
+  "driverArrived": "Tài xế đã đến điểm đón",
+  "driverArriving": "Tài xế đang đến điểm đón",
+  "driverPickedUp": "Tài xế đã đón khách",
+  "driverStarted": "Tài xế đã bắt đầu chuyến đi",
+  "driverCompleted": "Tài xế đã hoàn thành chuyến đi",
+  "driverRejected": "Tài xế đã từ chối chuyến đi",
 
   "login": "Login",
   "home": "Home",

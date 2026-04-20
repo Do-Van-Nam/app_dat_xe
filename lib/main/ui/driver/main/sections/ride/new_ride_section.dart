@@ -62,7 +62,7 @@ class NewRideSection extends StatelessWidget {
                                       style: AppStyles.inter12Regular,
                                     ),
                                     Text(
-                                      '${offer?.distanceKm.toStringAsFixed(1) ?? "1.2"} KM',
+                                      '${offer?.distance?.toStringAsFixed(1) ?? "1.2"} KM',
                                       style: AppStyles.inter12SemiBold.copyWith(
                                           color: AppColors.colorF5A623),
                                     ),
@@ -75,7 +75,7 @@ class NewRideSection extends StatelessWidget {
                           // Countdown
                           CountdownCircle(
                             seconds: state.countdownSeconds,
-                            total: offer?.countdownSeconds ?? 15,
+                            total: 15,
                           ),
                         ],
                       ),
@@ -102,7 +102,7 @@ class NewRideSection extends StatelessWidget {
                                       style: AppStyles.inter11SemiBold.copyWith(
                                           color: AppColors.color27AE60)),
                                   Text(
-                                    '${_fmt(offer?.estimatedEarning ?? 29000)}đ',
+                                    '${offer?.totalPrice ?? 29000}đ',
                                     style: AppStyles.inter36ExtraBold,
                                   ),
                                 ],
@@ -138,8 +138,8 @@ class NewRideSection extends StatelessWidget {
                             iconPath: AppImages.icDropoffPin,
                             iconColor: AppColors.colorF5A623,
                             label: l10n.dropoffPoint,
-                            address:
-                                offer?.dropoffAddress ?? l10n.dropoffAddress,
+                            address: offer?.destinationAddress ??
+                                l10n.dropoffAddress,
                           ),
                         ],
                       ),

@@ -7,7 +7,9 @@ class DriverState extends Equatable {
     this.todayIncome = 0,
     this.totalTrips = 0,
     this.currentOffer,
+    this.destinationPoint,
     this.countdownSeconds = 15,
+    this.isAutoFetchRoute = false,
     this.customer = const CustomerInfo(
       name: 'Nam Huy',
       rating: 4.9,
@@ -34,7 +36,9 @@ class DriverState extends Equatable {
   final NavTab selectedTab;
   final int todayIncome; // VND
   final int totalTrips;
-  final RideOffer? currentOffer;
+  final Ride? currentOffer;
+  final LatLng? destinationPoint;
+  final bool isAutoFetchRoute;
   final int countdownSeconds;
   final CustomerInfo customer; // pickup customer
   final CustomerInfo activeCustomer; // in-trip customer
@@ -52,7 +56,9 @@ class DriverState extends Equatable {
     NavTab? selectedTab,
     int? todayIncome,
     int? totalTrips,
-    RideOffer? currentOffer,
+    Ride? currentOffer,
+    LatLng? destinationPoint,
+    bool? isAutoFetchRoute,
     bool clearOffer = false,
     int? countdownSeconds,
     CustomerInfo? customer,
@@ -69,7 +75,9 @@ class DriverState extends Equatable {
       selectedTab: selectedTab ?? this.selectedTab,
       todayIncome: todayIncome ?? this.todayIncome,
       totalTrips: totalTrips ?? this.totalTrips,
-      currentOffer: clearOffer ? null : (currentOffer ?? this.currentOffer),
+      currentOffer: (currentOffer ?? this.currentOffer),
+      destinationPoint: destinationPoint ?? this.destinationPoint,
+      isAutoFetchRoute: isAutoFetchRoute ?? this.isAutoFetchRoute,
       countdownSeconds: countdownSeconds ?? this.countdownSeconds,
       customer: customer ?? this.customer,
       activeCustomer: activeCustomer ?? this.activeCustomer,

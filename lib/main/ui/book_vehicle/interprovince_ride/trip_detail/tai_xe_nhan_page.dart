@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
 
 import 'tai_xe_nhan_bloc.dart';
 import 'widgets/app_icon_button.dart';

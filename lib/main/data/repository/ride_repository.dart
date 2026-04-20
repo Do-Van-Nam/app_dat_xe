@@ -188,4 +188,23 @@ class RideRepository {
     }
     return (false, null);
   }
+
+// yeu cau huy chuyen sau khi da co tai xe nhan
+  Future<(bool, Ride?)> cancelRideRequest(dynamic rideId, String reason) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_RIDE_CANCEL_REQUEST(rideId),
+      body: {"reason": reason},
+      headers: await _authHeader(),
+    );
+
+    if (response.isSuccess && response.data != null) {
+      try {
+        final data = response.data['data'] ?? response.data;
+        return (true, Ride.fromJson(data as Map<String, dynamic>));
+      } catch (e) {
+        print('❌ cancelRide parse error: $e');
+      }
+    }
+    return (false, null);
+  }
 }

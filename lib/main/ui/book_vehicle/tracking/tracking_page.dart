@@ -1,5 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,14 +10,15 @@ import '../../driver/map_background.dart';
 import 'tracking_bloc.dart';
 
 class TrackingPage extends StatelessWidget {
-  const TrackingPage({super.key});
+  final Ride ride;
+  const TrackingPage({super.key, required this.ride});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     return BlocProvider(
-      create: (_) => TrackingBloc()..add(LoadTrackingDataEvent()),
+      create: (_) => TrackingBloc(ride: ride)..add(LoadTrackingDataEvent()),
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.deliveryAndPickup),
@@ -28,7 +31,18 @@ class TrackingPage extends StatelessWidget {
                 onPressed: () {}),
           ],
         ),
-        body: BlocBuilder<TrackingBloc, TrackingState>(
+        body: BlocConsumer<TrackingBloc, TrackingState>(
+          listener: (context, state) {
+            if (state is TrackingLoaded) {
+              if (state.status == TrackingStatus.driverCompleted) {
+                context.go(PATH_ACTIVITY_TRIP_DETAIL, extra: {"ride": ride});
+              } else if (state.status == TrackingStatus.driverRejected) {
+                AppToast.show(context,
+                    "Tài xế đã hủy chuyến, đừng lo chúng tôi sẽ tìm tài xế khác hỗ trợ bạn");
+                context.go(PATH_FINDING_DRIVER, extra: {"ride": ride});
+              }
+            }
+          },
           builder: (context, state) {
             if (state is TrackingLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -39,6 +53,15 @@ class TrackingPage extends StatelessWidget {
             }
 
             if (state is TrackingLoaded) {
+              final String title = switch (state.status) {
+                TrackingStatus.driverArriving => l10n.driverArriving,
+                TrackingStatus.driverArrived => l10n.driverArrived,
+                TrackingStatus.driverPickedUp => l10n.driverPickedUp,
+                TrackingStatus.driverStarted => l10n.driverStarted,
+                TrackingStatus.driverCompleted => l10n.driverCompleted,
+                TrackingStatus.driverRejected => l10n.driverRejected,
+              };
+
               return Stack(
                 children: [
                   // Map Background
@@ -60,6 +83,7 @@ class TrackingPage extends StatelessWidget {
                     left: 16,
                     right: 16,
                     child: _DriverArrivingCard(
+                      title: title,
                       arrivalTime: state.arrivalTime,
                       distance: state.distance,
                       l10n: l10n,
@@ -96,11 +120,13 @@ class TrackingPage extends StatelessWidget {
 // ==================== WIDGETS DÙNG CHUNG ====================
 
 class _DriverArrivingCard extends StatelessWidget {
+  final String title;
   final String arrivalTime;
   final double distance;
   final AppLocalizations l10n;
 
   const _DriverArrivingCard({
+    required this.title,
     required this.arrivalTime,
     required this.distance,
     required this.l10n,
@@ -130,7 +156,7 @@ class _DriverArrivingCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.driverArriving,
+                  title,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 16),
                 ),
@@ -152,8 +178,8 @@ class _DriverInfoBottomSheet extends StatelessWidget {
   final String vehiclePlate;
   final String vehicleName;
   final double rating;
-  final int discountedPrice;
-  final int originalPrice;
+  final double discountedPrice;
+  final double originalPrice;
   final AppLocalizations l10n;
   final VoidCallback onCancel;
 

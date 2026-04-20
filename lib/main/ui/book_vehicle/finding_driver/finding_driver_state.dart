@@ -1,6 +1,13 @@
 part of 'finding_driver_bloc.dart';
 
-enum FindingDriverStatus { initial, searching, found, cancelled, timeout }
+enum FindingDriverStatus {
+  initial,
+  searching,
+  found,
+  cancelled,
+  timeout,
+  error
+}
 
 class FindingDriverState extends Equatable {
   const FindingDriverState({

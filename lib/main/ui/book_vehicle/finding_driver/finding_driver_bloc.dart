@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/data/repository/ride_repository.dart';
 import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:demo_app/main/utils/service/local_notification_service.dart';
 import 'package:equatable/equatable.dart';
@@ -26,10 +27,11 @@ class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
     on<FindingDriverFound>(_onDriverFound);
     on<FindingDriverTimeout>(_onTimeout);
     _sub = UserSocketService().onRideEvent.listen((data) {
-      // if(data["event"] == "DRIVER_FOUND"){
-      //   add(const FindingDriverFound());
-      // }
-      print("data tu user socket service $data");
+      print("data tu user socket service trong finding driver bloc $data");
+      if (data["event"] == "ride.accepted") {
+        add(const FindingDriverFound());
+      }
+      // data tu user socket service trong finding driver bloc {event: ride.accepted, data: {event: ride.accepted, ride_id: 160403560485574447, driver: {id: 160218433070182013, full_name: driver4, vehicle_name: hshsj, vehicle_number: shnanan, vehicle_type: 1, current_lat: 10.776889, current_lng: 106.700806}, occurred_at: 2026-04-18T04:28:30+00:00}}
     });
   }
 
@@ -39,30 +41,34 @@ class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
   ) async {
     emit(state.copyWith(status: FindingDriverStatus.searching));
 
-    // Simulate searching for a driver
-    await Future.delayed(const Duration(seconds: 8));
+    // // Simulate searching for a driver
+    // await Future.delayed(const Duration(seconds: 8));
 
-    // Only emit if still searching (not cancelled)
-    if (state.status == FindingDriverStatus.searching) {
-      add(const FindingDriverFound());
-    }
+    // // Only emit if still searching (not cancelled)
+    // if (state.status == FindingDriverStatus.searching) {
+    //   add(const FindingDriverFound());
+    // }
   }
 
-  void _onCancelSearch(
+  Future<void> _onCancelSearch(
     FindingDriverCancelSearch event,
     Emitter<FindingDriverState> emit,
-  ) {
-    emit(state.copyWith(status: FindingDriverStatus.cancelled));
+  ) async {
+    final (success, ride) = await RideRepository().cancelRide(
+      this.ride?.id ?? "",
+      "ly do huy",
+    );
+    if (success) {
+      emit(state.copyWith(status: FindingDriverStatus.cancelled));
+    } else {
+      emit(state.copyWith(status: FindingDriverStatus.error));
+    }
   }
 
   void _onDriverFound(
     FindingDriverFound event,
     Emitter<FindingDriverState> emit,
   ) async {
-    await LocalNotificationService.instance.showNotification(
-      title: "Đặt xe thành công",
-      body: "Chuyến đi của bạn đã được xác nhận",
-    );
     emit(state.copyWith(status: FindingDriverStatus.found));
   }
 
@@ -71,5 +77,11 @@ class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
     Emitter<FindingDriverState> emit,
   ) {
     emit(state.copyWith(status: FindingDriverStatus.timeout));
+  }
+
+  @override
+  Future<void> close() {
+    _sub.cancel(); // ⚠️ bắt buộc
+    return super.close();
   }
 }

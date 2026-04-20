@@ -1,5 +1,6 @@
 import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import '../../base/base_response.dart';
 
@@ -9,7 +10,8 @@ class DriverRepository {
   factory DriverRepository() => _instance;
 
   Future<Map<String, String>> _authHeader() async {
-    final token = await SharePreferenceUtil.getLoginToken();
+    // final token = await SharePreferenceUtil.getLoginToken();
+    final token = "157|YXmshfVpzaxPKalr1qeYXws81WmCISKfls4W3Q4P314f44f2";
     return {"Authorization": "Bearer $token"};
   }
 
@@ -39,7 +41,7 @@ class DriverRepository {
   // Chấp nhận chuyến xe
   // POST /api/v1/driver/ride/{rideId}/accept
   // ============================================================
-  Future<(bool, String)> acceptRide({
+  Future<(bool, String, Ride)> acceptRide({
     required dynamic rideId,
     required double lat,
     required double lng,
@@ -52,8 +54,15 @@ class DriverRepository {
         "current_lng": lng,
       },
     );
-
-    return (response.isSuccess, response.message ?? "");
+    Ride ride = Ride();
+    if (response.data is Map<String, dynamic>) {
+      final Map<String, dynamic> data = response.data;
+      if (data.containsKey('data') && data['data'] != null) {
+        final userData = data['data']['ride'] ?? data['data'];
+        ride = Ride.fromJson(userData as Map<String, dynamic>);
+      }
+    }
+    return (response.isSuccess, response.message ?? "", ride);
   }
 
   // ============================================================
@@ -89,6 +98,62 @@ class DriverRepository {
       },
     );
 
+    return (response.isSuccess, response.message ?? "");
+  }
+
+  // ============================================================
+  // Bắt đầu chuyến xe
+  // POST /api/v1/driver/ride/{rideId}/start
+  // ============================================================
+  Future<(bool, String)> startRide(
+      dynamic rideId, double lat, double lng) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_DRIVER_RIDE_START(rideId),
+      headers: await _authHeader(),
+      body: {"lat": lat, "lng": lng},
+    );
+    return (response.isSuccess, response.message ?? "");
+  }
+
+  // ============================================================
+  // Hoàn thành chuyến xe
+  // POST /api/v1/driver/ride/{rideId}/complete
+  // ============================================================
+  Future<(bool, String)> completeRide(
+      dynamic rideId, double lat, double lng) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_DRIVER_RIDE_COMPLETE(rideId),
+      headers: await _authHeader(),
+      body: {"lat": lat, "lng": lng},
+    );
+    return (response.isSuccess, response.message ?? "");
+  }
+
+  // ============================================================
+  // Đã đến điểm đón
+  // POST /api/v1/driver/ride/{rideId}/arrived
+  // ============================================================
+  Future<(bool, String)> arrivedAtPickup(
+      dynamic rideId, double lat, double lng) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_DRIVER_RIDE_ARRIVED(rideId),
+      headers: await _authHeader(),
+      body: {"lat": lat, "lng": lng},
+    );
+    return (response.isSuccess, response.message ?? "");
+  }
+
+  // ============================================================
+  // Đã lấy hàng / đón khách
+  // POST /api/v1/driver/ride/{rideId}/pickup
+  // ============================================================
+  Future<(bool, String)> confirmPickup(
+      dynamic rideId, double lat, double lng) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_DRIVER_RIDE_PICKUP(rideId),
+      headers: await _authHeader(),
+      body: {"lat": lat, "lng": lng},
+    );
     return (response.isSuccess, response.message ?? "");
   }
 }

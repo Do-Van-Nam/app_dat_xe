@@ -1,5 +1,6 @@
 // ── Driver trip flow states ───────────────────────────────────────────────
 enum DriverScreen {
+  // cho nguoi
   offline, // Ngoại tuyến – BẬT button
   online, // Trực tuyến – chờ cuốc, TẮT button
   newRide, // Popup cuốc xe mới (15s countdown)
@@ -7,6 +8,11 @@ enum DriverScreen {
   arrivedPickup, // Đã đến điểm đón – chưa bắt đầu
   startTrip, // Đang chạy – bắt đầu chuyến xe
   arrivedDest, // Đã đến điểm trả
+
+  // cho hang
+  newShippingOrder,
+  goingToPickupShippingOrder,
+  startTripShippingOrder,
 }
 
 // ── Bottom nav tabs ───────────────────────────────────────────────────────

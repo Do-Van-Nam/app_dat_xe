@@ -7,7 +7,8 @@ class HomeInitial extends HomeState {}
 class HomeLoadSuccess extends HomeState {
   final User user;
   final HomePageModel? homeData;
-  HomeLoadSuccess(this.user, this.homeData);
+  final Ride? currentRide;
+  HomeLoadSuccess(this.user, this.homeData, this.currentRide);
 }
 
 class HomeLoadFailure extends HomeState {

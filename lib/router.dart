@@ -284,7 +284,11 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_TRACKING,
-      builder: (context, state) => TrackingPage(),
+      builder: (context, state) {
+        final extras = state.extra as Map;
+        final ride = extras['ride'] as Ride;
+        return TrackingPage(ride: ride);
+      },
     ),
     GoRoute(
       path: PATH_AIRPORT_BOOKING,
@@ -318,7 +322,9 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_TRIP_DETAIL,
-      builder: (context, state) => TripDetailPage(),
+      builder: (context, state) {
+        return TripDetailPage();
+      },
     ),
     // food
     // GoRoute(
@@ -354,7 +360,11 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_ACTIVITY_TRIP_DETAIL,
-      builder: (context, state) => ActivityTripDetailPage(),
+      builder: (context, state) {
+        final extras = state.extra as Map;
+        final ride = extras['ride'] as Ride;
+        return ActivityTripDetailPage(ride: ride);
+      },
     ),
 // DRIVER
     GoRoute(

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
-import 'package:demo_app/main/utils/service/local_notification_service.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 enum SocketConnectionStatus {
@@ -14,10 +13,10 @@ enum SocketConnectionStatus {
   error,
 }
 
-class UserSocketService {
-  static final UserSocketService _instance = UserSocketService._internal();
-  factory UserSocketService() => _instance;
-  UserSocketService._internal();
+class DriverSocketService {
+  static final DriverSocketService _instance = DriverSocketService._internal();
+  factory DriverSocketService() => _instance;
+  DriverSocketService._internal();
 
   IO.Socket? _socket;
 
@@ -51,7 +50,7 @@ class UserSocketService {
     if (!_statusController.isClosed) {
       _statusController.add(newStatus);
     }
-    print('UserSocketService 📶 Socket status: $newStatus');
+    print('DriverSocketService 📶 Socket status: $newStatus');
   }
 
   Future<void> init({String? rideId}) async {
@@ -60,12 +59,12 @@ class UserSocketService {
     }
 
     if (_isInitializing) {
-      print('UserSocketService ⚠️ Socket đang khởi tạo, bỏ qua init trùng');
+      print('DriverSocketService ⚠️ Socket đang khởi tạo, bỏ qua init trùng');
       return;
     }
 
     if (_isInitialized && isConnected) {
-      print('UserSocketService ✅ Socket đã kết nối rồi');
+      print('DriverSocketService ✅ Socket đã kết nối rồi');
       if (_pendingRideId != null) {
         joinRide(_pendingRideId!);
       }
@@ -80,7 +79,7 @@ class UserSocketService {
       final userId = (user?.id ?? "160079173451580383").toString();
       _currentUserId = userId;
 
-      print('UserSocketService 🚀 Khởi tạo socket với userId=$userId');
+      print('DriverSocketService 🚀 Khởi tạo socket với userId=$userId');
 
       if (_socket == null) {
         _socket = _createSocket(userId);
@@ -98,7 +97,7 @@ class UserSocketService {
 
       _isInitialized = true;
     } catch (e) {
-      print('UserSocketService ❌ Lỗi init socket: $e');
+      print('DriverSocketService ❌ Lỗi init socket: $e');
       _setStatus(SocketConnectionStatus.error);
       rethrow;
     } finally {
@@ -109,16 +108,14 @@ class UserSocketService {
   IO.Socket _createSocket(String userId) {
     return IO.io(
       'http://160.30.173.186:8002',
-
-      // 'http://160.30.173.186:3001',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()
           .enableReconnection()
           .setReconnectionAttempts(5)
           .setReconnectionDelay(2000)
-          .setQuery({'userId': userId})
-          // .setQuery({'userId': "160245943409884827"})
+          // force tai xe duoi 091
+          .setQuery({'userId': "160245943409884827"})
           .build(),
     );
   }
@@ -126,11 +123,11 @@ class UserSocketService {
   void _connect() {
     if (_socket == null) return;
     if (_socket!.connected) {
-      print('UserSocketService ✅ Socket đã connected, không connect lại');
+      print('DriverSocketService ✅ Socket đã connected, không connect lại');
       return;
     }
 
-    print('UserSocketService 🔌 Đang connect socket...');
+    print('DriverSocketService 🔌 Đang connect socket...');
     _setStatus(SocketConnectionStatus.connecting);
     _socket!.connect();
   }
@@ -139,42 +136,42 @@ class UserSocketService {
     final s = _socket;
     if (s == null) return;
 
-    print('UserSocketService 🔧 Gắn core listeners');
+    print('DriverSocketService 🔧 Gắn core listeners');
 
     s.onConnect((_) {
-      print('UserSocketService ✅ Socket connected: ${s.id}');
+      print('DriverSocketService ✅ Socket connected: ${s.id}');
       _setStatus(SocketConnectionStatus.connected);
       _joinRideAfterConnect();
     });
 
     s.onDisconnect((reason) {
-      print('UserSocketService ❌ Socket disconnected: $reason');
+      print('DriverSocketService ❌ Socket disconnected: $reason');
       _setStatus(SocketConnectionStatus.disconnected);
     });
 
     s.onConnectError((error) {
-      print('UserSocketService ❌ Socket connect error: $error');
+      print('DriverSocketService ❌ Socket connect error: $error');
       _setStatus(SocketConnectionStatus.error);
     });
 
     s.onError((error) {
-      print('UserSocketService ❌ Socket error: $error');
+      print('DriverSocketService ❌ Socket error: $error');
       _setStatus(SocketConnectionStatus.error);
     });
 
     s.onReconnectAttempt((attempt) {
-      print('UserSocketService 🔄 Reconnect attempt: $attempt');
+      print('DriverSocketService 🔄 Reconnect attempt: $attempt');
       _setStatus(SocketConnectionStatus.reconnecting);
     });
 
     s.onReconnect((attempt) {
-      print('UserSocketService ✅ Reconnected after $attempt attempt(s)');
+      print('DriverSocketService ✅ Reconnected after $attempt attempt(s)');
       _setStatus(SocketConnectionStatus.connected);
       _joinRideAfterConnect();
     });
 
     s.onAny((event, data) {
-      print('UserSocketService 📡 [onAny] "$event" | $data');
+      print('DriverSocketService 📡 [onAny] "$event" | $data');
     });
   }
 
@@ -182,90 +179,65 @@ class UserSocketService {
     final s = _socket;
     if (s == null) return;
 
-    print('UserSocketService 🎯 Gắn business listeners');
+    print('DriverSocketService 🎯 Gắn business listeners');
 
     s.on('driver.application_approved', (data) {
-      print('UserSocketService 📨 driver.application_approved: $data');
+      print('DriverSocketService 📨 driver.application_approved: $data');
       if (!_approvalController.isClosed) {
         _approvalController.add(data);
       }
     });
 
-    s.on('ride.accepted', (data) async {
-      print('UserSocketService 📨 ride.accepted: $data');
-      await LocalNotificationService.instance.showNotification(
-        title: "Đã tìm thấy tài xế cho chuyến đi của bạn",
-        body: "Tài xế sẽ đến đón bạn sớm",
-      );
+    s.on('ride.accepted', (data) {
+      print('DriverSocketService 📨 ride.accepted: $data');
       _emitRideEvent('ride.accepted', data);
     });
 
-    s.on('ride.arrived', (data) async {
-      await LocalNotificationService.instance.showNotification(
-        title: "Tài xế đã đến điểm đón",
-        body: "Tài xế đã đến điểm đón",
-      );
-      print('UserSocketService 📨 ride.arrived: $data');
+    s.on('ride.arrived', (data) {
+      print('DriverSocketService 📨 ride.arrived: $data');
       _emitRideEvent('ride.arrived', data);
     });
 
-    s.on('ride.picked_up', (data) async {
-      await LocalNotificationService.instance.showNotification(
-        title: "Tài xế đã đón bạn",
-        body: "Tài xế đã đón bạn",
-      );
-      print('UserSocketService 📨 ride.picked_up: $data');
+    s.on('ride.picked_up', (data) {
+      print('DriverSocketService 📨 ride.picked_up: $data');
       _emitRideEvent('ride.picked_up', data);
     });
-    s.on('ride.started', (data) async {
-      await LocalNotificationService.instance.showNotification(
-        title: "Chuyến đi đã bắt đầu",
-        body: "Chuyến đi đã bắt đầu",
-      );
-      print('UserSocketService 📨 ride.started: $data');
+    s.on('ride.started', (data) {
+      print('DriverSocketService 📨 ride.started: $data');
       _emitRideEvent('ride.started', data);
     });
 
-    s.on('ride.completed', (data) async {
-      await LocalNotificationService.instance.showNotification(
-        title: "Chuyến đi đã hoàn thành",
-        body: "Chuyến đi đã hoàn thành",
-      );
-      await SharePreferenceUtil.saveCurrentRide(null);
-      print('UserSocketService 📨 ride.completed: $data');
+    s.on('ride.completed', (data) {
+      print('DriverSocketService 📨 ride.completed: $data');
       _emitRideEvent('ride.completed', data);
     });
-    s.on('ride.rejected', (data) async {
-      await SharePreferenceUtil.saveCurrentRide(null);
-      await LocalNotificationService.instance.showNotification(
-        title: "Chuyến đi đã bị từ chối",
-        body: "Chuyến đi đã bị từ chối",
-      );
-      print('UserSocketService 📨 ride.rejected: $data');
+
+    s.on('ride.new_offer', (data) {
+      print('DriverSocketService 📨 ride.new_offer: $data');
+      _emitRideEvent('ride.new_offer', data);
+    });
+// {user_id: 160245943409884827, event: ride.new_offer, ride_id: 160803027243049444, pickup_address: 5 ngo 58 tran vy, destination_address: 5 ngo 58 tran vy, distance_km: 5, total_price: 35000, vehicle_type: BIKE, occurred_at: 2026-04-20T09:21:09+00:00}
+    s.on('ride.rejected', (data) {
+      print('DriverSocketService 📨 ride.rejected: $data');
       _emitRideEvent('ride.rejected', data);
     });
 
-    s.on('ride.cancelled', (data) async {
-      await SharePreferenceUtil.saveCurrentRide(null);
-      await LocalNotificationService.instance.showNotification(
-        title: "Chuyến đi đã bị hủy",
-        body: "Chuyến đi đã bị hủy",
-      );
-      print('UserSocketService 📨 ride.cancelled: $data');
+    s.on('ride.cancelled', (data) {
+      print('DriverSocketService 📨 ride.cancelled: $data');
       _emitRideEvent('ride.cancelled', data);
     });
 
     s.on('ride:tracking.updated', (data) {
-      print('UserSocketService 📨 ride:tracking.updated: $data');
+      print('DriverSocketService 📨 ride:tracking.updated: $data');
       _emitRideEvent('ride:tracking.updated', data);
     });
 
     s.on('ride:join:response', (response) {
-      print('UserSocketService 📍 ride:join:response: $response');
+      print('DriverSocketService 📍 ride:join:response: $response');
     });
 
     s.on('room:joined', (response) {
-      print('UserSocketService 📍 room:joined: $response');
+      print('DriverSocketService 📍 room:joined: $response');
     });
   }
 
@@ -291,37 +263,38 @@ class UserSocketService {
 
     final s = _socket;
     if (s == null) {
-      print('UserSocketService ⚠️ Chưa có socket, lưu pending rideId=$rideId');
+      print(
+          'DriverSocketService ⚠️ Chưa có socket, lưu pending rideId=$rideId');
       return;
     }
 
     if (!s.connected) {
       print(
-          'UserSocketService ⚠️ Socket chưa connected, lưu pending rideId=$rideId');
+          'DriverSocketService ⚠️ Socket chưa connected, lưu pending rideId=$rideId');
       return;
     }
 
-    print('UserSocketService 🚗 Join ride room: $rideId');
-    print('UserSocketService    Socket connected? ${s.connected}');
-    print('UserSocketService    Socket id: ${s.id}');
+    print('DriverSocketService 🚗 Join ride room: $rideId');
+    print('DriverSocketService    Socket connected? ${s.connected}');
+    print('DriverSocketService    Socket id: ${s.id}');
 
     try {
       s.emit('ride:join', {'rideId': rideId});
-      print('UserSocketService  ✓ Emit ride:join thành công');
+      print('DriverSocketService  ✓ Emit ride:join thành công');
     } catch (e) {
-      print('UserSocketService  ✗ Emit ride:join lỗi: $e');
+      print('DriverSocketService  ✗ Emit ride:join lỗi: $e');
     }
   }
 
   Future<void> reconnect() async {
     if (_socket == null) {
-      print('UserSocketService ⚠️ Socket chưa được tạo, gọi init lại');
+      print('DriverSocketService ⚠️ Socket chưa được tạo, gọi init lại');
       await init(rideId: _pendingRideId);
       return;
     }
 
     if (_socket!.connected) {
-      print('UserSocketService ✅ Socket đang connected, không reconnect');
+      print('DriverSocketService ✅ Socket đang connected, không reconnect');
       return;
     }
 
@@ -329,13 +302,13 @@ class UserSocketService {
   }
 
   void disconnect() {
-    print('UserSocketService 🔌 SocketService disconnect');
+    print('DriverSocketService 🔌 SocketService disconnect');
     _socket?.disconnect();
     _setStatus(SocketConnectionStatus.disconnected);
   }
 
   void dispose() {
-    print('UserSocketService 🧹 SocketService dispose');
+    print('DriverSocketService 🧹 SocketService dispose');
 
     _socket?.dispose();
     _socket = null;
@@ -370,7 +343,7 @@ class UserSocketService {
 // dung o file bloc 
   // late StreamSubscription _sub;
 // trong init bloc 
-// _sub = UserSocketService().onApplicationApproved.listen((data) {
+// _sub = DriverSocketService().onApplicationApproved.listen((data) {
 //       add(WaitingApprovalStatusUpdated(WaitingApprovalPageStatus.approved));
 //     });
 

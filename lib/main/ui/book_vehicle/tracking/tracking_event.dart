@@ -6,3 +6,8 @@ sealed class TrackingEvent {}
 class LoadTrackingDataEvent extends TrackingEvent {}
 
 class CancelRideEvent extends TrackingEvent {}
+
+class ChangeTrackingStatusEvent extends TrackingEvent {
+  final TrackingStatus status;
+  ChangeTrackingStatusEvent({required this.status});
+}

@@ -156,10 +156,12 @@ class CountdownCircle extends StatelessWidget {
     super.key,
     required this.seconds,
     required this.total,
+    this.color,
   });
 
   final int seconds;
   final int total;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +173,7 @@ class CountdownCircle extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           CustomPaint(
-            painter: _CountdownPainter(progress: progress),
+            painter: _CountdownPainter(progress: progress, color: color),
             size: const Size(56, 56),
           ),
           Text(
@@ -187,8 +189,9 @@ class CountdownCircle extends StatelessWidget {
 }
 
 class _CountdownPainter extends CustomPainter {
-  _CountdownPainter({required this.progress});
+  _CountdownPainter({required this.progress, this.color});
   final double progress;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -206,7 +209,7 @@ class _CountdownPainter extends CustomPainter {
 
     // Progress arc
     final arcPaint = Paint()
-      ..color = AppColors.colorTimerStroke
+      ..color = color ?? AppColors.colorTimerStroke
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;

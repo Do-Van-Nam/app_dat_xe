@@ -1,10 +1,10 @@
 import 'package:demo_app/core/app_export.dart';
 
 class PaymentDetails extends StatelessWidget {
-  final int baseFare;
-  final int serviceFee;
-  final int discount;
-  final int totalAmount;
+  final double baseFare;
+  final double serviceFee;
+  final double discount;
+  final double totalAmount;
   final AppLocalizations l10n;
 
   const PaymentDetails({
@@ -64,7 +64,7 @@ class PaymentDetails extends StatelessWidget {
     );
   }
 
-  String _formatPrice(int price) {
+  String _formatPrice(double price) {
     return price.toString().replaceAllMapped(
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (Match m) => '${m[1]}.',

@@ -1,5 +1,6 @@
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 import 'finding_driver_bloc.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -16,14 +17,15 @@ class FindingDriverPage extends StatelessWidget {
     return BlocProvider(
       create: (_) =>
           FindingDriverBloc(ride: ride)..add(const FindingDriverStartSearch()),
-      child: _FindingDriverView(path: path),
+      child: _FindingDriverView(path: path, ride: ride),
     );
   }
 }
 
 class _FindingDriverView extends StatelessWidget {
-  const _FindingDriverView({required this.path});
+  const _FindingDriverView({required this.path, this.ride});
   final String path;
+  final Ride? ride;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +35,17 @@ class _FindingDriverView extends StatelessWidget {
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, state) {
         if (state.status == FindingDriverStatus.found) {
-          context.go(path);
+          context.go(path, extra: {"ride": ride});
         }
         if (state.status == FindingDriverStatus.cancelled) {
-          context.pop();
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go(PATH_HOME);
+          }
+        }
+        if (state.status == FindingDriverStatus.error) {
+          AppToast.show(context, "Lỗi khi tìm tài xế");
         }
       },
       child: Scaffold(

@@ -1,5 +1,6 @@
 ﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:demo_app/main/data/model/homepage/homepage.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
@@ -124,6 +125,76 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 20),
+                if (state.currentRide != null) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: GestureDetector(
+                      onTap: () => context.push(PATH_TRACKING,
+                          extra: {"ride": state.currentRide}),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.access_time,
+                                color: Colors.blue,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Chuyến đi đang diễn ra",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Đang chờ tài xế nhận chuyến",
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
 
                 const SizedBox(height: 20),
 
@@ -395,6 +466,48 @@ class HomeView extends StatelessWidget {
                       }
                     },
                     child: Text("Upload Records")),
+                OutlinedButton(
+                    onPressed: () {
+                      context.push(PATH_FINDING_DRIVER, extra: {
+                        "path": PATH_TRACKING,
+                        "ride": Ride(
+                          id: "160402426172027395",
+                          customerId: "158637144988007679",
+                          driverId: null,
+                          pickupAddress: "Số 1 Đào Duy Anh, Đống Đa, Hà Nội",
+                          pickupLat: "21.0072000",
+                          pickupLng: "105.8428000",
+                          destinationAddress:
+                              "Vincom Mega Mall Ocean Park, Gia Lâm, Hà Nội",
+                          destinationLat: "20.9944000",
+                          destinationLng: "105.9458000",
+                          distance: 5000,
+                          duration: 600,
+                          vehicleType: 1,
+                          status: 2,
+                          basePrice: "12000.00",
+                          distancePrice: "20000.00",
+                          totalPrice: "35000.00",
+                          voucherId: null,
+                          isPaid: false,
+                          createdAt:
+                              DateTime.parse("2026-04-18T03:37:58.000000Z"),
+                          updatedAt:
+                              DateTime.parse("2026-04-18T03:40:13.000000Z"),
+                          deletedAt: null,
+                          voucherCode: null,
+                          discountAmount: "0.00",
+                          cancelReason: null,
+                          cancellationFee: "0.00",
+                          timeFare: "3000.00",
+                          // trackingStatus: null,
+                          // driverAssignedAt: null,
+                          // driverArrivedAt: null,
+                          // trackingLastPingAt: null
+                        )
+                      });
+                    },
+                    child: Text("Finding driver")),
                 OutlinedButton(
                     onPressed: () => context.push(PATH_DRIVER_WALLET),
                     child: Text("Driver Wallet")),

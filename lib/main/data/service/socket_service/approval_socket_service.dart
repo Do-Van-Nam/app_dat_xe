@@ -17,7 +17,7 @@ class ApprovalSocketService {
 
   Future<void> init() async {
     if (_isInitialized || _isConnecting) {
-      print("⚠️ Socket đang init hoặc đã init");
+      print("⚠️Approval Socket đang init hoặc đã init");
       return;
     }
 
@@ -25,13 +25,15 @@ class ApprovalSocketService {
 
     final user = await SharePreferenceUtil.getUser();
 
-    print("🚀 Init socket với userId: ${user?.id}");
+    print("🚀Approval Init socket với userId: ${user?.id}");
 
     socket = IO.io(
       'http://160.30.173.186:3001', // ⚠️ nhớ đúng port
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .setQuery({'userId': user?.id})
+          // force userid de debug
+          // .setQuery({'userId': "160245943409884827"})
           .disableAutoConnect() // 👈 QUAN TRỌNG
           .build(),
     );
@@ -47,28 +49,30 @@ class ApprovalSocketService {
   void _setupListeners() {
     if (socket == null) return;
 
-    print('🔧 Setup listeners');
+    print('🔧Approval Setup listeners');
 
     socket!.onConnect((_) {
-      print('✅ Connected: ${socket!.id}');
+      print('✅Approval Connected: ${socket!.id}');
     });
-
+    socket!.onError((error) {
+      print('❌Approval Error: $error');
+    });
     socket!.onDisconnect((reason) {
-      print('❌ Disconnected: $reason');
+      print('❌Approval Disconnected: $reason');
     });
 
     socket!.on('driver.application_approved', (data) {
-      print('📨 driver.application_approved');
+      print('📨Approval driver.application_approved');
       _approvalController.add(data);
     });
 
     socket!.onAny((event, data) {
-      print('📡 $event');
+      print('📡Approval $event');
     });
   }
 
   void dispose() {
-    print("🧹 Dispose socket");
+    print("🧹Approval Dispose socket");
     socket?.disconnect();
     socket = null;
     _isInitialized = false;
