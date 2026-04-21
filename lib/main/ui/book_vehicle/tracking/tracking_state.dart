@@ -14,6 +14,9 @@ enum TrackingStatus {
   driverStarted,
   driverCompleted,
   driverRejected,
+  userCancelRequested,
+  userCancelFailed,
+  userCancelSuccess,
 }
 
 final class TrackingLoaded extends TrackingState {
@@ -28,6 +31,7 @@ final class TrackingLoaded extends TrackingState {
   final String pickupAddress;
   final String destinationAddress;
   final TrackingStatus status;
+  final Ride ride;
 
   TrackingLoaded({
     required this.driverName,
@@ -41,6 +45,7 @@ final class TrackingLoaded extends TrackingState {
     required this.pickupAddress,
     required this.destinationAddress,
     required this.status,
+    required this.ride,
   });
 
   TrackingLoaded copyWith({
@@ -55,6 +60,7 @@ final class TrackingLoaded extends TrackingState {
     String? pickupAddress,
     String? destinationAddress,
     TrackingStatus? status,
+    Ride? ride,
   }) {
     return TrackingLoaded(
       driverName: driverName ?? this.driverName,
@@ -68,6 +74,7 @@ final class TrackingLoaded extends TrackingState {
       pickupAddress: pickupAddress ?? this.pickupAddress,
       destinationAddress: destinationAddress ?? this.destinationAddress,
       status: status ?? this.status,
+      ride: ride ?? this.ride,
     );
   }
 }

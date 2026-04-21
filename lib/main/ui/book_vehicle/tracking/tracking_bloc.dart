@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/data/repository/ride_repository.dart';
 import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
@@ -14,6 +15,7 @@ class TrackingBloc extends Bloc<TrackingEvent, TrackingState> {
   TrackingBloc({required this.ride}) : super(TrackingInitial()) {
     on<LoadTrackingDataEvent>(_onLoadData);
     on<CancelRideEvent>(_onCancelRide);
+    on<CancelRideRequestEvent>(_onCancelRideRequest);
     on<ChangeTrackingStatusEvent>(_onChangeStatus);
     _sub = UserSocketService().onRideEvent.listen((data) {
       print("data tu user socket service trong tracking bloc $data");
@@ -39,26 +41,69 @@ class TrackingBloc extends Bloc<TrackingEvent, TrackingState> {
     try {
       print("ride trong tracking bloc ${ride.toJson()}");
       emit(TrackingLoaded(
-        driverName: "Nguyễn Văn A",
-        vehiclePlate: "59-A1123.45",
-        vehicleName: "Yamaha Exciter",
-        rating: 4.9,
-        arrivalTime: "KHOẢNG 2 PHÚT",
-        distance: double.parse((ride.distance ?? "0").toString()) / 1000,
-        discountedPrice: double.parse(ride.totalPrice ?? "0"),
-        originalPrice: double.parse(ride.totalPrice ?? "0"),
-        pickupAddress: ride.pickupAddress ?? "--",
-        destinationAddress: ride.destinationAddress ?? "--",
-        status: TrackingStatus.driverArriving,
-      ));
+          driverName: "Nguyễn Văn A",
+          vehiclePlate: "59-A1123.45",
+          vehicleName: "Yamaha Exciter",
+          rating: 4.9,
+          arrivalTime: "KHOẢNG 2 PHÚT",
+          distance: double.parse((ride.distance ?? "0").toString()) / 1000,
+          discountedPrice: double.parse(ride.totalPrice ?? "0"),
+          originalPrice: double.parse(ride.totalPrice ?? "0"),
+          pickupAddress: ride.pickupAddress ?? "--",
+          destinationAddress: ride.destinationAddress ?? "--",
+          status: TrackingStatus.driverArriving,
+          ride: ride));
     } catch (e) {
       emit(TrackingError("Không thể tải thông tin theo dõi : $e"));
     }
   }
 
-  void _onCancelRide(CancelRideEvent event, Emitter<TrackingState> emit) {
-    // Thực tế sẽ gọi API hủy chuyến
-    emit(TrackingError("Chuyến đã được hủy"));
+  Future<void> _onCancelRide(
+      CancelRideEvent event, Emitter<TrackingState> emit) async {
+    // emit(TrackingLoading());
+
+    try {
+      final (isSuccess, message) =
+          await RideRepository().cancelRideRequest(ride.id, "Hủy chuyến");
+
+      if (isSuccess) {
+        print("emit userCancellRequested");
+        emit((state as TrackingLoaded)
+            .copyWith(status: TrackingStatus.userCancelSuccess));
+      } else {
+        print("emit userCancellFailed");
+        emit((state as TrackingLoaded)
+            .copyWith(status: TrackingStatus.userCancelFailed));
+      }
+    } catch (e) {
+      print("emit userCancellFailed: $e");
+      emit((state as TrackingLoaded)
+          .copyWith(status: TrackingStatus.userCancelFailed));
+    }
+  }
+
+  Future<void> _onCancelRideRequest(
+      CancelRideRequestEvent event, Emitter<TrackingState> emit) async {
+    // emit(TrackingLoading());
+
+    try {
+      final (isSuccess, message) =
+          await RideRepository().cancelRideRequest(ride.id, "Hủy chuyến");
+
+      if (isSuccess) {
+        print("emit userCancellRequested");
+        emit((state as TrackingLoaded)
+            .copyWith(status: TrackingStatus.userCancelSuccess));
+      } else {
+        print("emit userCancellFailed");
+        emit((state as TrackingLoaded)
+            .copyWith(status: TrackingStatus.userCancelFailed));
+      }
+    } catch (e) {
+      print("emit userCancellFailed: $e");
+      emit((state as TrackingLoaded)
+          .copyWith(status: TrackingStatus.userCancelFailed));
+    }
   }
 
   void _onChangeStatus(

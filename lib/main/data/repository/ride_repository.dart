@@ -178,10 +178,11 @@ class RideRepository {
       headers: await _authHeader(),
     );
 
-    if (response.isSuccess && response.data != null) {
+    if (response.isSuccess) {
       try {
-        final data = response.data['data'] ?? response.data;
-        return (true, Ride.fromJson(data as Map<String, dynamic>));
+        // final data = response.data['data'] ?? response.data;
+        // return (true, Ride.fromJson(data as Map<String, dynamic>));
+        return (true, null);
       } catch (e) {
         print('❌ cancelRide parse error: $e');
       }
@@ -200,6 +201,7 @@ class RideRepository {
     if (response.isSuccess && response.data != null) {
       try {
         final data = response.data['data'] ?? response.data;
+        await SharePreferenceUtil.saveCurrentRide(null);
         return (true, Ride.fromJson(data as Map<String, dynamic>));
       } catch (e) {
         print('❌ cancelRide parse error: $e');

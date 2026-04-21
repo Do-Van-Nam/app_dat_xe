@@ -8,7 +8,7 @@ enum DriverScreen {
   arrivedPickup, // Đã đến điểm đón – chưa bắt đầu
   startTrip, // Đang chạy – bắt đầu chuyến xe
   arrivedDest, // Đã đến điểm trả
-
+  customerCancel,
   // cho hang
   newShippingOrder,
   goingToPickupShippingOrder,

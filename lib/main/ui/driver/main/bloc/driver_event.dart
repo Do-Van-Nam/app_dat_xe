@@ -19,6 +19,22 @@ class NewRideArrived extends DriverEvent {
   List<Object?> get props => [offer];
 }
 
+/// Customer cancellation requested.
+class RideCancellationRequested extends DriverEvent {
+  final Ride offer;
+  const RideCancellationRequested(this.offer);
+  @override
+  List<Object?> get props => [offer];
+}
+
+/// Customer cancellation requested.
+class CustomerCancel extends DriverEvent {
+  final Ride offer;
+  const CustomerCancel(this.offer);
+  @override
+  List<Object?> get props => [offer];
+}
+
 /// Driver accepts the incoming ride.
 class RideAccepted extends DriverEvent {
   const RideAccepted();

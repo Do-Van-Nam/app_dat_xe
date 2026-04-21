@@ -58,15 +58,15 @@ class _DriverView extends StatelessWidget {
                   destinationPoint: state.destinationPoint,
                 ),
                 builder: (context, record) {
-                  // return MapBackground(
-                  //   followUserLocation: true,
-                  //   destinationPoint: record.destinationPoint,
-                  //   autoFetchRoute: record.isAutoFetchRoute,
-                  // );
-                  return SizedBox(
-                    height: 100,
-                    width: 100,
+                  return MapBackground(
+                    followUserLocation: true,
+                    destinationPoint: record.destinationPoint,
+                    autoFetchRoute: record.isAutoFetchRoute,
                   );
+                  // return SizedBox(
+                  //   height: 100,
+                  //   width: 100,
+                  // );
                 },
               ),
             ),
@@ -101,6 +101,23 @@ class _DriverView extends StatelessWidget {
                     ),
                   );
                   context.push(PATH_RATE_TRIP);
+                } else if (state.screen == DriverScreen.customerCancel) {
+                  showCommonPopup(
+                    context: context,
+                    title:
+                        'Khách hàng yêu cầu huỷ chuyến. Xác nhận huỷ chuyến?',
+                    option1Text: 'Không',
+                    option1OnTap: () => Navigator.pop(context),
+                    option2Text: 'Đồng ý',
+                    option2OnTap: () {
+                      // xử lý huỷ chuyến
+                      context
+                          .read<DriverBloc>()
+                          .add(CustomerCancel(state.currentOffer!));
+                      Navigator.pop(context);
+                    },
+                    isShowOption1: false,
+                  );
                 }
               },
               builder: (context, state) {
@@ -108,40 +125,60 @@ class _DriverView extends StatelessWidget {
                   children: [
                     _buildBody(state),
 
-                    // dropdown doi giao dien de debug
-                    Positioned(
-                      top: 100,
-                      left: 20,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.red, width: 2),
-                        ),
-                        child: DropdownButton<DriverScreen>(
-                          value: state.screen,
-                          items: DriverScreen.values.map((screen) {
-                            return DropdownMenuItem(
-                              value: screen,
-                              child: Text(
-                                screen.name,
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.black),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (val) {
-                            if (val != null) {
-                              context
-                                  .read<DriverBloc>()
-                                  .add(DebugChangeScreen(val));
-                            }
-                          },
-                          underline: const SizedBox(),
-                        ),
-                      ),
-                    ),
+                    // // dropdown doi giao dien de debug
+                    // Positioned(
+                    //   top: 100,
+                    //   left: 20,
+                    //   child: Container(
+                    //     padding: const EdgeInsets.symmetric(horizontal: 10),
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.white.withOpacity(0.8),
+                    //       borderRadius: BorderRadius.circular(8),
+                    //       border: Border.all(color: Colors.red, width: 2),
+                    //     ),
+                    //     child: DropdownButton<DriverScreen>(
+                    //       value: state.screen,
+                    //       items: DriverScreen.values.map((screen) {
+                    //         return DropdownMenuItem(
+                    //           value: screen,
+                    //           child: Text(
+                    //             screen.name,
+                    //             style: const TextStyle(
+                    //                 fontSize: 12, color: Colors.black),
+                    //           ),
+                    //         );
+                    //       }).toList(),
+                    //       onChanged: (val) {
+                    //         if (val != null) {
+                    //           context
+                    //               .read<DriverBloc>()
+                    //               .add(DebugChangeScreen(val));
+                    //         }
+                    //       },
+                    //       underline: const SizedBox(),
+                    //     ),
+                    //   ),
+                    // ),
+
+                    // Positioned(
+                    //     top: 100,
+                    //     right: 20,
+                    //     child: TextButton(
+                    //       child: Text("show popup"),
+                    //       onPressed: () {
+                    //         showCommonPopup(
+                    //           context: context,
+                    //           title:
+                    //               'Khách hàng yêu cầu huỷ chuyến. Xác nhận huỷ chuyến?',
+                    //           option1Text: 'Không',
+                    //           option1OnTap: () => Navigator.pop(context),
+                    //           option2Text: 'Huỷ chuyến',
+                    //           option2OnTap: () {
+                    //             // xử lý huỷ chuyến
+                    //           },
+                    //         );
+                    //       },
+                    //     ))
                   ],
                 );
               },
@@ -244,6 +281,8 @@ class _DriverView extends StatelessWidget {
         return l10n.arrivedDest;
       case DriverScreen.startTripShippingOrder:
         return l10n.arrivedDest;
+      case DriverScreen.customerCancel:
+        return l10n.arrivedDest;
     }
   }
 
@@ -274,6 +313,8 @@ class _DriverView extends StatelessWidget {
 
           case DriverScreen.startTripShippingOrder:
             return const StartShippingSection();
+          case DriverScreen.customerCancel:
+            return const OnlineSection();
 
           // return const ArrivedDestSection();
         }

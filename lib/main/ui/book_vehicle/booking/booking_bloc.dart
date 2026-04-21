@@ -235,8 +235,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
     final (success, ride) =
         await RideRepository().cancelRide(event.rideId, event.cancelReason);
-    if (success && ride != null) {
-      rId = ride.id?.toString();
+    if (success) {
+      rId = ride?.id?.toString();
       current = current.copyWith(rideId: rId);
       emit(current);
     } else {

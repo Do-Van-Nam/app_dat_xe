@@ -21,6 +21,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
   DriverBloc() : super(const DriverState()) {
     on<ToggleOnlineStatus>(_onToggleOnline);
     on<NewRideArrived>(_onNewRide);
+    on<RideCancellationRequested>(_onRideCancellationRequested);
     on<RideAccepted>(_onRideAccepted);
     on<RideRejected>(_onRideRejected);
     on<CountdownTicked>(_onCountdownTicked);
@@ -32,6 +33,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
     on<SosTapped>(_onSos);
     on<ChatTapped>(_onChat);
     on<CallTapped>(_onCall);
+    on<CustomerCancel>(_onCustomerCancel);
     on<DebugChangeScreen>((event, emit) {
       emit(state.copyWith(screen: event.screen
           // ,
@@ -54,6 +56,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
         "ride.started" => DriverScreen.goingToPickup,
         "ride.new_offer" => DriverScreen.newRide,
         "ride.completed" => DriverScreen.goingToPickup,
+        "ride.cancellation_requested" => DriverScreen.customerCancel,
         "ride.rejected" || "ride.cancelled" => DriverScreen.goingToPickup,
         _ => null,
       };
@@ -106,7 +109,11 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
         );
 
         // emit(state.copyWith(currentOffer: ride1));
-        add(NewRideArrived(ride1));
+        if (data["event"] == "ride.cancellation_requested") {
+          add(RideCancellationRequested(ride1));
+        } else {
+          add(NewRideArrived(ride1));
+        }
         // add(ChangeTrackingStatusEvent(status: status));
       }
       // data tu user socket service trong finding driver bloc {event: ride.accepted, data: {event: ride.accepted, ride_id: 160403560485574447, driver: {id: 160218433070182013, full_name: driver4, vehicle_name: hshsj, vehicle_number: shnanan, vehicle_type: 1, current_lat: 10.776889, current_lng: 106.700806}, occurred_at: 2026-04-18T04:28:30+00:00}}
@@ -126,8 +133,11 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
     // Go online
 
     try {
+      final position = await SharePreferenceUtil.getCurrentPosition();
       final (isSuccess, message) = await _driverRepository.updateStatus(
-          isOnline: isOnline, lat: 0, lng: 0);
+          isOnline: isOnline,
+          lat: position?.latitude ?? 0,
+          lng: position?.longitude ?? 0);
 
       if (isSuccess) {
         print("emit  success");
@@ -196,6 +206,38 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
     _startCountdown();
   }
 
+  void _onRideCancellationRequested(
+      RideCancellationRequested event, Emitter<DriverState> emit) {
+    emit(state.copyWith(
+      screen: DriverScreen.customerCancel,
+      currentOffer: event.offer,
+    ));
+  }
+
+  Future<void> _onCustomerCancel(
+      CustomerCancel event, Emitter<DriverState> emit) async {
+    try {
+      final (isSuccess, message) = await _driverRepository.driverCancelRespond(
+          rideId: state.currentOffer?.id ?? "0", agreement: true);
+      if (isSuccess) {
+        print("emit  success");
+
+        emit(state.copyWith(
+          screen: DriverScreen.online,
+          clearOffer: true,
+          isAutoFetchRoute: false,
+          destinationPoint: null,
+        ));
+      } else {
+        print("emit  fail");
+        emit(state.copyWith(error: UniqueError(message)));
+      }
+    } catch (e) {
+      print("emit  fail: $e");
+      emit(state.copyWith(error: UniqueError(e.toString())));
+    }
+  }
+
   void _startCountdown() {
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
@@ -233,10 +275,16 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
       if (isSuccess) {
         print("emit  success");
         _countdownTimer?.cancel();
+
         emit(state.copyWith(
           screen: DriverScreen.goingToPickup,
           currentOffer: ride,
           clearOffer: true,
+          isAutoFetchRoute: true,
+          destinationPoint: LatLng(
+            double.parse(ride.pickupLat ?? "0"),
+            double.parse(ride.pickupLng ?? "0"),
+          ),
         ));
       } else {
         print("emit  fail");
@@ -262,7 +310,12 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
       if (isSuccess) {
         _countdownTimer?.cancel();
         print("emit  success");
-        emit(state.copyWith(screen: DriverScreen.online, clearOffer: true));
+        emit(state.copyWith(
+          screen: DriverScreen.online,
+          clearOffer: true,
+          isAutoFetchRoute: false,
+          destinationPoint: null,
+        ));
       } else {
         print("emit  fail");
         emit(state.copyWith(error: UniqueError(message)));
@@ -315,7 +368,14 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
           position?.longitude ?? 0);
       if (isSuccess && isSuccess1) {
         print("emit  success");
-        emit(state.copyWith(screen: DriverScreen.startTrip));
+        emit(state.copyWith(
+          screen: DriverScreen.startTrip,
+          isAutoFetchRoute: true,
+          destinationPoint: LatLng(
+            double.parse(state.currentOffer?.destinationLat ?? "0"),
+            double.parse(state.currentOffer?.destinationLng ?? "0"),
+          ),
+        ));
       } else {
         print("emit  fail");
         emit(state.copyWith(error: UniqueError(message)));
@@ -339,7 +399,10 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
 
       if (isSuccess) {
         print("emit  success");
-        emit(state.copyWith(screen: DriverScreen.arrivedDest));
+        emit(state.copyWith(
+            screen: DriverScreen.arrivedDest,
+            isAutoFetchRoute: false,
+            destinationPoint: null));
       } else {
         print("emit  fail");
         emit(state.copyWith(error: UniqueError(message)));
@@ -363,7 +426,10 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
 
       if (isSuccess) {
         print("emit  success");
-        emit(state.copyWith(screen: DriverScreen.arrivedDest));
+        emit(state.copyWith(
+            screen: DriverScreen.arrivedDest,
+            isAutoFetchRoute: false,
+            destinationPoint: null));
       } else {
         print("emit  fail");
         emit(state.copyWith(error: UniqueError(message)));
