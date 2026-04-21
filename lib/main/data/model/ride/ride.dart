@@ -1,7 +1,7 @@
 class Ride {
-  final int? id;
-  final int? customerId;
-  final int? driverId;
+  final String? id;
+  final String? customerId;
+  final String? driverId;
   final String? pickupAddress;
   final String? pickupLat;
   final String? pickupLng;
@@ -15,7 +15,7 @@ class Ride {
   final String? basePrice;
   final String? distancePrice;
   final String? totalPrice;
-  final int? voucherId;
+  final String? voucherId;
   final String? voucherCode;
   final String? discountAmount;
   final bool? isPaid;

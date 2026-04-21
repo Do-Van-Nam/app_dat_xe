@@ -5,4 +5,5 @@ final AppConfig stagingConfig = AppConfig(
   apiBaseUrl: 'https://api.staging.example.com',
   enableLogging: true,
   appName: 'Demo App (Staging)',
+  socketUrl: 'http://[IP_ADDRESS]',
 );

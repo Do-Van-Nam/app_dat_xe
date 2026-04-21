@@ -13,7 +13,7 @@ class ToggleOnlineStatus extends DriverEvent {
 
 /// A new ride offer arrived.
 class NewRideArrived extends DriverEvent {
-  final RideOffer offer;
+  final Ride offer;
   const NewRideArrived(this.offer);
   @override
   List<Object?> get props => [offer];
@@ -77,4 +77,11 @@ class ChatTapped extends DriverEvent {
 
 class CallTapped extends DriverEvent {
   const CallTapped();
+}
+
+class DebugChangeScreen extends DriverEvent {
+  final DriverScreen screen;
+  const DebugChangeScreen(this.screen);
+  @override
+  List<Object?> get props => [screen];
 }

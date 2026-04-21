@@ -7,10 +7,22 @@ final class ProfileInitial extends ProfileState {}
 
 final class ProfileLoaded extends ProfileState {
   final User user;
+  final bool isCredit;
 
   ProfileLoaded({
     required this.user,
+    required this.isCredit,
   });
+
+  ProfileLoaded copyWith({
+    User? user,
+    bool? isCredit,
+  }) {
+    return ProfileLoaded(
+      user: user ?? this.user,
+      isCredit: isCredit ?? this.isCredit,
+    );
+  }
 }
 
 final class ProfileLoading extends ProfileState {}

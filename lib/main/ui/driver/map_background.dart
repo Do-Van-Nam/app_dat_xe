@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
+import 'package:demo_app/main/data/repository/operation_repository.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_svg/svg.dart';
@@ -132,9 +134,12 @@ class _MapBackgroundState extends State<MapBackground> {
       _decodeAndDraw(widget.encodedPolyline!);
     }
 
-    // Cập nhật marker đến
+    // Cập nhật marker đến và vẽ lại route nếu điểm đến thay đổi
     if (widget.destinationPoint != oldWidget.destinationPoint) {
       _updateDestinationMarker();
+      if (widget.autoFetchRoute && widget.destinationPoint != null) {
+        _autoFetchAndDraw();
+      }
     }
   }
 
@@ -172,9 +177,7 @@ class _MapBackgroundState extends State<MapBackground> {
         _drawRoute(widget.routeCoordinates!);
       } else if (widget.encodedPolyline != null) {
         _decodeAndDraw(widget.encodedPolyline!);
-      } else if (widget.autoFetchRoute &&
-          widget.destinationPoint != null &&
-          widget.goongApiKey != null) {
+      } else if (widget.autoFetchRoute && widget.destinationPoint != null) {
         print("ve map route khi khoi tao ");
         await _autoFetchAndDraw();
       }
@@ -190,9 +193,15 @@ class _MapBackgroundState extends State<MapBackground> {
           accuracy: LocationAccuracy.high,
           distanceFilter: 5, // cập nhật khi di chuyển >= 5m
         ),
-      ).listen((pos) {
+      ).listen((pos) async {
         _onNewPosition(pos);
+        // goi ham callback
         widget.onLocationUpdate?.call(pos);
+        // goi api cap nhat vi tri luon
+        print("map bg goi api update vi tri");
+        await OperationRepository().updateLocation(pos.latitude, pos.longitude);
+        // luu vi tri hien tai vao sharePreference moi khi di chuyen qua 5 met
+        await SharePreferenceUtil.saveCurrentPosition(pos);
       });
     }
   }

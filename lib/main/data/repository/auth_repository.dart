@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
+import 'package:demo_app/main/data/service/socket_service/socket_service.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
+import 'package:dio/dio.dart';
 
 class AuthRepository {
   AuthRepository._();
@@ -88,6 +91,12 @@ class AuthRepository {
         final User user = User.fromJson(userData);
         print("user ${user.toJson()}");
         SharePreferenceUtil.saveUser(user);
+        if (data['data'].containsKey('token') &&
+            data['data']['token'] != null) {
+          final String token = data['data']['token'];
+          print("signup luu  token vao share preference ${token}");
+          SharePreferenceUtil.saveLoginToken(token);
+        }
       }
       if (data.containsKey('message') && data['message'] != null) {
         message = data['message'].toString();
@@ -236,6 +245,8 @@ class AuthRepository {
         message = data['message'].toString();
       }
     }
+    // dispose SocketService khi logout thanh cong
+    if (isSuccess) SocketService().dispose();
 
     return (isSuccess, message);
   }
@@ -316,5 +327,70 @@ class AuthRepository {
       }
     }
     return (isSuccess, message);
+  }
+
+  // ============================================================
+  // Gửi OTP đăng ký tài xế
+  // POST /api/v1/driver/register/send-otp
+  // ============================================================
+  Future<(bool, String, User?)> sendDriverRegisterOtp(
+      Map<String, dynamic> body) async {
+    final response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_DRIVER_REGISTER_SEND_OTP,
+      body: body,
+    );
+
+    bool isSuccess = false;
+    String message = response.message ?? '';
+    User? user;
+
+    if (response.data is Map<String, dynamic>) {
+      final Map<String, dynamic> data = response.data;
+      isSuccess = data['success'] == true;
+      message = data['message']?.toString() ?? message;
+
+      if (data.containsKey('data') && data['data'] != null) {
+        final userData = data['data']['user'] ?? data['data'];
+        user = User.fromJson(userData as Map<String, dynamic>);
+      }
+    }
+    return (isSuccess, message, user);
+  }
+
+  // ============================================================
+  // Submit đăng ký tài xế (Multipart)
+  // POST /api/v1/driver/register/submit
+  // ============================================================
+  Future<(bool, String, User?)> submitDriverRegister(
+      Map<String, dynamic> body) async {
+    final token = await SharePreferenceUtil.getLoginToken();
+    // Để upload file với Dio, ta cần gói body vào FormData
+    // Body giả định chứa các trường text và các trường file (đã được convert qua MultipartFile)
+    final formData = FormData.fromMap(body);
+
+    final response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_DRIVER_REGISTER_SUBMIT,
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    bool isSuccess = false;
+    String message = response.message ?? '';
+    User? user;
+
+    if (response.data is Map<String, dynamic>) {
+      final Map<String, dynamic> data = response.data;
+      isSuccess = data['success'] == true;
+      message = data['message']?.toString() ?? message;
+
+      if (data.containsKey('data') && data['data'] != null) {
+        final userData = data['data']['user'] ?? data['data'];
+        user = User.fromJson(userData as Map<String, dynamic>);
+      }
+    }
+    return (isSuccess, message, user);
   }
 }

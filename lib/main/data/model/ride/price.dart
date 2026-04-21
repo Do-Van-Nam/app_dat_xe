@@ -1,5 +1,5 @@
 class Price {
-  final int? rideId;
+  final String? rideId;
   final num? distanceKm;
   final num? durationMinutes;
   final FareBreakdown? fareBreakdown;

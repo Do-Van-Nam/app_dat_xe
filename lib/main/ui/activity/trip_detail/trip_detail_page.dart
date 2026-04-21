@@ -1,4 +1,6 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 
 import 'bloc/trip_detail_bloc.dart';
 import 'widgets/driver_info_card.dart';
@@ -8,7 +10,8 @@ import 'widgets/payment_details.dart';
 import 'widgets/rating_section.dart';
 
 class ActivityTripDetailPage extends StatelessWidget {
-  const ActivityTripDetailPage({super.key});
+  const ActivityTripDetailPage({super.key, this.ride});
+  final Ride? ride;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,16 @@ class ActivityTripDetailPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.tripDetail, style: AppStyles.inter18Bold),
-          leading: const BackButton(),
+          leading: BackButton(
+            onPressed: () async {
+              await SharePreferenceUtil.saveCurrentRide(null);
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go(PATH_HOME);
+              }
+            },
+          ),
           actions: const [Icon(Icons.notifications_outlined)],
         ),
         backgroundColor: AppColors.colorF9F9FC,
@@ -50,21 +62,23 @@ class ActivityTripDetailPage extends StatelessWidget {
 
                     // 3. Route Section
                     RouteSection(
-                      pickupAddress: state.pickupAddress,
-                      pickupTime: state.pickupTime,
-                      destinationAddress: state.destinationAddress,
-                      destinationTime: state.destinationTime,
-                      distance: state.distance,
-                      duration: state.durationMinutes,
+                      pickupAddress: ride?.pickupAddress ?? "--",
+                      pickupTime: ride?.createdAt?.toString() ?? "--",
+                      destinationAddress: ride?.destinationAddress ?? "--",
+                      destinationTime: ride?.createdAt?.toString() ?? "--",
+                      distance:
+                          double.parse(ride?.distance?.toString() ?? "0") /
+                              1000,
+                      duration: 0,
                       l10n: l10n,
                     ),
 
                     // 4. Payment Details
                     PaymentDetails(
-                      baseFare: state.baseFare,
-                      serviceFee: state.serviceFee,
-                      discount: state.discount,
-                      totalAmount: state.totalAmount,
+                      baseFare: double.parse(ride?.basePrice ?? "0"),
+                      serviceFee: double.parse(ride?.distancePrice ?? "0"),
+                      discount: double.parse(ride?.discountAmount ?? "0"),
+                      totalAmount: double.parse(ride?.totalPrice ?? "0"),
                       l10n: l10n,
                     ),
                     _BottomActions(l10n: l10n),

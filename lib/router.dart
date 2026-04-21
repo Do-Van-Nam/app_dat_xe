@@ -206,14 +206,22 @@ final GoRouter router = GoRouter(
       builder: (context, state) => LanguagePage(),
     ),
 //driver auth
-    GoRoute(
-      path: PATH_DRIVER_REGISTER,
-      // builder: (context, state) => DriverRegisterPage(),
-      builder: (context, state) => UploadRecordsPage(),
-    ),
+    // GoRoute(
+    //   path: PATH_DRIVER_REGISTER,
+    //   // builder: (context, state) => DriverRegisterPage(),
+    //   builder: (context, state) => UploadRecordsPage(),
+    // ),
     GoRoute(
       path: PATH_DRIVER_UPLOAD_RECORDS,
-      builder: (context, state) => UploadRecordsPage(),
+      builder: (context, state) {
+        final extras = state.extra as Map;
+        final phone = extras['phone'] as String;
+        final fullName = extras['fullName'] as String;
+        return UploadRecordsPage(
+          phone: phone,
+          fullName: fullName,
+        );
+      },
     ),
     GoRoute(
       path: PATH_DRIVER_SERVICE_REGISTER,
@@ -276,7 +284,11 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_TRACKING,
-      builder: (context, state) => TrackingPage(),
+      builder: (context, state) {
+        final extras = state.extra as Map;
+        final ride = extras['ride'] as Ride;
+        return TrackingPage(ride: ride);
+      },
     ),
     GoRoute(
       path: PATH_AIRPORT_BOOKING,
@@ -310,7 +322,9 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_TRIP_DETAIL,
-      builder: (context, state) => TripDetailPage(),
+      builder: (context, state) {
+        return TripDetailPage();
+      },
     ),
     // food
     // GoRoute(
@@ -346,7 +360,11 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_ACTIVITY_TRIP_DETAIL,
-      builder: (context, state) => ActivityTripDetailPage(),
+      builder: (context, state) {
+        final extras = state.extra as Map;
+        final ride = extras['ride'] as Ride;
+        return ActivityTripDetailPage(ride: ride);
+      },
     ),
 // DRIVER
     GoRoute(

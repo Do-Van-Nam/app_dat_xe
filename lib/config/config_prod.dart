@@ -5,4 +5,5 @@ final AppConfig prodConfig = AppConfig(
   apiBaseUrl: 'https://api.example.com',
   enableLogging: false,
   appName: 'Demo App',
+  socketUrl: 'http://[IP_ADDRESS]',
 );

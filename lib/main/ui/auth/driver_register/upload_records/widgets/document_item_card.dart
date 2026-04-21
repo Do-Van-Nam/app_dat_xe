@@ -118,16 +118,16 @@ class DocumentItemCard extends StatelessWidget {
                   color: AppColors.colorPrimary,
                 ),
               )
-            else if (isVerified)
-              SvgPicture.asset(
-                AppImages.icCheckCircleGreen,
-                width: 26,
-                height: 26,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.colorGreen,
-                  BlendMode.srcIn,
-                ),
-              )
+            // else if (isVerified)
+            //   SvgPicture.asset(
+            //     AppImages.icCheckCircleGreen,
+            //     width: 26,
+            //     height: 26,
+            //     colorFilter: const ColorFilter.mode(
+            //       AppColors.colorGreen,
+            //       BlendMode.srcIn,
+            //     ),
+            //   )
             else
               _ActionButton(
                 item: item,

@@ -35,7 +35,7 @@ class UploadRecordsFileSelected extends UploadRecordsEvent {
   const UploadRecordsFileSelected(
       {required this.docId, required this.filePath});
   final String docId;
-  final String filePath;
+  final XFile filePath;
 
   @override
   List<Object?> get props => [docId, filePath];
@@ -60,7 +60,26 @@ class UploadRecordsDocFailed extends UploadRecordsEvent {
   List<Object?> get props => [docId, message];
 }
 
+class UploadRecordsInfoChanged extends UploadRecordsEvent {
+  const UploadRecordsInfoChanged({
+    required this.type,
+    required this.value,
+  });
+
+  final String type;
+  final String value;
+
+  @override
+  List<Object?> get props => [
+        type,
+        value,
+      ];
+}
+
 /// User taps "Bước tiếp theo".
 class UploadRecordsNextTapped extends UploadRecordsEvent {
   const UploadRecordsNextTapped();
+
+  @override
+  List<Object?> get props => [];
 }

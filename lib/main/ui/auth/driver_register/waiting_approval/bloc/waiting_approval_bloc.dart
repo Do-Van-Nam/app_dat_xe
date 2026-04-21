@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/data/service/socket_service/approval_socket_service.dart';
+import 'package:demo_app/main/data/service/socket_service/socket_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'waiting_approval_event.dart';
@@ -6,6 +10,9 @@ part 'waiting_approval_state.dart';
 
 class WaitingApprovalBloc
     extends Bloc<WaitingApprovalEvent, WaitingApprovalState> {
+  // final SocketService _socketService = SocketService();
+  late StreamSubscription _sub;
+
   WaitingApprovalBloc() : super(const WaitingApprovalState()) {
     on<WaitingApprovalInitialised>(_onInitialised);
     on<WaitingApprovalStatusUpdated>(_onStatusUpdated);
@@ -13,6 +20,20 @@ class WaitingApprovalBloc
     on<WaitingApprovalGoHomeTapped>(_onGoHomeTapped);
 
     add(const WaitingApprovalInitialised());
+    // print("bloc log bat dau khoi tao socket");
+    // // connectToRealtime();
+    // // Khởi tạo Socket khi Bloc được tạo
+    // _socketService.init();
+
+    // // Lắng nghe từ SocketService
+    // _socketService.onApplicationApproved.listen((data) {
+    //   add(WaitingApprovalStatusUpdated(WaitingApprovalPageStatus.approved));
+    //   print("data: $data");
+    // });
+    print("setup approval socket service o waiting approval bloc");
+    _sub = ApprovalSocketService().onApplicationApproved.listen((data) {
+      add(WaitingApprovalStatusUpdated(WaitingApprovalPageStatus.approved));
+    });
   }
 
   void _onInitialised(
@@ -71,5 +92,11 @@ class WaitingApprovalBloc
     Emitter<WaitingApprovalState> emit,
   ) {
     // Navigation is handled by BlocListener in the UI layer.
+  }
+
+  @override
+  Future<void> close() {
+    _sub.cancel(); // ⚠️ bắt buộc
+    return super.close();
   }
 }
