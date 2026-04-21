@@ -1,7 +1,6 @@
 import 'package:demo_app/core/app_export.dart';
-import 'package:demo_app/main/ui/auth/driver_register/upload_records/widgets/dropdown.dart';
+import '../../driver_register/upload_records/widgets/dropdown.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 
 import 'bloc/upload_records_bloc.dart';
 import 'widgets/document_item_card.dart';
