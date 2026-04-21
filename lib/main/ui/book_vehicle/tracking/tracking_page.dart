@@ -5,6 +5,7 @@ import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../driver/map_background.dart';
 import 'tracking_bloc.dart';
@@ -40,6 +41,14 @@ class TrackingPage extends StatelessWidget {
                 AppToast.show(context,
                     "Tài xế đã hủy chuyến, đừng lo chúng tôi sẽ tìm tài xế khác hỗ trợ bạn");
                 context.go(PATH_FINDING_DRIVER, extra: {"ride": ride});
+              } else if (state.status == TrackingStatus.userCancelSuccess) {
+                AppToast.show(context, "Bạn đã hủy chuyến thành công");
+                context.go(PATH_HOME);
+              } else if (state.status == TrackingStatus.userCancelFailed) {
+                AppToast.show(context, "Bạn đã hủy chuyến thất bại");
+              } else if (state.status == TrackingStatus.userCancelRequested) {
+                AppToast.show(context,
+                    "Đã gửi yêu cầu hủy chuyến đến tài xế, chuyến sẽ được hủy khi tài xế đồng ý hủy chuyến");
               }
             }
           },
@@ -60,21 +69,31 @@ class TrackingPage extends StatelessWidget {
                 TrackingStatus.driverStarted => l10n.driverStarted,
                 TrackingStatus.driverCompleted => l10n.driverCompleted,
                 TrackingStatus.driverRejected => l10n.driverRejected,
+                TrackingStatus.userCancelRequested => l10n.driverArriving,
+                TrackingStatus.userCancelFailed => l10n.driverArriving,
+                TrackingStatus.userCancelSuccess => l10n.driverArriving,
               };
 
               return Stack(
                 children: [
                   // Map Background
                   Positioned.fill(
-                    child: BlocSelector<TrackingBloc, TrackingState, bool>(
-                        selector: (state) {
-                      return true;
-                    }, builder: (context, state) {
-                      return MapBackground(
-                        followUserLocation: true,
-                        autoFetchRoute: true,
-                      );
-                    }),
+                    child: BlocSelector<TrackingBloc, TrackingState, Ride>(
+                        selector: (state) => (state as TrackingLoaded).ride,
+                        builder: (context, ride) {
+                          return MapBackground(
+                            followUserLocation: true,
+                            autoFetchRoute: true,
+                            originPoint: LatLng(
+                              double.parse(ride.pickupLat ?? "0"),
+                              double.parse(ride.pickupLng ?? "0"),
+                            ),
+                            destinationPoint: LatLng(
+                              double.parse(ride.destinationLat ?? "0"),
+                              double.parse(state.ride.destinationLng ?? "0"),
+                            ),
+                          );
+                        }),
                   ),
 
                   // Driver Arriving Info
@@ -473,10 +492,10 @@ void _showCancelDialog(BuildContext context, AppLocalizations l10n) {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SvgPicture.asset(AppImages.icPhone),
-                  const SizedBox(width: 8),
+                  // SvgPicture.asset(AppImages.icPhone),
+                  // const SizedBox(width: 8),
                   Text(
-                    l10n.btnGoiTaiXe,
+                    l10n.confirm,
                     style: AppStyles.inter14SemiBold.copyWith(
                       color: AppColors.colorWhite,
                     ),

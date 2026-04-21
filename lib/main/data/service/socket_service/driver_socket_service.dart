@@ -115,7 +115,8 @@ class DriverSocketService {
           .setReconnectionAttempts(5)
           .setReconnectionDelay(2000)
           // force tai xe duoi 091
-          .setQuery({'userId': "160245943409884827"})
+          // .setQuery({'userId': "160245943409884827"})
+          .setQuery({'userId': userId})
           .build(),
     );
   }
@@ -226,7 +227,10 @@ class DriverSocketService {
       print('DriverSocketService 📨 ride.cancelled: $data');
       _emitRideEvent('ride.cancelled', data);
     });
-
+    s.on('ride.cancellation_requested', (data) {
+      print('DriverSocketService 📨 ride.cancellation_requested: $data');
+      _emitRideEvent('ride.cancellation_requested', data);
+    });
     s.on('ride:tracking.updated', (data) {
       print('DriverSocketService 📨 ride:tracking.updated: $data');
       _emitRideEvent('ride:tracking.updated', data);

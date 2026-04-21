@@ -10,8 +10,8 @@ class DriverRepository {
   factory DriverRepository() => _instance;
 
   Future<Map<String, String>> _authHeader() async {
-    // final token = await SharePreferenceUtil.getLoginToken();
-    final token = "157|YXmshfVpzaxPKalr1qeYXws81WmCISKfls4W3Q4P314f44f2";
+    final token = await SharePreferenceUtil.getLoginToken();
+    // final token = "157|YXmshfVpzaxPKalr1qeYXws81WmCISKfls4W3Q4P314f44f2";
     return {"Authorization": "Bearer $token"};
   }
 
@@ -95,6 +95,24 @@ class DriverRepository {
         "reason_id": reasonId,
         "current_lat": lat,
         "current_lng": lng,
+      },
+    );
+
+    return (response.isSuccess, response.message ?? "");
+  }
+
+// Tài xế đồng ý hủy chuyến xe
+  // POST /api/v1/driver/ride/{rideId}/cancel-respond
+  // ============================================================
+  Future<(bool, String)> driverCancelRespond({
+    required dynamic rideId,
+    required bool agreement,
+  }) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_DRIVER_RIDE_CANCEL_RESPOND(rideId),
+      headers: await _authHeader(),
+      body: {
+        "agreement": agreement,
       },
     );
 
