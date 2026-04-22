@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
 import 'bloc/rate_trip_bloc.dart';
 import 'sections/earning_detail_section.dart';
@@ -12,12 +13,13 @@ import 'sections/route_section.dart';
 // ═══════════════════════════════════════════════════════════════
 
 class RateTripPage extends StatelessWidget {
-  const RateTripPage({super.key});
+  const RateTripPage({super.key, required this.rideId});
+  final String rideId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => RateTripBloc(),
+      create: (_) => RateTripBloc(rideId: rideId)..add(RateTripLoaded()),
       child: const _RateTripView(),
     );
   }
@@ -30,55 +32,57 @@ class _RateTripView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocListener<RateTripBloc, RateTripState>(
-      listenWhen: (p, c) =>
-          p.status != c.status || p.errorMessage != c.errorMessage,
-      listener: (context, state) {
-        if (state.status == RateTripStatus.error &&
-            state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
-        }
-        if (state.status == RateTripStatus.confirmed) {
-          // TODO: navigate to home / ready-for-next-trip screen
-          Navigator.of(context).pop();
-        }
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.colorBackground,
-        appBar: _RateTripAppBar(title: l10n.hoanTatAppBarTitle),
-        body: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    HeroCardSection(),
-                    SizedBox(height: 20),
-                    RouteSection(),
-                    SizedBox(height: 16),
-                    MapSection(),
-                    SizedBox(height: 16),
-                    EarningDetailSection(),
-                    SizedBox(height: 16),
-                    ReviewSection(),
-                    SizedBox(height: 24),
-                  ],
+    return BlocConsumer<RateTripBloc, RateTripState>(
+        listenWhen: (p, c) =>
+            p.status != c.status || p.errorMessage != c.errorMessage,
+        listener: (context, state) {
+          if (state.status == RateTripStatus.error &&
+              state.errorMessage != null) {
+            AppToast.show(context, state.errorMessage!.message);
+          }
+          if (state.status == RateTripStatus.confirmed) {
+            // TODO: navigate to home / ready-for-next-trip screen
+            Navigator.of(context).pop();
+          }
+        },
+        builder: (context, state) {
+          if (state.status == RateTripStatus.loading || state.trip == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final trip = state.trip!;
+          return Scaffold(
+            backgroundColor: AppColors.colorBackground,
+            appBar: _RateTripAppBar(title: l10n.hoanTatAppBarTitle),
+            body: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        HeroCardSection(trip: trip),
+                        SizedBox(height: 20),
+                        RouteSection(trip: trip),
+                        SizedBox(height: 16),
+                        MapSection(trip: trip),
+                        SizedBox(height: 16),
+                        EarningDetailSection(trip: trip),
+                        SizedBox(height: 16),
+                        ReviewSection(),
+                        SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                const _ConfirmButtonSection(),
+              ],
             ),
-            const _ConfirmButtonSection(),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }
-
 // ═══════════════════════════════════════════════════════════════
 //  APP BAR
 // ═══════════════════════════════════════════════════════════════

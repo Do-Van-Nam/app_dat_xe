@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:bloc/bloc.dart';
+import 'package:demo_app/main/data/model/ride/call.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/unique_error.dart';
 import 'package:demo_app/main/data/repository/driver_repository.dart';
+import 'package:demo_app/main/data/repository/ride_repository.dart';
 import 'package:demo_app/main/data/service/socket_service/driver_socket_service.dart';
 import 'package:demo_app/main/data/service/socket_service/socket_service.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
@@ -23,6 +25,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
     on<NewRideArrived>(_onNewRide);
     on<RideCancellationRequested>(_onRideCancellationRequested);
     on<RideAccepted>(_onRideAccepted);
+    on<GetCallInfo>(_onGetCallInfo);
     on<RideRejected>(_onRideRejected);
     on<CountdownTicked>(_onCountdownTicked);
     on<ArrivedAtPickup>(_onArrivedPickup);
@@ -44,6 +47,12 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
           // )
           ));
     });
+    // khoi tao driver socket service o man home
+    // print("khoi tao driver socket service o home bloc");
+    // _driverSocketService.init();
+    // if (currentRide != null) {
+    //   _driverSocketService.joinRide(currentRide.id ?? "");
+    // }
     //khoi tao driver socket service o man home
     print("khoi tao driver socket service o driver bloc");
     _driverSocketService.init();
@@ -276,6 +285,8 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
         print("emit  success");
         _countdownTimer?.cancel();
 
+        add(GetCallInfo(ride.id ?? "0"));
+
         emit(state.copyWith(
           screen: DriverScreen.goingToPickup,
           currentOffer: ride,
@@ -289,6 +300,29 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
       } else {
         print("emit  fail");
         emit(state.copyWith(error: UniqueError(message)));
+      }
+    } catch (e) {
+      print("emit  fail: $e");
+      emit(state.copyWith(error: UniqueError(e.toString())));
+    }
+    // bat de test, sau nay xoa di
+    // emit(state.copyWith(
+    //   screen: DriverScreen.goingToPickup,
+    //   clearOffer: true,
+    // ));
+  }
+
+  Future<void> _onGetCallInfo(
+      GetCallInfo event, Emitter<DriverState> emit) async {
+    try {
+      final (isSuccess, callInfo) =
+          await RideRepository().getCallInfo(state.currentOffer?.id ?? "0");
+      print("callInfo sau khi get: ${callInfo?.toJson()}");
+      if (isSuccess) {
+        emit(state.copyWith(callInfo: callInfo));
+      } else {
+        print("emit  fail");
+        emit(state.copyWith(error: UniqueError("Da co loi xay ra")));
       }
     } catch (e) {
       print("emit  fail: $e");

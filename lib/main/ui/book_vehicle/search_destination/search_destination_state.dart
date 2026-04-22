@@ -17,8 +17,8 @@ final class SearchDestinationSubmit extends SearchDestinationState {
 final class SearchDestinationLoading extends SearchDestinationState {}
 
 final class SearchDestinationLoaded extends SearchDestinationState {
-  final List<PopularDestination> popularDestinations;
-  final List<RecentSearch> recentSearches;
+  final List<GoongLocation> popularDestinations;
+  final List<GoongLocation> recentSearches;
   final String currentLocation;
   final bool isLoadingLocation;
   // Cho kết quả tìm kiếm Goong Maps
@@ -29,6 +29,8 @@ final class SearchDestinationLoaded extends SearchDestinationState {
   final String? pickupPlaceId;
   final String? destinationPlaceId;
   final String? submitMessage;
+  final GoongLocation? homeLocation;
+  final GoongLocation? workLocation;
 
   SearchDestinationLoaded({
     required this.popularDestinations,
@@ -42,11 +44,13 @@ final class SearchDestinationLoaded extends SearchDestinationState {
     this.pickupPlaceId,
     this.destinationPlaceId,
     this.submitMessage,
+    this.homeLocation,
+    this.workLocation,
   });
 
   SearchDestinationLoaded copyWith({
-    List<PopularDestination>? popularDestinations,
-    List<RecentSearch>? recentSearches,
+    List<GoongLocation>? popularDestinations,
+    List<GoongLocation>? recentSearches,
     String? currentLocation,
     bool? isLoadingLocation,
     List<GoongLocation>? searchResults,
@@ -56,6 +60,8 @@ final class SearchDestinationLoaded extends SearchDestinationState {
     String? pickupPlaceId,
     String? destinationPlaceId,
     String? submitMessage,
+    GoongLocation? homeLocation,
+    GoongLocation? workLocation,
   }) {
     return SearchDestinationLoaded(
       popularDestinations: popularDestinations ?? this.popularDestinations,
@@ -69,6 +75,8 @@ final class SearchDestinationLoaded extends SearchDestinationState {
       pickupPlaceId: pickupPlaceId ?? this.pickupPlaceId,
       destinationPlaceId: destinationPlaceId ?? this.destinationPlaceId,
       submitMessage: submitMessage ?? this.submitMessage,
+      homeLocation: homeLocation ?? this.homeLocation,
+      workLocation: workLocation ?? this.workLocation,
     );
   }
 }

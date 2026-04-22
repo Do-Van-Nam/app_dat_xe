@@ -1,9 +1,13 @@
 ﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:demo_app/main/data/model/goong/location.dart';
 import 'package:demo_app/main/data/model/homepage/homepage.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
+import 'package:demo_app/main/data/repository/goong_repository.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
+import 'package:demo_app/main/utils/widget/popup_widgets.dart';
+import 'package:demo_app/main/utils/widget/textfield_widgets.dart';
 import 'home_bloc.dart';
 import 'package:demo_app/core/app_export.dart';
 
@@ -126,75 +130,75 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 20),
-                if (state.currentRide != null) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: GestureDetector(
-                      onTap: () => context.push(PATH_TRACKING,
-                          extra: {"ride": state.currentRide}),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.shade50,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Icons.access_time,
-                                color: Colors.blue,
-                                size: 20,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Chuyến đi đang diễn ra",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "Đang chờ tài xế nhận chuyến",
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Icon(
-                              Icons.arrow_forward_ios,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                // const SizedBox(height: 20),
+                // if (state.currentRide != null) ...[
+                //   Padding(
+                //     padding: const EdgeInsets.symmetric(horizontal: 16),
+                //     child: GestureDetector(
+                //       onTap: () => context.push(PATH_TRACKING,
+                //           extra: {"ride": state.currentRide}),
+                //       child: Container(
+                //         padding: const EdgeInsets.all(16),
+                //         decoration: BoxDecoration(
+                //           color: Colors.white,
+                //           borderRadius: BorderRadius.circular(12),
+                //           boxShadow: [
+                //             BoxShadow(
+                //               color: Colors.black.withOpacity(0.05),
+                //               blurRadius: 10,
+                //               offset: const Offset(0, 2),
+                //             ),
+                //           ],
+                //         ),
+                //         child: Row(
+                //           children: [
+                //             Container(
+                //               padding: const EdgeInsets.all(8),
+                //               decoration: BoxDecoration(
+                //                 color: Colors.blue.shade50,
+                //                 borderRadius: BorderRadius.circular(8),
+                //               ),
+                //               child: const Icon(
+                //                 Icons.access_time,
+                //                 color: Colors.blue,
+                //                 size: 20,
+                //               ),
+                //             ),
+                //             const SizedBox(width: 12),
+                //             Expanded(
+                //               child: Column(
+                //                 crossAxisAlignment: CrossAxisAlignment.start,
+                //                 children: [
+                //                   Text(
+                //                     "Chuyến đi đang diễn ra",
+                //                     style: TextStyle(
+                //                       fontWeight: FontWeight.bold,
+                //                       fontSize: 16,
+                //                     ),
+                //                   ),
+                //                   const SizedBox(height: 4),
+                //                   Text(
+                //                     "Đang chờ tài xế nhận chuyến",
+                //                     style: TextStyle(
+                //                       color: Colors.grey.shade600,
+                //                       fontSize: 14,
+                //                     ),
+                //                   ),
+                //                 ],
+                //               ),
+                //             ),
+                //             const Icon(
+                //               Icons.arrow_forward_ios,
+                //               size: 16,
+                //               color: Colors.grey,
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                //   const SizedBox(height: 16),
+                // ],
 
                 const SizedBox(height: 20),
 
@@ -259,12 +263,12 @@ class HomeView extends StatelessWidget {
                       spacing: 12,
                       children: [
                         IntrinsicHeight(
-                          child: _buildSavedAddress(
-                              l10n.home, Icons.home, 'Thêm địa chỉ'),
+                          child: _buildSavedAddress(context, l10n.home,
+                              Icons.home, state.homeAddress, "home"),
                         ),
                         IntrinsicHeight(
-                          child: _buildSavedAddress(
-                              'Công ty', Icons.work, 'Bitexco Financial'),
+                          child: _buildSavedAddress(context, 'Công ty',
+                              Icons.work, state.workAddress, "work"),
                         ),
                       ],
                     ),
@@ -438,6 +442,8 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                // debug
                 OutlinedButton(
                     onPressed: () => context.push(PATH_DRIVER_MAIN),
                     child: Text("Driver Main")),
@@ -514,7 +520,10 @@ class HomeView extends StatelessWidget {
                 OutlinedButton(
                     onPressed: () => context.push(PATH_DRIVER_MEMBERSHIP),
                     child: Text("Driver Membership")),
-
+                OutlinedButton(
+                    onPressed: () => context.push(PATH_RATE_TRIP,
+                        extra: {'rideId': "161154110074588293"}),
+                    child: Text("Rate Trip")),
                 const SizedBox(height: 100), // Space for bottom nav
               ],
             ),
@@ -555,35 +564,100 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildSavedAddress(String title, IconData icon, String subtitle) {
-    return Container(
-      width: 180,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.color_F3F3F6,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(icon, color: AppColors.colorMain),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text(subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey)),
-              ],
+  Widget _buildSavedAddress(BuildContext context, String title, IconData icon,
+      String subtitle, String type) {
+    final TextEditingController destinationController = TextEditingController();
+    final FocusNode destinationFocus = FocusNode();
+    destinationController.text = subtitle;
+    return GestureDetector(
+      onTap: () {
+        // showPopup(
+        //     context: context,
+        //     child: CommonCard(
+        //         child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         Text("dka"),
+        //         Text("dka"),
+        //       ],
+        //     )));
+        // return;
+        showDialog(
+            context: context,
+            builder: (_) => Dialog(
+                  insetPadding: const EdgeInsets.all(16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 8,
+                      children: [
+                        AutocompleteTextField<GoongLocation>(
+                          controller: destinationController,
+                          focusNode: destinationFocus,
+                          hintText: "nhap dia chi",
+                          backgroundColor: Colors.white,
+                          suffixIcon:
+                              const Icon(Icons.map, color: Colors.orange),
+                          fetchSuggestions: (input) async {
+                            final (ok, list) = await GoongRepository()
+                                .getAutocompletePlaces(input: input);
+                            return ok ? list : [];
+                          },
+                          itemBuilder: (context, location) =>
+                              locationSuggestionTile(location),
+                          onSelected: (location) {
+                            destinationController.text = location.description;
+                            if (type == "home") {
+                              context.read<HomeBloc>().add(
+                                  UpdateHomeAddressEvent(location: location));
+                            } else if (type == "work") {
+                              context.read<HomeBloc>().add(
+                                  UpdateWorkAddressEvent(location: location));
+                            }
+                          },
+                          // Giữ nguyên logic nhấn Enter → submit booking
+                          onSubmitted: (_) {},
+                        ),
+                        commonButton(
+                            text: "Xac nhan",
+                            onPressed: () {
+                              context.pop();
+                            })
+                      ],
+                    ),
+                  ),
+                ));
+      },
+      child: Container(
+        width: 180,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.color_F3F3F6,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(icon, color: AppColors.colorMain),
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  Text(subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

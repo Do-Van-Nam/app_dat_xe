@@ -1,23 +1,27 @@
+import 'dart:math';
+
 import 'package:demo_app/core/app_export.dart';
-import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/main/data/model/goong/location.dart';
 import 'package:demo_app/main/data/model/goong/place_detail.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
-import 'package:demo_app/res/app_colors.dart';
-import 'package:demo_app/res/app_fonts.dart';
-import 'package:demo_app/router.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:demo_app/main/data/repository/goong_repository.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
+import 'package:demo_app/main/utils/widget/textfield_widgets.dart';
 
 import 'booking_bloc.dart';
 
 class BookingPage extends StatelessWidget {
   final GoongPlaceDetail pickUp;
   final GoongPlaceDetail dropOff;
-  const BookingPage({super.key, required this.pickUp, required this.dropOff});
 
+  const BookingPage({super.key, required this.pickUp, required this.dropOff});
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _destinationController =
+        TextEditingController();
+    final TextEditingController _pickUpController = TextEditingController();
+    final FocusNode _destinationFocus = FocusNode();
+    final FocusNode _pickUpFocus = FocusNode();
     final l10n = AppLocalizations.of(context)!;
     final request = CreateRideRequest(
       pickupAddress: pickUp.formattedAddress ?? "",
@@ -30,11 +34,24 @@ class BookingPage extends StatelessWidget {
     );
 
     return BlocProvider(
-      create: (_) => BookingBloc()
+      create: (_) => BookingBloc(pickUp, dropOff)
         // ..add(LoadBookingOptionsEvent())
-        ..add(LoadInitialBookingData(request)),
+        ..add(LoadInitialBookingData(request))
+        ..add(SaveIdEvent(
+            pickupPlaceId: pickUp.placeId ?? "",
+            destinationPlaceId: dropOff.placeId ?? "")),
       child: Scaffold(
-        body: BlocBuilder<BookingBloc, BookingState>(
+        body: BlocConsumer<BookingBloc, BookingState>(
+          listenWhen: (previous, current) {
+            return current is BookingLoaded &&
+                previous is BookingLoaded &&
+                current.submitMessage != previous.submitMessage;
+          },
+          listener: (context, state) {
+            if (state is BookingLoaded && state.submitMessage != null) {
+              AppToast.show(context, state.submitMessage!.message);
+            }
+          },
           builder: (context, state) {
             if (state is BookingLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -73,7 +90,10 @@ class BookingPage extends StatelessWidget {
                                 backgroundColor: Colors.white,
                                 child: IconButton(
                                   icon: const Icon(Icons.arrow_back),
-                                  onPressed: () => context.pop(),
+                                  onPressed: () =>
+                                      //  context.pop(true),
+                                      context.go(
+                                          "$PATH_SEARCH_DESTINATION?${Random().nextInt(1000000) + DateTime.now().millisecondsSinceEpoch}"),
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -81,9 +101,68 @@ class BookingPage extends StatelessWidget {
                               // Addresses
                               Expanded(
                                 child: _AddressSection(
-                                  pickup: pickUp.formattedAddress ?? "",
-                                  destination: dropOff.formattedAddress ?? "",
+                                  pickup: state.pickupAddress,
+                                  destination: state.destinationAddress,
                                   l10n: l10n,
+                                  // context: context,
+                                  isLoadingLocation: state.isLoadingLocation,
+                                  state: state,
+                                  context1: context,
+                                  onSubmit: () => context
+                                      .read<BookingBloc>()
+                                      .add(
+                                        SubmitSearchEvent(
+                                          pickupPlaceId:
+                                              state.pickupPlaceId ?? '',
+                                          destinationPlaceId:
+                                              state.destinationPlaceId ?? '',
+                                          onSuccess: (pickupLocation,
+                                              destinationLocation) {
+                                            print(
+                                                "pickupLocation: $pickupLocation");
+                                            print(
+                                                "destinationLocation: $destinationLocation");
+                                            final request = CreateRideRequest(
+                                              pickupAddress: pickupLocation
+                                                      .formattedAddress ??
+                                                  "",
+                                              pickupLat: pickupLocation
+                                                      .geometry?.location?.lat
+                                                      .toString() ??
+                                                  "",
+                                              pickupLng: pickupLocation
+                                                      .geometry?.location?.lng
+                                                      .toString() ??
+                                                  "",
+                                              destinationAddress:
+                                                  destinationLocation
+                                                          .formattedAddress ??
+                                                      "",
+                                              destinationLat:
+                                                  destinationLocation.geometry
+                                                          ?.location?.lat
+                                                          .toString() ??
+                                                      "",
+                                              destinationLng:
+                                                  destinationLocation.geometry
+                                                          ?.location?.lng
+                                                          .toString() ??
+                                                      "",
+                                              vehicleType: 1,
+                                            );
+                                            context.read<BookingBloc>().add(
+                                                LoadInitialBookingData(
+                                                    request));
+                                            // context.push(
+                                            //   PATH_BOOKING,
+                                            //   extra: {
+                                            //     'pickUp': pickupLocation,
+                                            //     'dropOff': destinationLocation,
+                                            //   },
+                                            // );
+                                          },
+                                        ),
+                                      ),
                                 ),
                               ),
                             ],
@@ -168,6 +247,7 @@ class BookingPage extends StatelessWidget {
                                 SizedBox(height: 8),
                                 commonButton(
                                     text: l10n.confirmBooking,
+                                    // margin: EdgeInsets.all(16),
                                     onPressed: () {
                                       context.read<BookingBloc>().add(
                                           ConfirmRideEvent(
@@ -183,13 +263,18 @@ class BookingPage extends StatelessWidget {
                                       // context.push(PATH_FINDING_DRIVER,
                                       //     extra: PATH_TRACKING);
                                     }),
-                                // _ConfirmButton(
-                                //   totalAmount: state.totalAmount,
-                                //   l10n: l10n,
-                                //   onPressed: () => context.push(PATH_TRACKING),
-                                // )
                               ],
                             )),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(
+                        //       horizontal: 16, vertical: 8),
+                        //   child:
+                        // ),
+                        // _ConfirmButton(
+                        //   totalAmount: state.totalAmount,
+                        //   l10n: l10n,
+                        //   onPressed: () => context.push(PATH_TRACKING),
+                        // )
                       ],
                     ),
                   ),
@@ -207,16 +292,64 @@ class BookingPage extends StatelessWidget {
 
 // ==================== WIDGETS DÙNG CHUNG ====================
 
-class _AddressSection extends StatelessWidget {
+class _AddressSection extends StatefulWidget {
   final String pickup;
   final String destination;
   final AppLocalizations l10n;
-
+  final bool isLoadingLocation;
+  final BookingLoaded state;
+  final VoidCallback onSubmit;
+  final BuildContext context1;
   const _AddressSection({
+    super.key,
     required this.pickup,
     required this.destination,
     required this.l10n,
+    this.isLoadingLocation = false,
+    required this.state,
+    required this.onSubmit,
+    required this.context1,
   });
+
+  @override
+  State<_AddressSection> createState() => _AddressSectionState();
+}
+
+class _AddressSectionState extends State<_AddressSection> {
+  late final TextEditingController _pickUpController;
+  late final TextEditingController _destinationController;
+  late final FocusNode _pickUpFocus;
+  late final FocusNode _destinationFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    _pickUpController = TextEditingController(text: widget.pickup);
+    _destinationController = TextEditingController(text: widget.destination);
+    _pickUpFocus = FocusNode();
+    _destinationFocus = FocusNode();
+  }
+
+  @override
+  void didUpdateWidget(covariant _AddressSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Cập nhật text khi state thay đổi từ bên ngoài
+    if (widget.pickup != oldWidget.pickup) {
+      _pickUpController.text = widget.pickup;
+    }
+    if (widget.destination != oldWidget.destination) {
+      _destinationController.text = widget.destination;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pickUpController.dispose();
+    _destinationController.dispose();
+    _pickUpFocus.dispose();
+    _destinationFocus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -266,18 +399,189 @@ class _AddressSection extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(pickup, maxLines: 1, overflow: TextOverflow.ellipsis),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Divider(),
+                  AutocompleteTextField<GoongLocation>(
+                    controller: _pickUpController,
+                    focusNode: _pickUpFocus,
+                    hintText: widget.pickup,
+                    backgroundColor: Colors.white,
+                    fetchSuggestions: (input) async {
+                      final (ok, list) = await GoongRepository()
+                          .getAutocompletePlaces(input: input);
+                      return ok ? list : [];
+                    },
+                    itemBuilder: (context, location) =>
+                        _locationSuggestionTile(location),
+                    onSelected: (location) {
+                      _pickUpController.text = location.description;
+                      widget.context1
+                          .read<BookingBloc>()
+                          .add(SavePickupPlaceIdEvent(location.placeId));
+                    },
+                    // Nút GPS luôn hiển thị (persistentTrailingWidget)
+                    persistentTrailingWidget: GestureDetector(
+                      onTap: widget.isLoadingLocation
+                          ? null
+                          : () => widget.context1
+                              .read<BookingBloc>()
+                              .add(FetchCurrentLocationEvent()),
+                      child: Tooltip(
+                        message: 'Lấy vị trí hiện tại',
+                        child: widget.isLoadingLocation
+                            ? const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              )
+                            : const Icon(
+                                Icons.my_location,
+                                color: Colors.blue,
+                              ),
+                      ),
+                    ),
                   ),
-                  Text(destination,
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
+
+                  const SizedBox(height: 12),
+
+                  // ── Trường điểm đến ─────────────────────────────────
+                  AutocompleteTextField<GoongLocation>(
+                    controller: _destinationController,
+                    focusNode: _destinationFocus,
+                    hintText: widget.destination,
+                    backgroundColor: Colors.white,
+                    suffixIcon: const Icon(Icons.map, color: Colors.orange),
+                    fetchSuggestions: (input) async {
+                      final (ok, list) = await GoongRepository()
+                          .getAutocompletePlaces(input: input);
+                      return ok ? list : [];
+                    },
+                    itemBuilder: (context, location) =>
+                        _locationSuggestionTile(location),
+                    onSelected: (location) {
+                      _destinationController.text = location.description;
+                      widget.context1
+                          .read<BookingBloc>()
+                          .add(SaveDestinationPlaceIdEvent(location.placeId));
+                    },
+                    // Giữ nguyên logic nhấn Enter → submit booking
+                    onSubmitted: (_) {
+                      print("nhan enter tron");
+                      widget.onSubmit();
+                      return;
+                      final state = context.read<BookingBloc>().state;
+                      if (state is BookingLoaded) {
+                        context.read<BookingBloc>().add(
+                              SubmitSearchEvent(
+                                pickupPlaceId: state.pickupPlaceId ?? '',
+                                destinationPlaceId:
+                                    state.destinationPlaceId ?? '',
+                                onSuccess:
+                                    (pickupLocation, destinationLocation) {
+                                  print("pickupLocation: $pickupLocation");
+                                  print(
+                                      "destinationLocation: $destinationLocation");
+                                  final request = CreateRideRequest(
+                                    pickupAddress:
+                                        pickupLocation.formattedAddress ?? "",
+                                    pickupLat: pickupLocation
+                                            .geometry?.location?.lat
+                                            .toString() ??
+                                        "",
+                                    pickupLng: pickupLocation
+                                            .geometry?.location?.lng
+                                            .toString() ??
+                                        "",
+                                    destinationAddress:
+                                        destinationLocation.formattedAddress ??
+                                            "",
+                                    destinationLat: destinationLocation
+                                            .geometry?.location?.lat
+                                            .toString() ??
+                                        "",
+                                    destinationLng: destinationLocation
+                                            .geometry?.location?.lng
+                                            .toString() ??
+                                        "",
+                                    vehicleType: 1,
+                                  );
+                                  context
+                                      .read<BookingBloc>()
+                                      .add(LoadInitialBookingData(request));
+                                  // context.push(
+                                  //   PATH_BOOKING,
+                                  //   extra: {
+                                  //     'pickUp': pickupLocation,
+                                  //     'dropOff': destinationLocation,
+                                  //   },
+                                  // );
+                                },
+                              ),
+                            );
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _locationSuggestionTile(GoongLocation location) {
+    final mainText = location.structuredFormatting.mainText.isNotEmpty
+        ? location.structuredFormatting.mainText
+        : location.description;
+    final subText = location.structuredFormatting.secondaryText;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 16,
+            backgroundColor: AppColors.color_E8E8EA,
+            child: const Icon(
+              Icons.location_on_outlined,
+              color: Colors.grey,
+              size: 16,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  mainText,
+                  style: AppTextFonts.poppinsMedium.copyWith(
+                    fontSize: 14,
+                    color: AppColors.color_1618,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (subText.isNotEmpty)
+                  Text(
+                    subText,
+                    style: AppTextFonts.poppinsRegular.copyWith(
+                      fontSize: 12,
+                      color: AppColors.color_8588,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

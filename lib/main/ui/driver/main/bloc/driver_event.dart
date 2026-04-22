@@ -19,6 +19,14 @@ class NewRideArrived extends DriverEvent {
   List<Object?> get props => [offer];
 }
 
+// lay thong tin lien lac sau khi da co tai xe nhan.
+class GetCallInfo extends DriverEvent {
+  final String rideId;
+  const GetCallInfo(this.rideId);
+  @override
+  List<Object?> get props => [rideId];
+}
+
 /// Customer cancellation requested.
 class RideCancellationRequested extends DriverEvent {
   final Ride offer;

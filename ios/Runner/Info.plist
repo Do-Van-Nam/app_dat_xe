@@ -7,7 +7,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>NHM Dat Xe</string>
+		<string>NHMsoft</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>NHM Dat Xe</string>
+		<string>NHMsoft</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>
@@ -70,14 +70,14 @@
 		<false/>
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
-  			<string>tel</string>
+			<string>tel</string>
 		</array>
 		<!-- google sign in -->
 		<key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-            <string>com.googleusercontent.apps.YOUR-CLIENT-ID</string>
-        </array>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>com.googleusercontent.apps.YOUR-CLIENT-ID</string>
+		</array>
 	</dict>
 </plist>

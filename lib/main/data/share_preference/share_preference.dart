@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:demo_app/main/data/model/goong/location.dart';
+import 'package:demo_app/main/data/model/goong/place_detail.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/data/model/user_info_model.dart';
@@ -28,6 +30,10 @@ class ShareKey {
   static const String KEY_LOGIN_TOKEN = "KEY_LOGIN_TOKEN";
   static const String KEY_CURRENT_RIDE = "KEY_CURRENT_RIDE";
   static const String KEY_CURRENT_POSITION = "KEY_CURRENT_POSITION";
+  static const String KEY_CURRENT_PICKUP = "KEY_CURRENT_PICKUP";
+  static const String KEY_CURRENT_DROPOFF = "KEY_CURRENT_DROPOFF";
+  static const String KEY_HOME_ADDRESS = "KEY_HOME_ADDRESS";
+  static const String KEY_WORK_ADDRESS = "KEY_WORK_ADDRESS";
 }
 
 class SharePreferenceUtil {
@@ -165,6 +171,82 @@ class SharePreferenceUtil {
 
     final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
     final user = User.fromJson(jsonMap);
+
+    return user;
+  }
+
+  static Future<void> saveCurrentPickup(GoongPlaceDetail? model) async {
+    // if (model == null) return;
+    final jsonString = jsonEncode(model?.toJson());
+    await setString(ShareKey.KEY_CURRENT_PICKUP, jsonString);
+  }
+
+  static Future<GoongPlaceDetail?> getCurrentPickup() async {
+    final jsonString = await getString(ShareKey.KEY_CURRENT_PICKUP);
+
+    if (jsonString == null || jsonString.isEmpty || jsonString == "null") {
+      return null;
+    }
+
+    final decoded = jsonDecode(jsonString);
+
+    if (decoded == null || decoded is! Map<String, dynamic>) {
+      return null;
+    }
+
+    return GoongPlaceDetail.fromJson(decoded);
+  }
+
+  static Future<void> saveHomeAddress(GoongLocation? model) async {
+    // if (model == null) return;
+    final jsonString = jsonEncode(model?.toJson());
+    await setString(ShareKey.KEY_HOME_ADDRESS, jsonString);
+  }
+
+  static Future<GoongLocation?> getHomeAddress() async {
+    final jsonString = await getString(ShareKey.KEY_HOME_ADDRESS);
+    if (jsonString.isEmpty || jsonString == null || jsonString == "null") {
+      return null;
+    }
+
+    final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+    final user = GoongLocation.fromJson(jsonMap);
+
+    return user;
+  }
+
+  static Future<void> saveWorkAddress(GoongLocation? model) async {
+    // if (model == null) return;
+    final jsonString = jsonEncode(model?.toJson());
+    await setString(ShareKey.KEY_WORK_ADDRESS, jsonString);
+  }
+
+  static Future<GoongLocation?> getWorkAddress() async {
+    final jsonString = await getString(ShareKey.KEY_WORK_ADDRESS);
+    if (jsonString.isEmpty || jsonString == null || jsonString == "null") {
+      return null;
+    }
+
+    final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+    final user = GoongLocation.fromJson(jsonMap);
+
+    return user;
+  }
+
+  static Future<void> saveCurrentDropOff(GoongPlaceDetail? model) async {
+    // if (model == null) return;
+    final jsonString = jsonEncode(model?.toJson());
+    await setString(ShareKey.KEY_CURRENT_DROPOFF, jsonString);
+  }
+
+  static Future<GoongPlaceDetail?> getCurrentDropOff() async {
+    final jsonString = await getString(ShareKey.KEY_CURRENT_DROPOFF);
+    if (jsonString.isEmpty || jsonString == null || jsonString == "null") {
+      return null;
+    }
+
+    final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+    final user = GoongPlaceDetail.fromJson(jsonMap);
 
     return user;
   }

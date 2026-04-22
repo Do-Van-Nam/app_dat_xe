@@ -22,6 +22,7 @@ class _MainPageState extends State<MainPage> {
   // Danh sách các route tương ứng với bottom nav
   final List<String> _routes = [
     PATH_HOME,
+    // PATH_DRIVER_MAIN,
     PATH_ACTIVITY,
     PATH_PROFILE,
   ];

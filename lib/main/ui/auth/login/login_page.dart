@@ -95,7 +95,6 @@ class _LoginViewState extends State<LoginView> {
                   print(
                       "=== LOGIN FAILURE - Showing toast: ${state.error} ===");
                   AppToast.show(context, state.error);
-                  // KHÔNG navigate ở đây
                 } else if (state is LoginLoading) {
                   print("=== LOGIN LOADING ===");
                 }
@@ -225,46 +224,46 @@ class _LoginViewState extends State<LoginView> {
                             const SizedBox(height: 32),
 
                             // Divider
-                            const Row(
-                              children: [
-                                Expanded(child: Divider()),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  child: Text(
-                                    'HOẶC ĐĂNG NHẬP BẰNG',
-                                    style: TextStyle(
-                                        color: AppColors.color_434653),
-                                  ),
-                                ),
-                                Expanded(child: Divider()),
-                              ],
-                            ),
+                            // const Row(
+                            //   children: [
+                            //     Expanded(child: Divider()),
+                            //     Padding(
+                            //       padding: EdgeInsets.symmetric(horizontal: 16),
+                            //       child: Text(
+                            //         'HOẶC ĐĂNG NHẬP BẰNG',
+                            //         style: TextStyle(
+                            //             color: AppColors.color_434653),
+                            //       ),
+                            //     ),
+                            //     Expanded(child: Divider()),
+                            //   ],
+                            // ),
 
-                            const SizedBox(height: 24),
+                            // const SizedBox(height: 24),
 
-                            // Social Login
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _socialButton(
-                                    'Google',
-                                    "null",
-                                    () => context.read<LoginBloc>().add(
-                                          LoginByGoogle(),
-                                        ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: _socialButton(
-                                    'iOS Apple',
-                                    null,
-                                    signInWithApple,
-                                    isApple: true,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            // // Social Login
+                            // Row(
+                            //   children: [
+                            //     Expanded(
+                            //       child: _socialButton(
+                            //         'Google',
+                            //         "null",
+                            //         () => context.read<LoginBloc>().add(
+                            //               LoginByGoogle(),
+                            //             ),
+                            //       ),
+                            //     ),
+                            //     const SizedBox(width: 12),
+                            //     Expanded(
+                            //       child: _socialButton(
+                            //         'iOS Apple',
+                            //         null,
+                            //         signInWithApple,
+                            //         isApple: true,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),

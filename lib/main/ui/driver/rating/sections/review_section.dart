@@ -7,15 +7,18 @@ import '../widgets/star_rating.dart';
 
 class ReviewSection extends StatelessWidget {
   const ReviewSection();
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
+    const review = CustomerReview(
+      reviewerName: 'Nguyễn Thu Thảo',
+      reviewerType: 'Khách hàng thân thiết',
+      comment: '"Tài xế rất lịch sự và nhiệt tình, xe sạch sẽ."',
+      rating: 5,
+    );
     return BlocBuilder<RateTripBloc, RateTripState>(
-      buildWhen: (p, c) => p.review != c.review,
       builder: (context, state) {
-        final review = state.review;
+        // final review = review;
         return AppOutlinedCard(
           child: Column(
             children: [
@@ -78,4 +81,76 @@ class ReviewSection extends StatelessWidget {
       },
     );
   }
+}
+
+class EarningDetail extends Equatable {
+  const EarningDetail({
+    required this.baseFare,
+    required this.serviceFeeDiscount,
+    required this.serviceFeeValue,
+    required this.totalEarning,
+  });
+
+  final String baseFare;
+  final String serviceFeeDiscount;
+  final String serviceFeeValue;
+  final String totalEarning;
+
+  @override
+  List<Object?> get props =>
+      [baseFare, serviceFeeDiscount, serviceFeeValue, totalEarning];
+}
+
+class TripSummary extends Equatable {
+  const TripSummary({
+    required this.heroAmount,
+    required this.heroDuration,
+    required this.heroDistance,
+    required this.pickupAddress,
+    required this.destinationAddress,
+    required this.mapDistanceValue,
+    required this.mapDurationValue,
+    required this.earning,
+  });
+
+  final String heroAmount;
+  final String heroDuration;
+  final String heroDistance;
+  final String pickupAddress;
+  final String destinationAddress;
+  final String mapDistanceValue;
+  final String mapDurationValue;
+  final EarningDetail earning;
+
+  @override
+  List<Object?> get props => [
+        heroAmount,
+        heroDuration,
+        heroDistance,
+        pickupAddress,
+        destinationAddress,
+        mapDistanceValue,
+        mapDurationValue,
+        earning,
+      ];
+}
+
+class CustomerReview extends Equatable {
+  const CustomerReview({
+    required this.reviewerName,
+    required this.reviewerType,
+    required this.comment,
+    required this.rating,
+    this.avatarUrl = '',
+  });
+
+  final String reviewerName;
+  final String reviewerType;
+  final String comment;
+  final int rating; // 1-5
+  final String avatarUrl;
+
+  @override
+  List<Object?> get props =>
+      [reviewerName, reviewerType, comment, rating, avatarUrl];
 }

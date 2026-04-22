@@ -105,3 +105,56 @@ class CancelRideEvent extends BookingEvent {
   final String cancelReason;
   CancelRideEvent(this.rideId, this.cancelReason);
 }
+
+class SearchQueryChangedEvent extends BookingEvent {
+  final String query;
+  SearchQueryChangedEvent(this.query);
+}
+
+class SaveLocationEvent extends BookingEvent {
+  final String locationId;
+  SaveLocationEvent(this.locationId);
+}
+
+class SavePickupLocationEvent extends BookingEvent {
+  final GoongPlaceDetail pickupLocation;
+  SavePickupLocationEvent(this.pickupLocation);
+}
+
+class SaveDestinationLocationEvent extends BookingEvent {
+  final GoongPlaceDetail destinationLocation;
+  SaveDestinationLocationEvent(this.destinationLocation);
+}
+
+class SavePickupPlaceIdEvent extends BookingEvent {
+  final String pickupPlaceId;
+  SavePickupPlaceIdEvent(this.pickupPlaceId);
+}
+
+class SaveDestinationPlaceIdEvent extends BookingEvent {
+  final String destinationPlaceId;
+  SaveDestinationPlaceIdEvent(this.destinationPlaceId);
+}
+
+class SubmitSearchEvent extends BookingEvent {
+  final String pickupPlaceId;
+  final String destinationPlaceId;
+  final Function(GoongPlaceDetail, GoongPlaceDetail) onSuccess;
+  SubmitSearchEvent({
+    required this.pickupPlaceId,
+    required this.destinationPlaceId,
+    required this.onSuccess,
+  });
+}
+
+class SaveIdEvent extends BookingEvent {
+  final String pickupPlaceId;
+  final String destinationPlaceId;
+  SaveIdEvent({
+    required this.pickupPlaceId,
+    required this.destinationPlaceId,
+  });
+}
+
+/// Trigger lấy vị trí GPS + geocoding địa chỉ hiện tại
+class FetchCurrentLocationEvent extends BookingEvent {}

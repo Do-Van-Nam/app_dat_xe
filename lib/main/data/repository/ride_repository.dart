@@ -1,5 +1,6 @@
 import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
+import 'package:demo_app/main/data/model/ride/call.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/ride/vehicle.dart';
@@ -205,6 +206,25 @@ class RideRepository {
         return (true, Ride.fromJson(data as Map<String, dynamic>));
       } catch (e) {
         print('❌ cancelRide parse error: $e');
+      }
+    }
+    return (false, null);
+  }
+
+  // / yeu cau huy chuyen sau khi da co tai xe nhan
+  Future<(bool, Call?)> getCallInfo(dynamic rideId) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.get(
+      url: ApiEndPoint.DOMAIN_RIDE_CALL_INFO(rideId),
+      headers: await _authHeader(),
+    );
+
+    if (response.isSuccess && response.data != null) {
+      try {
+        final data = response.data['data'] ?? response.data;
+        await SharePreferenceUtil.saveCurrentRide(null);
+        return (true, Call.fromJson(data as Map<String, dynamic>));
+      } catch (e) {
+        print('❌ getCallInfo parse error: $e');
       }
     }
     return (false, null);

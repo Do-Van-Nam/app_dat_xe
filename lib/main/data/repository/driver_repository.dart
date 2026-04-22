@@ -1,6 +1,7 @@
 import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/data/model/ride/ride_income_summary.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import '../../base/base_response.dart';
 
@@ -173,5 +174,43 @@ class DriverRepository {
       body: {"lat": lat, "lng": lng},
     );
     return (response.isSuccess, response.message ?? "");
+  }
+
+  // ============================================================
+  // Tài xế sẵn sàng sau khi hoan thanh chuyen
+  // POST /api/v1/driver/ride/{rideId}/confirm-ready
+  // ============================================================
+  Future<(bool, String)> confirmReady(dynamic rideId) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_DRIVER_RIDE_CONFIRM_READY(rideId),
+      headers: await _authHeader(),
+    );
+    return (response.isSuccess, response.message ?? "");
+  }
+
+  // ============================================================
+  // Tài xế sẵn sàng sau khi hoan thanh chuyen
+  // POST /api/v1/driver/ride/{rideId}/confirm-ready
+  // ============================================================
+  Future<(bool, String, RideIncomeSummary)> getIncomeSummary(
+      dynamic rideId) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.get(
+      url: ApiEndPoint.DOMAIN_DRIVER_RIDE_INCOME_SUMMARY(rideId),
+      headers: await _authHeader(),
+    );
+    RideIncomeSummary rideIncomeSummary = RideIncomeSummary();
+    if (response.isSuccess && response.data != null) {
+      try {
+        final data = response.data['data'] ?? response.data;
+        return (
+          true,
+          response.message ?? "",
+          RideIncomeSummary.fromJson(data as Map<String, dynamic>)
+        );
+      } catch (e) {
+        print('❌ getIncomeSummary parse error: $e');
+      }
+    }
+    return (response.isSuccess, response.message ?? "", rideIncomeSummary);
   }
 }

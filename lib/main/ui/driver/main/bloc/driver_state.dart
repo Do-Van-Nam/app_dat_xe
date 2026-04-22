@@ -30,6 +30,7 @@ class DriverState extends Equatable {
     this.tripKm = 3.5,
     this.tripEta = '14:45',
     this.error,
+    this.callInfo,
   });
 
   final DriverScreen screen;
@@ -37,6 +38,7 @@ class DriverState extends Equatable {
   final int todayIncome; // VND
   final int totalTrips;
   final Ride? currentOffer;
+  final Call? callInfo;
   final LatLng? destinationPoint;
   final bool isAutoFetchRoute;
   final int countdownSeconds;
@@ -69,6 +71,7 @@ class DriverState extends Equatable {
     double? tripKm,
     String? tripEta,
     UniqueError? error,
+    Call? callInfo,
   }) {
     return DriverState(
       screen: screen ?? this.screen,
@@ -87,6 +90,7 @@ class DriverState extends Equatable {
       tripKm: tripKm ?? this.tripKm,
       tripEta: tripEta ?? this.tripEta,
       error: error ?? this.error,
+      callInfo: callInfo ?? this.callInfo,
     );
   }
 

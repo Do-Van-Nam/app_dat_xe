@@ -59,11 +59,11 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
       }
 
       final (isSuccess, message) = await AuthRepository().register(
-          phone: "0${event.phone}",
-          fullName: event.fullName,
-          password: event.password,
-          otp: event.otp,
-          role: 3);
+        phone: "0${event.phone}",
+        fullName: event.fullName,
+        password: event.password,
+        otp: event.otp,
+      );
 
       if (isSuccess) {
         emit(OtpSuccess());

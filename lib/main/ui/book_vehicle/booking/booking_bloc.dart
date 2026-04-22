@@ -1,13 +1,19 @@
 import 'dart:ffi';
 
+import 'package:demo_app/main/data/model/goong/location.dart';
+import 'package:demo_app/main/data/model/goong/place_detail.dart';
 import 'package:demo_app/main/data/model/ride/price.dart';
 import 'package:demo_app/main/data/model/ride/vehicle.dart';
+import 'package:demo_app/main/data/model/unique_error.dart';
+import 'package:demo_app/main/data/repository/goong_repository.dart';
 import 'package:demo_app/main/data/repository/ride_repository.dart';
 import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/res/app_images.dart';
 import 'package:demo_app/router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 
@@ -15,12 +21,15 @@ part 'booking_event.dart';
 part 'booking_state.dart';
 
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
-  BookingBloc() : super(BookingInitial()) {
+  final GoongPlaceDetail pickUp;
+  final GoongPlaceDetail dropOff;
+  BookingBloc(this.pickUp, this.dropOff) : super(BookingInitial()) {
     on<LoadBookingOptionsEvent>(_onLoadOptions);
     on<SelectVehicleEvent>(_onSelectVehicle);
 
     // Các event được thêm mới gọi API
     on<CreateRideEvent>(_onCreateRide);
+    on<SaveIdEvent>(_onSaveId);
     on<GetVehiclesEvent>(_onGetVehicles);
     on<GetPriceEvent>(_onGetPrice);
     on<ApplyPromoCodeEvent>(_onApplyPromoCode);
@@ -28,6 +37,14 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     on<LoadInitialBookingData>(_onLoadInitialBookingData);
     on<ConfirmRideEvent>(_onConfirmRide);
     on<CancelRideEvent>(_onCancelRide);
+    on<SearchQueryChangedEvent>(_onSearchQueryChanged);
+    on<SaveLocationEvent>(_onSaveLocation);
+    on<FetchCurrentLocationEvent>(_onFetchCurrentLocation);
+    // on<SavePickupLocationEvent>(_onSavePickupLocation);
+    // on<SaveDestinationLocationEvent>(_onSaveDestinationLocation);
+    on<SavePickupPlaceIdEvent>(_onSavePickupPlaceId);
+    on<SaveDestinationPlaceIdEvent>(_onSaveDestinationPlaceId);
+    on<SubmitSearchEvent>(_onSubmitSearch);
   }
 
   Future<void> _onLoadInitialBookingData(
@@ -40,11 +57,23 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       await _onCreateRide(CreateRideEvent(event.request), emit);
       await _onGetVehicles(GetVehiclesEvent(event.request), emit);
       await _onGetPrice(GetPriceEvent(event.request), emit);
+      // await _onSaveId(SaveIdEvent(pickupPlaceId:event.request.pickupPlaceId??"", destinationPlaceId: event.request.destinationPlaceId??""), emit);
 
       print("ket thuc load");
     } catch (e) {
       print("loi load: $e");
     }
+  }
+
+  Future<void> _onSaveId(SaveIdEvent event, Emitter<BookingState> emit) async {
+    if (state is! BookingLoaded) return;
+    final current = state as BookingLoaded;
+    print("pickupPlaceId KHI KHOI TAO: ${event.pickupPlaceId}");
+    print("destinationPlaceId KHI KHOI TAO: ${event.destinationPlaceId}");
+    emit(current.copyWith(
+      pickupPlaceId: event.pickupPlaceId,
+      destinationPlaceId: event.destinationPlaceId,
+    ));
   }
 
   Future<void> _onLoadOptions(
@@ -126,7 +155,15 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
     if (success && ride != null) {
       print("Ride created: ${ride.id}");
-      emit(current.copyWith(rideId: ride.id?.toString()));
+      emit(current.copyWith(
+        rideId: ride.id?.toString(),
+        pickupAddress: ride.pickupAddress,
+        destinationAddress: ride.destinationAddress,
+        pickupLocation: pickUp,
+        destinationLocation: dropOff,
+        pickupPlaceId: pickUp.placeId,
+        destinationPlaceId: dropOff.placeId,
+      ));
     }
   }
 
@@ -281,5 +318,250 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         ));
       }
     }
+  }
+
+  Future<void> _onSearchQueryChanged(
+      SearchQueryChangedEvent event, Emitter<BookingState> emit) async {
+    if (state is! BookingLoaded) return;
+    final currentState = state as BookingLoaded;
+
+    final query = event.query.trim();
+
+    if (query.isEmpty) {
+      // Nếu rỗng, hiển thị lại lịch sử/gợi ý
+      emit(currentState.copyWith(
+        isSearching: false,
+        searchResults: [],
+      ));
+      return;
+    }
+
+    // Đánh dấu đang tìm kiếm
+    emit(currentState.copyWith(isSearching: true));
+
+    // Gọi API từ GoongRepository
+    final goongRepo = GoongRepository();
+    // TODO: Truyền thêm vĩ độ kinh độ nếu cần ưu tiên vị trí người dùng
+    final (success, locations) = await goongRepo.getAutocompletePlaces(
+      input: query,
+      limit: 10,
+    );
+
+    if (success) {
+      emit(currentState.copyWith(
+        isSearching: true,
+        searchResults: locations,
+      ));
+    } else {
+      // Lỗi hoặc rỗng
+      emit(currentState.copyWith(
+        isSearching: true,
+        searchResults: [],
+      ));
+    }
+  }
+
+  void _onSaveLocation(SaveLocationEvent event, Emitter<BookingState> emit) {
+    // TODO: Lưu vào danh sách yêu thích
+    print("Saved location: ${event.locationId}");
+  }
+
+  // ============================================================
+  // Lấy vị trí GPS hiện tại + Reverse Geocoding → địa chỉ text
+  // ============================================================
+
+  Future<void> _onFetchCurrentLocation(
+      FetchCurrentLocationEvent event, Emitter<BookingState> emit) async {
+    if (state is! BookingLoaded) return;
+    final current = state as BookingLoaded;
+
+    // Hiển thị loading spinner trên nút
+    emit(current.copyWith(isLoadingLocation: true));
+
+    try {
+      // 1. Kiểm tra location service
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        emit(current.copyWith(
+          isLoadingLocation: false,
+          currentLocation: "Vui lòng bật GPS",
+        ));
+        return;
+      }
+
+      // 2. Kiểm tra quyền
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.deniedForever ||
+          permission == LocationPermission.denied) {
+        emit(current.copyWith(
+          isLoadingLocation: false,
+          currentLocation: "Không có quyền truy cập vị trí",
+        ));
+        return;
+      }
+
+      // 3. Lấy tọa độ hiện tại
+      final Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 10),
+      );
+
+      print("📍 GPS: ${position.latitude}, ${position.longitude}");
+
+      // 4. Reverse geocoding → tên địa chỉ
+      String addressText = "${position.latitude.toStringAsFixed(5)}, "
+          "${position.longitude.toStringAsFixed(5)}";
+
+      try {
+        final placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+
+        if (placemarks.isNotEmpty) {
+          final p = placemarks.first;
+          final parts = <String>[
+            if (p.street?.isNotEmpty == true) p.street!,
+            if (p.subAdministrativeArea?.isNotEmpty == true)
+              p.subAdministrativeArea!,
+            if (p.administrativeArea?.isNotEmpty == true) p.administrativeArea!,
+          ];
+          if (parts.isNotEmpty) {
+            addressText = parts.join(", ");
+          }
+        }
+      } catch (geoError) {
+        print("⚠️ Geocoding error (dùng tọa độ thô): $geoError");
+      }
+      await SharePreferenceUtil.saveCurrentPickup(GoongPlaceDetail(
+        name: addressText,
+        geometry: GoongGeometry(
+          location: GoongLocationCoords(
+            lat: position.latitude,
+            lng: position.longitude,
+          ),
+        ),
+        placeId: 'didGetFromGPS',
+        formattedAddress: addressText,
+      ));
+      emit(current.copyWith(
+        isLoadingLocation: false,
+        currentLocation: addressText,
+        pickupLocation: GoongPlaceDetail(
+          name: addressText,
+          geometry: GoongGeometry(
+            location: GoongLocationCoords(
+              lat: position.latitude,
+              lng: position.longitude,
+            ),
+          ),
+          placeId: 'didGetFromGPS',
+          formattedAddress: addressText,
+        ),
+        pickupPlaceId: 'didGetFromGPS',
+        pickupAddress: addressText,
+      ));
+    } catch (e, st) {
+      print("❌ FetchCurrentLocation error: $e\n$st");
+      emit(current.copyWith(
+        isLoadingLocation: false,
+        currentLocation: "Không thể lấy vị trí",
+      ));
+    }
+  }
+
+  void _onSavePickupLocation(
+      SavePickupLocationEvent event, Emitter<BookingState> emit) {
+    emit((state as BookingLoaded).copyWith(
+      pickupLocation: event.pickupLocation,
+    ));
+  }
+
+  void _onSaveDestinationLocation(
+      SaveDestinationLocationEvent event, Emitter<BookingState> emit) {
+    emit((state as BookingLoaded).copyWith(
+      destinationLocation: event.destinationLocation,
+    ));
+  }
+
+  Future<void> _onSavePickupPlaceId(
+      SavePickupPlaceIdEvent event, Emitter<BookingState> emit) async {
+    print("pickupPlaceId: ${event.pickupPlaceId}");
+    final (success, locations) = await GoongRepository().getPlaceDetail(
+      placeId: event.pickupPlaceId,
+    );
+    if (success && locations != null) {
+      print("goi api thanh cong ,gan pickupLocation");
+      await SharePreferenceUtil.saveCurrentPickup(locations);
+    }
+    emit((state as BookingLoaded).copyWith(
+      pickupPlaceId: event.pickupPlaceId,
+      pickupAddress: locations?.name,
+    ));
+  }
+
+  Future<void> _onSaveDestinationPlaceId(
+      SaveDestinationPlaceIdEvent event, Emitter<BookingState> emit) async {
+    print("destinationPlaceId: ${event.destinationPlaceId}");
+    final (success, locations) = await GoongRepository().getPlaceDetail(
+      placeId: event.destinationPlaceId,
+    );
+    if (success && locations != null) {
+      print("goi api thanh cong ,gan destinationLocation");
+      await SharePreferenceUtil.saveCurrentDropOff(locations);
+    }
+    emit((state as BookingLoaded).copyWith(
+      destinationPlaceId: event.destinationPlaceId,
+      destinationAddress: locations?.name,
+    ));
+  }
+
+  Future<void> _onSubmitSearch(
+      SubmitSearchEvent event, Emitter<BookingState> emit) async {
+    print("goi submit search");
+    print("pickupPlaceId: ${event.pickupPlaceId}");
+    print("destinationPlaceId: ${event.destinationPlaceId}");
+    if (state is! BookingLoaded) return;
+    final current = state as BookingLoaded;
+
+    GoongPlaceDetail? pickupLocation = current.pickupLocation;
+    GoongPlaceDetail? destinationLocation = current.destinationLocation;
+    if (current.pickupPlaceId != null &&
+        current.pickupPlaceId != 'didGetFromGPS') {
+      final (success, locations) = await GoongRepository().getPlaceDetail(
+        placeId: current.pickupPlaceId!,
+      );
+      if (success && locations != null) {
+        pickupLocation = locations;
+      }
+    }
+    if (current.destinationPlaceId != null &&
+        current.destinationPlaceId != 'didGetFromGPS') {
+      final (success, locations) = await GoongRepository().getPlaceDetail(
+        placeId: current.destinationPlaceId!,
+      );
+      if (success && locations != null) {
+        destinationLocation = locations;
+      }
+    }
+    if (pickupLocation == null || destinationLocation == null) {
+      print("pickupLocation: ${pickupLocation?.toJson()}");
+      print("destinationLocation: ${destinationLocation?.toJson()}");
+      emit(current.copyWith(
+        submitMessage: UniqueError("Vui lòng nhập địa chỉ hợp lệ"),
+      ));
+      return;
+    }
+    print("pickupLocation: ${pickupLocation.name}");
+    print("destinationLocation: ${destinationLocation.name}");
+    print(" emit submit push booking");
+    event.onSuccess(pickupLocation, destinationLocation);
+    // emit(SearchDestinationSubmit(
+    //   pickupLocation: pickupLocation,
+    //   destinationLocation: destinationLocation,
+    // ));
   }
 }

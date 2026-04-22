@@ -4,6 +4,7 @@ import 'package:demo_app/main/ui/driver/main/sections/shipping/going_to_pickup_s
 import 'package:demo_app/main/ui/driver/main/sections/shipping/new_shipping_order_section.dart';
 import 'package:demo_app/main/ui/driver/main/sections/shipping/start_shipping_section.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
+import 'package:demo_app/main/utils/widget/popup_widgets.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../map_background.dart';
@@ -100,7 +101,8 @@ class _DriverView extends StatelessWidget {
                       duration: const Duration(seconds: 2),
                     ),
                   );
-                  context.push(PATH_RATE_TRIP);
+                  context.push(PATH_RATE_TRIP,
+                      extra: {'rideId': state.currentOffer!.id});
                 } else if (state.screen == DriverScreen.customerCancel) {
                   showCommonPopup(
                     context: context,

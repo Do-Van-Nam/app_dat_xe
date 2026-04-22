@@ -16,6 +16,16 @@ final class BookingLoaded extends BookingState {
   final String selectedVehicleId;
   final String? promoCode;
   final int totalAmount;
+  final String currentLocation;
+  final bool isLoadingLocation;
+  // Cho kết quả tìm kiếm Goong Maps
+  final List<GoongLocation> searchResults;
+  final bool isSearching;
+  final GoongPlaceDetail? pickupLocation;
+  final GoongPlaceDetail? destinationLocation;
+  final String? pickupPlaceId;
+  final String? destinationPlaceId;
+  final UniqueError? submitMessage;
 
   BookingLoaded({
     required this.pickupAddress,
@@ -26,6 +36,15 @@ final class BookingLoaded extends BookingState {
     required this.totalAmount,
     this.rideId,
     this.price,
+    this.currentLocation = '',
+    this.isLoadingLocation = false,
+    this.searchResults = const [],
+    this.isSearching = false,
+    this.pickupLocation,
+    this.destinationLocation,
+    this.pickupPlaceId,
+    this.destinationPlaceId,
+    this.submitMessage,
   });
 
   BookingLoaded copyWith({
@@ -37,6 +56,15 @@ final class BookingLoaded extends BookingState {
     String? selectedVehicleId,
     String? promoCode,
     int? totalAmount,
+    String? currentLocation,
+    bool? isLoadingLocation,
+    List<GoongLocation>? searchResults,
+    bool? isSearching,
+    GoongPlaceDetail? pickupLocation,
+    GoongPlaceDetail? destinationLocation,
+    String? pickupPlaceId,
+    String? destinationPlaceId,
+    UniqueError? submitMessage,
   }) {
     return BookingLoaded(
       pickupAddress: pickupAddress ?? this.pickupAddress,
@@ -47,6 +75,15 @@ final class BookingLoaded extends BookingState {
       totalAmount: totalAmount ?? this.totalAmount,
       rideId: rideId ?? this.rideId,
       price: price ?? this.price,
+      currentLocation: currentLocation ?? this.currentLocation,
+      isLoadingLocation: isLoadingLocation ?? this.isLoadingLocation,
+      searchResults: searchResults ?? this.searchResults,
+      isSearching: isSearching ?? this.isSearching,
+      pickupLocation: pickupLocation ?? this.pickupLocation,
+      destinationLocation: destinationLocation ?? this.destinationLocation,
+      pickupPlaceId: pickupPlaceId ?? this.pickupPlaceId,
+      destinationPlaceId: destinationPlaceId ?? this.destinationPlaceId,
+      submitMessage: submitMessage ?? this.submitMessage,
     );
   }
 }

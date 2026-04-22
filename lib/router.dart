@@ -132,7 +132,16 @@ final GoRouter router = GoRouter(
         return MainPage(child: child);
       },
       routes: [
+        // app khach hang
         GoRoute(path: PATH_HOME, builder: (context, state) => HomePage()),
+
+        // app tai xe
+        // GoRoute(path: PATH_HOME, builder: (context, state) => DriverPage()),
+        GoRoute(
+          path: PATH_DRIVER_MAIN,
+          builder: (context, state) => DriverPage(),
+        ),
+
         GoRoute(path: PATH_PROFILE, builder: (context, state) => ProfilePage()),
         GoRoute(
             path: PATH_ACTIVITY, builder: (context, state) => ActivityPage()),
@@ -367,13 +376,14 @@ final GoRouter router = GoRouter(
       },
     ),
 // DRIVER
-    GoRoute(
-      path: PATH_DRIVER_MAIN,
-      builder: (context, state) => DriverPage(),
-    ),
+
     GoRoute(
       path: PATH_RATE_TRIP,
-      builder: (context, state) => RateTripPage(),
+      builder: (context, state) {
+        final extras = state.extra as Map;
+        final rideId = extras['rideId'] as String;
+        return RateTripPage(rideId: rideId);
+      },
     ),
     GoRoute(
       path: PATH_MAP_SAMPLE,

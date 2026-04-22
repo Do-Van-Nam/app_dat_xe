@@ -55,6 +55,8 @@ class ApiEndPoint {
       "$DOMAIN_API/ride/$rideId/cancel";
   static String DOMAIN_RIDE_CANCEL_REQUEST(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/cancel-request";
+  static String DOMAIN_RIDE_CALL_INFO(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/communication/calls";
 // chuyen xe
 // tai xe
   static String get DOMAIN_DRIVER_STATUS => "$DOMAIN_API/driver/status";
@@ -74,6 +76,10 @@ class ApiEndPoint {
       "$DOMAIN_API/driver/ride/$rideId/pickup";
   static String DOMAIN_DRIVER_RIDE_CANCEL_RESPOND(dynamic rideId) =>
       "$DOMAIN_API/driver/ride/$rideId/cancel-respond";
+  static String DOMAIN_DRIVER_RIDE_INCOME_SUMMARY(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/summary";
+  static String DOMAIN_DRIVER_RIDE_CONFIRM_READY(dynamic rideId) =>
+      "$DOMAIN_API/driver/ride/$rideId/confirm-ready";
 
   // Operation
   static String get DOMAIN_OPERATION_LOCATION =>

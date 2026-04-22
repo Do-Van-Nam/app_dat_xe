@@ -10,12 +10,11 @@ import '../../utils/service/navigation_handler.dart';
 import 'splash_bloc.dart';
 import 'splash_state.dart';
 
-class SplashPage extends StatefulWidget{
+class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
-
 }
 
 class _SplashPageState extends State<SplashPage> {
@@ -27,6 +26,7 @@ class _SplashPageState extends State<SplashPage> {
       context.read<SplashBloc>().add(SplashStarted());
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SplashBloc, SplashState>(
@@ -36,7 +36,10 @@ class _SplashPageState extends State<SplashPage> {
           SchedulerBinding.instance.addPostFrameCallback((_) {
             switch (state.next) {
               case SplashNext.home:
+                // app khach hang
                 context.go(PATH_HOME);
+                // app tai xe
+                // context.go(PATH_DRIVER_MAIN);
                 break;
               case SplashNext.login:
                 context.go(PATH_LOGIN);
@@ -60,7 +63,6 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 }
-
 
 class _SplashLoadingIndicator extends StatelessWidget {
   const _SplashLoadingIndicator();

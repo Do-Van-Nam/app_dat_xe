@@ -1,3 +1,4 @@
+import 'package:demo_app/main/data/model/goong/location.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/data/model/homepage/homepage.dart';
@@ -16,16 +17,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final SocketService _socketService = SocketService();
 
   HomeBloc() : super(HomeInitial()) {
+    on<UpdateHomeAddressEvent>((event, emit) async {
+      await SharePreferenceUtil.saveHomeAddress(event.location);
+      emit((state as HomeLoadSuccess)
+          .copyWith(homeAddress: event.location.description));
+    });
+
+    on<UpdateWorkAddressEvent>((event, emit) async {
+      await SharePreferenceUtil.saveWorkAddress(event.location);
+      emit((state as HomeLoadSuccess)
+          .copyWith(workAddress: event.location.description));
+    });
+
     on<HomeLoaded>((event, emit) async {
       final currentRide = await SharePreferenceUtil.getCurrentRide();
       final user = await SharePreferenceUtil.getUser();
       print("lay user tu share preference ${user?.toJson()}");
-
+      final homeAddress = await SharePreferenceUtil.getHomeAddress();
+      final workAddress = await SharePreferenceUtil.getWorkAddress();
       final (isSuccess, homePageData, message) =
           await HomePageRepository().getHomePageData();
 
       if (user != null) {
-        emit(HomeLoadSuccess(user, homePageData, currentRide));
+        emit(HomeLoadSuccess(
+            user: user,
+            homeData: homePageData,
+            currentRide: currentRide,
+            homeAddress: homeAddress?.description ?? "Thêm địa chỉ nhà",
+            workAddress: workAddress?.description ?? "Thêm địa chỉ công ty"));
       } else {
         emit(HomeLoadFailure('Không tìm thấy thông tin người dùng'));
       }

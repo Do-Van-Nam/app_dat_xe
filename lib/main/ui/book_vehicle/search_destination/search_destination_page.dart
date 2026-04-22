@@ -1,5 +1,12 @@
+import 'dart:math';
+
+import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/main/data/repository/goong_repository.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
+import 'package:demo_app/main/utils/widget/textfield_widgets.dart';
 import 'package:demo_app/res/app_colors.dart';
+import 'package:demo_app/res/app_fonts.dart';
 import 'package:demo_app/res/app_images.dart';
 import 'package:demo_app/res/app_styles.dart';
 import 'package:demo_app/router.dart';
@@ -22,6 +29,34 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
   final TextEditingController _pickUpController = TextEditingController();
   final FocusNode _destinationFocus = FocusNode();
   final FocusNode _pickUpFocus = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialDataFromSharedPreferences();
+  }
+
+  Future<void> _loadInitialDataFromSharedPreferences() async {
+    try {
+      // Lấy dữ liệu từ SharedPreferences
+      final pickup = await SharePreferenceUtil.getCurrentPickup();
+      final dropOff = await SharePreferenceUtil.getCurrentDropOff();
+
+      // Gán vào controller (chỉ gán nếu có dữ liệu)
+      if (pickup != null) {
+        _pickUpController.text = pickup.formattedAddress;
+      }
+
+      if (dropOff != null) {
+        _destinationController.text = dropOff.formattedAddress;
+      }
+
+      print("✅ Đã load dữ liệu ban đầu từ SharedPreferences");
+      print("Pickup: ${pickup ?? 'null'}");
+      print("DropOff: ${dropOff ?? 'null'}");
+    } catch (e) {
+      print("❌ Lỗi khi load dữ liệu từ SharedPreferences: $e");
+    }
+  }
 
   @override
   void dispose() {
@@ -34,9 +69,8 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
 
   void _onSelectDestination(dynamic dest, BuildContext context) {
     String address = "";
-    if (dest is PopularDestination) {
-      address = dest.address.isNotEmpty ? dest.address : dest.name;
-    } else if (dest is GoongLocation) {
+    if (dest is GoongLocation) {
+      print("dest la goonglocation");
       address = dest.description;
     }
 
@@ -45,24 +79,35 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
       context
           .read<SearchDestinationBloc>()
           .add(SavePickupPlaceIdEvent(dest.placeId));
+      // context.read<SearchDestinationBloc>().add(SavePickupLocationEvent(dest));
     } else {
       _destinationController.text = address;
       context
           .read<SearchDestinationBloc>()
           .add(SaveDestinationPlaceIdEvent(dest.placeId));
+      // context
+      //     .read<SearchDestinationBloc>()
+      //     .add(SaveDestinationLocationEvent(dest));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
     return BlocProvider(
       create: (_) => SearchDestinationBloc()..add(LoadSearchDataEvent()),
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.searchDestination),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () async {
+              print("xoa va back");
+              await SharePreferenceUtil.saveCurrentPickup(null);
+              await SharePreferenceUtil.saveCurrentDropOff(null);
+              context.go(PATH_HOME);
+            },
+          ),
           actions: [
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
@@ -80,7 +125,7 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
                 current is SearchDestinationSubmit;
           },
           // Cập nhật pickUpController mỗi khi currentLocation thay đổi
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is SearchDestinationLoaded &&
                 !state.isLoadingLocation &&
                 state.currentLocation != "Vị trí của bạn") {
@@ -88,8 +133,19 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
             }
             if (state is SearchDestinationSubmit) {
               print("push booking");
-              context.push(
-                PATH_BOOKING,
+              // final result = await context.push(
+              //     "$PATH_BOOKING?${DateTime.now().millisecondsSinceEpoch}",
+              //     extra: {
+              //       "pickUp": state.pickupLocation,
+              //       "dropOff": state.destinationLocation,
+              //     });
+              // if (result != null) {
+              //   context
+              //       .read<SearchDestinationBloc>()
+              //       .add(LoadSearchDataEvent());
+              // }
+              context.go(
+                "$PATH_BOOKING?${Random().nextInt(1000000) + DateTime.now().millisecondsSinceEpoch}",
                 extra: {
                   "pickUp": state.pickupLocation,
                   "dropOff": state.destinationLocation,
@@ -107,76 +163,111 @@ class _SearchDestinationPageState extends State<SearchDestinationPage> {
             }
 
             if (state is SearchDestinationLoaded) {
-              return SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 1. Search Inputs Section
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.color_F3F3F6,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.all(20),
+              return Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _SearchInputsSection(
-                            l10n: l10n,
-                            destinationController: _destinationController,
-                            pickUpController: _pickUpController,
-                            destinationFocus: _destinationFocus,
-                            pickUpFocus: _pickUpFocus,
-                            isLoadingLocation: state.isLoadingLocation,
+                          // 1. Search Inputs Section
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.color_F3F3F6,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              children: [
+                                _SearchInputsSection(
+                                  l10n: l10n,
+                                  destinationController: _destinationController,
+                                  pickUpController: _pickUpController,
+                                  destinationFocus: _destinationFocus,
+                                  pickUpFocus: _pickUpFocus,
+                                  isLoadingLocation: state.isLoadingLocation,
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                // 2. Quick Add Buttons
+                                _QuickAddButtons(
+                                  l10n: l10n,
+                                  state: state,
+                                  onSelected: _onSelectDestination,
+                                  context: context,
+                                ),
+                              ],
+                            ),
                           ),
 
-                          const SizedBox(height: 24),
+                          if (state.isSearching) ...[
+                            const SizedBox(height: 32),
+                            _SearchResultsSection(
+                              results: state.searchResults,
+                              l10n: l10n,
+                              onSelect: (dest) =>
+                                  _onSelectDestination(dest, context),
+                            ),
+                          ] else ...[
+                            const SizedBox(height: 32),
+                            // 3. Popular Destinations
+                            _PopularDestinationsSection(
+                              destinations: state.popularDestinations,
+                              l10n: l10n,
+                              onSelect: (dest) =>
+                                  _onSelectDestination(dest, context),
 
-                          // 2. Quick Add Buttons
-                          _QuickAddButtons(l10n: l10n),
+                              // (dest) =>
+
+                              // _onSelectDestination(dest, context),
+                            ),
+                            const SizedBox(height: 40),
+                            // 4. Recent Searches
+                            _RecentSearchesSection(
+                              searches: state.recentSearches,
+                              l10n: l10n,
+                              onSelect: (dest) =>
+                                  _onSelectDestination(dest, context),
+
+                              // (dest) => _onSelectDestination(dest, context),
+                            ),
+                            const SizedBox(height: 32),
+                            // 5. Map Section
+                            _MapSection(l10n: l10n),
+                          ],
                         ],
                       ),
                     ),
-
-                    if (state.isSearching) ...[
-                      const SizedBox(height: 32),
-                      _SearchResultsSection(
-                        results: state.searchResults,
-                        l10n: l10n,
-                        onSelect: (dest) => _onSelectDestination(dest, context),
-                      ),
-                    ] else ...[
-                      const SizedBox(height: 32),
-                      // 3. Popular Destinations
-                      _PopularDestinationsSection(
-                          destinations: state.popularDestinations,
-                          l10n: l10n,
-                          onSelect: (dest) => {
-                                print("click popular destination"),
-                              }
-
-                          // (dest) =>
-
-                          // _onSelectDestination(dest, context),
-                          ),
-                      const SizedBox(height: 40),
-                      // 4. Recent Searches
-                      _RecentSearchesSection(
-                          searches: state.recentSearches,
-                          l10n: l10n,
-                          onSelect: (dest) => {
-                                print("click popular destination"),
-                              }
-
-                          // (dest) => _onSelectDestination(dest, context),
-                          ),
-                      const SizedBox(height: 32),
-                      // 5. Map Section
-                      _MapSection(l10n: l10n),
-                    ],
-                  ],
-                ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: commonButton(
+                        text: "Xác nhận đặt xe",
+                        onPressed: () {
+                          context.read<SearchDestinationBloc>().add(
+                                SubmitSearchEvent(
+                                  pickupPlaceId: state.pickupPlaceId ?? '',
+                                  destinationPlaceId:
+                                      state.destinationPlaceId ?? '',
+                                  onSuccess:
+                                      (pickupLocation, destinationLocation) {
+                                    context.push(
+                                      PATH_BOOKING,
+                                      extra: {
+                                        'pickUp': pickupLocation,
+                                        'dropOff': destinationLocation,
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                        }),
+                  )
+                ],
               );
             }
 
@@ -212,9 +303,10 @@ class _SearchInputsSection extends StatelessWidget {
     return IntrinsicHeight(
       child: Row(
         children: [
+          // ── Dấu chấm + đường kẻ dọc ────────────────────────────────
           Column(
             children: [
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Container(
                 width: 8,
                 height: 8,
@@ -223,7 +315,7 @@ class _SearchInputsSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: VerticalDivider(
                   color: AppColors.color_C3C6D5,
                   thickness: 1.5,
@@ -238,95 +330,161 @@ class _SearchInputsSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
             ],
           ),
           const SizedBox(width: 12),
+
+          // ── 2 AutocompleteTextField ────────────────────────────────
           Expanded(
             child: Column(
               children: [
-                // Vị trí hiện tại
-                TextField(
+                // ── Trường vị trí hiện tại ──────────────────────────
+                AutocompleteTextField<GoongLocation>(
                   controller: pickUpController,
                   focusNode: pickUpFocus,
-                  onChanged: (value) {
+                  hintText: l10n.yourLocation,
+                  backgroundColor: Colors.white,
+                  fetchSuggestions: (input) async {
+                    final (ok, list) = await GoongRepository()
+                        .getAutocompletePlaces(input: input);
+                    return ok ? list : [];
+                  },
+                  itemBuilder: (context, location) =>
+                      _locationSuggestionTile(location),
+                  onSelected: (location) {
+                    pickUpController.text = location.description;
                     context
                         .read<SearchDestinationBloc>()
-                        .add(SearchQueryChangedEvent(value));
+                        .add(SavePickupPlaceIdEvent(location.placeId));
                   },
-                  decoration: InputDecoration(
-                    hintText: l10n.yourLocation,
-                    suffixIcon: GestureDetector(
-                      onTap: isLoadingLocation
-                          ? null
-                          : () => context
-                              .read<SearchDestinationBloc>()
-                              .add(FetchCurrentLocationEvent()),
-                      child: Tooltip(
-                        message: "Lấy vị trí hiện tại",
-                        child: isLoadingLocation
-                            ? const Padding(
-                                padding: EdgeInsets.all(12),
-                                child: SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.blue,
-                                  ),
+                  // Nút GPS luôn hiển thị (persistentTrailingWidget)
+                  persistentTrailingWidget: GestureDetector(
+                    onTap: isLoadingLocation
+                        ? null
+                        : () => context
+                            .read<SearchDestinationBloc>()
+                            .add(FetchCurrentLocationEvent()),
+                    child: Tooltip(
+                      message: 'Lấy vị trí hiện tại',
+                      child: isLoadingLocation
+                          ? const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.blue,
                                 ),
-                              )
-                            : const Icon(
-                                Icons.my_location,
-                                color: Colors.blue,
                               ),
-                      ),
+                            )
+                          : const Icon(
+                              Icons.my_location,
+                              color: Colors.blue,
+                            ),
                     ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                    fillColor: Colors.grey[100],
                   ),
                 ),
+
                 const SizedBox(height: 12),
 
-                // Điểm đến
-                TextField(
+                // ── Trường điểm đến ─────────────────────────────────
+                AutocompleteTextField<GoongLocation>(
                   controller: destinationController,
                   focusNode: destinationFocus,
-                  decoration: InputDecoration(
-                    hintText: l10n.whereToGo,
-                    suffixIcon: const Icon(Icons.map, color: Colors.orange),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  onChanged: (value) {
+                  hintText: l10n.whereToGo,
+                  backgroundColor: Colors.white,
+                  suffixIcon: const Icon(Icons.map, color: Colors.orange),
+                  fetchSuggestions: (input) async {
+                    final (ok, list) = await GoongRepository()
+                        .getAutocompletePlaces(input: input);
+                    return ok ? list : [];
+                  },
+                  itemBuilder: (context, location) =>
+                      _locationSuggestionTile(location),
+                  onSelected: (location) {
+                    destinationController.text = location.description;
                     context
                         .read<SearchDestinationBloc>()
-                        .add(SearchQueryChangedEvent(value));
+                        .add(SaveDestinationPlaceIdEvent(location.placeId));
                   },
-                  onSubmitted: (value) {
+                  // Giữ nguyên logic nhấn Enter → submit booking
+                  onSubmitted: (_) {
                     final state = context.read<SearchDestinationBloc>().state;
                     if (state is SearchDestinationLoaded) {
                       context.read<SearchDestinationBloc>().add(
-                          SubmitSearchEvent(
-                              pickupPlaceId: state.pickupPlaceId ?? "",
+                            SubmitSearchEvent(
+                              pickupPlaceId: state.pickupPlaceId ?? '',
                               destinationPlaceId:
-                                  state.destinationPlaceId ?? "",
+                                  state.destinationPlaceId ?? '',
                               onSuccess: (pickupLocation, destinationLocation) {
                                 context.push(
                                   PATH_BOOKING,
                                   extra: {
-                                    "pickUp": pickupLocation,
-                                    "dropOff": destinationLocation,
+                                    'pickUp': pickupLocation,
+                                    'dropOff': destinationLocation,
                                   },
                                 );
-                              }));
+                              },
+                            ),
+                          );
                     }
                   },
                 ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Render 1 item gợi ý địa điểm trong dropdown.
+  Widget _locationSuggestionTile(GoongLocation location) {
+    final mainText = location.structuredFormatting.mainText.isNotEmpty
+        ? location.structuredFormatting.mainText
+        : location.description;
+    final subText = location.structuredFormatting.secondaryText;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 16,
+            backgroundColor: AppColors.color_E8E8EA,
+            child: const Icon(
+              Icons.location_on_outlined,
+              color: Colors.grey,
+              size: 16,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  mainText,
+                  style: AppTextFonts.poppinsMedium.copyWith(
+                    fontSize: 14,
+                    color: AppColors.color_1618,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (subText.isNotEmpty)
+                  Text(
+                    subText,
+                    style: AppTextFonts.poppinsRegular.copyWith(
+                      fontSize: 12,
+                      color: AppColors.color_8588,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
               ],
             ),
           ),
@@ -338,8 +496,15 @@ class _SearchInputsSection extends StatelessWidget {
 
 class _QuickAddButtons extends StatelessWidget {
   final AppLocalizations l10n;
+  final SearchDestinationLoaded state;
+  final onSelected;
+  final BuildContext context;
 
-  const _QuickAddButtons({required this.l10n});
+  const _QuickAddButtons(
+      {required this.l10n,
+      required this.state,
+      required this.onSelected,
+      required this.context});
 
   @override
   Widget build(BuildContext context) {
@@ -347,13 +512,20 @@ class _QuickAddButtons extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _QuickAddChip(icon: Icons.home, label: l10n.addHome, onTap: () {}),
+          if (state.homeLocation != null)
+            _QuickAddChip(
+                icon: Icons.home,
+                label: "Nhà: ${state.homeLocation!.description}",
+                onTap: () => onSelected(state.homeLocation!, context)),
           const SizedBox(width: 8),
-          _QuickAddChip(
-              icon: Icons.business, label: l10n.addCompany, onTap: () {}),
-          const SizedBox(width: 8),
-          _QuickAddChip(
-              icon: Icons.location_pin, label: l10n.addFavorite, onTap: () {}),
+          if (state.workLocation != null)
+            _QuickAddChip(
+                icon: Icons.business,
+                label: "Công ty: ${state.workLocation!.description}",
+                onTap: () => onSelected(state.workLocation!, context)),
+          // const SizedBox(width: 8),
+          // _QuickAddChip(
+          //     icon: Icons.location_pin, label: l10n.addFavorite, onTap: () {}),
         ],
       ),
     );
@@ -395,9 +567,9 @@ class _QuickAddChip extends StatelessWidget {
 }
 
 class _PopularDestinationsSection extends StatelessWidget {
-  final List<PopularDestination> destinations;
+  final List<GoongLocation> destinations;
   final AppLocalizations l10n;
-  final Function(PopularDestination) onSelect;
+  final Function(GoongLocation) onSelect;
 
   const _PopularDestinationsSection({
     required this.destinations,
@@ -439,9 +611,9 @@ class _PopularDestinationsSection extends StatelessWidget {
 }
 
 class _RecentSearchesSection extends StatelessWidget {
-  final List<RecentSearch> searches;
+  final List<GoongLocation> searches;
   final AppLocalizations l10n;
-  final Function(PopularDestination) onSelect;
+  final Function(GoongLocation) onSelect;
 
   const _RecentSearchesSection({
     required this.searches,
@@ -463,16 +635,10 @@ class _RecentSearchesSection extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         ...searches.map((search) {
-          final dest = PopularDestination(
-            id: search.id,
-            name: search.name,
-            distance: "",
-            address: search.address,
-          );
           return _DestinationItem(
-            destination: dest,
+            destination: search,
             isPopular: false,
-            onTap: () => onSelect(dest),
+            onTap: () => onSelect(search),
           );
         }),
       ],
@@ -481,7 +647,7 @@ class _RecentSearchesSection extends StatelessWidget {
 }
 
 class _DestinationItem extends StatelessWidget {
-  final PopularDestination destination;
+  final GoongLocation destination;
   final bool isPopular;
   final VoidCallback onTap;
 
@@ -503,13 +669,11 @@ class _DestinationItem extends StatelessWidget {
         ),
       ),
       title: Text(
-        destination.name,
+        destination.description,
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: Text(
-        destination.distance.isNotEmpty
-            ? "${destination.distance} • ${destination.address}"
-            : destination.address,
+        destination.structuredFormatting.secondaryText,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),

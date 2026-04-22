@@ -1,5 +1,6 @@
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 import 'finding_driver_bloc.dart';
 
@@ -33,16 +34,16 @@ class _FindingDriverView extends StatelessWidget {
 
     return BlocListener<FindingDriverBloc, FindingDriverState>(
       listenWhen: (prev, curr) => prev.status != curr.status,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state.status == FindingDriverStatus.found) {
           context.go(path, extra: {"ride": ride});
         }
         if (state.status == FindingDriverStatus.cancelled) {
-          if (context.canPop()) {
-            context.pop();
-          } else {
-            context.go(PATH_HOME);
-          }
+          AppToast.show(context, "Đã hủy chuyến");
+
+          await SharePreferenceUtil.saveCurrentPickup(null);
+          await SharePreferenceUtil.saveCurrentDropOff(null);
+          context.go(PATH_HOME);
         }
         if (state.status == FindingDriverStatus.error) {
           AppToast.show(context, "Lỗi khi tìm tài xế");
@@ -82,7 +83,11 @@ class _FindingDriverAppBar extends StatelessWidget
       backgroundColor: AppColors.colorWhite,
       elevation: 0,
       leading: GestureDetector(
-        onTap: () => context.go(PATH_HOME),
+        onTap: () async {
+          await SharePreferenceUtil.saveCurrentPickup(null);
+          await SharePreferenceUtil.saveCurrentDropOff(null);
+          context.go(PATH_HOME);
+        },
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SvgPicture.asset(
@@ -540,23 +545,30 @@ class _EstimateCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                value,
-                style: AppStyles.inter28Bold.copyWith(
-                  color: valueColor,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppStyles.inter28Bold.copyWith(
+                    color: valueColor,
+                  ),
                 ),
-              ),
-              Text(
-                unit,
-                style: AppStyles.inter16SemiBold.copyWith(
-                  color: valueColor,
+                Text(
+                  unit,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppStyles.inter16SemiBold.copyWith(
+                    color: valueColor,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
