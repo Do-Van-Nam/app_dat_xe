@@ -75,10 +75,14 @@ class ActivityTripDetailPage extends StatelessWidget {
 
                     // 4. Payment Details
                     PaymentDetails(
-                      baseFare: double.parse(ride?.basePrice ?? "0"),
-                      serviceFee: double.parse(ride?.distancePrice ?? "0"),
-                      discount: double.parse(ride?.discountAmount ?? "0"),
-                      totalAmount: double.parse(ride?.totalPrice ?? "0"),
+                      baseFare:
+                          double.parse(ride?.basePrice?.toString() ?? "0"),
+                      serviceFee:
+                          double.parse(ride?.distancePrice?.toString() ?? "0"),
+                      discount:
+                          double.parse(ride?.discountAmount?.toString() ?? "0"),
+                      totalAmount:
+                          double.parse(ride?.totalPrice?.toString() ?? "0"),
                       l10n: l10n,
                     ),
                     _BottomActions(l10n: l10n),

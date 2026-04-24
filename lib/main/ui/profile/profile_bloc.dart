@@ -3,7 +3,7 @@
 import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/data/repository/auth_repository.dart';
 import 'package:demo_app/main/data/repository/user_repository.dart';
-import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
+import 'package:demo_app/main/data/service/socket_service/driver_socket_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -17,13 +17,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<LoadProfileEvent>(_onLoadProfile);
     on<LogoutEvent>(_onLogout);
     on<ChangePaymentMethodEvent>(_onChangePaymentMethod);
-
-    _sub = UserSocketService().onRideEvent.listen((data) {
-      // if(data["event"] == "DRIVER_FOUND"){
-      //   add(const FindingDriverFound());
-      // }
-      print("data tu user socket service trong profile bloc $data");
-    });
   }
 
   Future<void> _onLoadProfile(
@@ -48,13 +41,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final (isSuccess, message) = await AuthRepository().logout();
       if (isSuccess) {
         emit(ProfileLoggedOut());
+        // UserSocketService().disconnect();
+        DriverSocketService().disconnect();
       } else {
-        // emit(ProfileError(message.isNotEmpty ? message : 'Đăng xuất thất bại'));
-        emit(ProfileLoggedOut());
+        emit(ProfileError(message.isNotEmpty ? message : 'Đăng xuất thất bại'));
+        // UserSocketService().disconnect();
+        // DriverSocketService().disconnect();
+        // // emit(ProfileError(message.isNotEmpty ? message : 'Đăng xuất thất bại'));
+        // emit(ProfileLoggedOut());
       }
     } catch (e) {
-      emit(ProfileLoggedOut());
-      // emit(ProfileError('Đăng xuất thất bại: ${e.toString()}'));
+      // UserSocketService().disconnect();
+      // DriverSocketService().disconnect();
+      // emit(ProfileLoggedOut());
+      emit(ProfileError('Đăng xuất thất bại: ${e.toString()}'));
     }
   }
 

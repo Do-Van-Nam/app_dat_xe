@@ -3,6 +3,9 @@ import 'package:intl/intl.dart';
 class Constant {
   Constant._();
   // PAYMENT SEVICE
+  static const bool isUserApp = true; //true: app người dùng, false: app tài xế
+  static const bool isDebugMode = true;
+
   static const String TOPUP = "Top-up";
   static const String PROFILE = "profile";
   static const String TOPUP_V2 = "Topup";
@@ -73,7 +76,6 @@ class Constant {
 
   static const String UPDATE = "UPDATE";
 
-
   static String normalizePhone(String phone) {
     String p = phone.trim();
 
@@ -142,7 +144,6 @@ class Constant {
     }
   }
 
-  static String formatDateV2(int millis) =>
-      DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(millis));
-
+  static String formatDateV2(int millis) => DateFormat('dd/MM/yyyy')
+      .format(DateTime.fromMillisecondsSinceEpoch(millis));
 }

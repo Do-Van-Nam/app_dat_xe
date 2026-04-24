@@ -1,9 +1,11 @@
 import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
 import 'package:demo_app/main/data/model/ride/call.dart';
+import 'package:demo_app/main/data/model/ride/chat_room.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/ride/vehicle.dart';
+import 'package:demo_app/main/data/model/ride/airport.dart';
 import 'package:demo_app/main/data/model/ride/price.dart';
 import '../../base/base_response.dart';
 
@@ -37,6 +39,25 @@ class RideRepository {
       }
     }
     return (false, null);
+  }
+
+  Future<(bool, Ride?)> getRideDetail(dynamic rideId) async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.get(
+        url: ApiEndPoint.DOMAIN_RIDE_DETAIL(rideId),
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        return (true, Ride.fromJson(data as Map<String, dynamic>));
+      }
+      return (false, null);
+    } catch (e, stack) {
+      print('❌ getRideDetail error: $e');
+      print('Stack trace: $stack');
+      return (false, null);
+    }
   }
 
   // ============================================================
@@ -102,10 +123,50 @@ class RideRepository {
     return (false, null);
   }
 
+// ============================================================
+  // Tạo chat room
+  // GET /api/v1/ride/{rideId}/communication/room
   // ============================================================
-  // Áp dụng voucher
-  // POST /api/v1/ride/{rideId}/voucher
+  Future<(bool, ChatRoom?)> getChatRoom(dynamic rideId) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.get(
+      url: ApiEndPoint.DOMAIN_RIDE_MESSAGES(rideId),
+      headers: await _authHeader(),
+    );
+
+    if (response.isSuccess && response.data != null) {
+      try {
+        final data = response.data['data'] ?? response.data;
+        return (true, ChatRoom.fromJson(data as Map<String, dynamic>));
+      } catch (e) {
+        print('❌ getChatRoom parse error: $e');
+      }
+    }
+    return (false, null);
+  }
+
   // ============================================================
+  // Gửi tin nhắn thoại
+  // POST /api/v1/ride/{rideId}/communication/voice
+  // ============================================================
+  Future<(bool, ChatMessage?)> sendMessage(
+      dynamic rideId, String message) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
+      url: ApiEndPoint.DOMAIN_RIDE_MESSAGES(rideId),
+      headers: await _authHeader(),
+      body: {"message": message},
+    );
+
+    if (response.isSuccess && response.data != null) {
+      try {
+        final data = response.data['data']['message'] ?? response.data;
+        return (true, ChatMessage.fromJson(data as Map<String, dynamic>));
+      } catch (e) {
+        print('❌ sendMessage parse error: $e');
+      }
+    }
+    return (false, null);
+  }
+
   Future<(bool, Price?)> applyVoucher(
       dynamic rideId, String voucherCode) async {
     final BaseResponse response = await ApiUtil.getInstance()!.post(
@@ -213,7 +274,7 @@ class RideRepository {
 
   // / yeu cau huy chuyen sau khi da co tai xe nhan
   Future<(bool, Call?)> getCallInfo(dynamic rideId) async {
-    final BaseResponse response = await ApiUtil.getInstance()!.get(
+    final BaseResponse response = await ApiUtil.getInstance()!.post(
       url: ApiEndPoint.DOMAIN_RIDE_CALL_INFO(rideId),
       headers: await _authHeader(),
     );
@@ -228,5 +289,82 @@ class RideRepository {
       }
     }
     return (false, null);
+  }
+
+  // ============================================================
+  // Lấy danh sách Sân bay
+  // GET /api/v1/ride/airports
+  // ============================================================
+  Future<(bool, List<Airport>)> getAirports() async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.get(
+        url: ApiEndPoint.DOMAIN_RIDE_AIRPORTS,
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final rawData = response.data['data'] ?? response.data;
+
+        if (rawData is List) {
+          final airports = rawData
+              .map((e) => Airport.fromJson(e as Map<String, dynamic>))
+              .toList();
+          return (true, airports);
+        } else if (rawData is Map<String, dynamic>) {
+          final list = rawData['data'];
+          if (list is List) {
+            final airports = list
+                .map((e) => Airport.fromJson(e as Map<String, dynamic>))
+                .toList();
+            return (true, airports);
+          }
+        }
+      }
+      return (false, <Airport>[]);
+    } catch (e, stack) {
+      print('❌ getAirports error: $e');
+      print('Stack trace: $stack');
+      return (false, <Airport>[]);
+    }
+  }
+
+  Future<(bool, String?)> bookAirportRide(Map<String, dynamic> body) async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.post(
+        url: ApiEndPoint.DOMAIN_RIDE_BOOK_AIRPORT,
+        body: body,
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        return (true, data['ride_id'].toString());
+      }
+      return (false, null);
+    } catch (e, stack) {
+      print('❌ bookAirportRide error: $e');
+      print('Stack trace: $stack');
+      return (false, null);
+    }
+  }
+
+  Future<(bool, String?)> bookInterCityRide(Map<String, dynamic> body) async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.post(
+        url: ApiEndPoint.DOMAIN_RIDE_BOOK_INTERCITY,
+        body: body,
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        return (true, data['ride_id'].toString());
+      }
+      return (false, null);
+    } catch (e, stack) {
+      print('❌ bookAirportRide error: $e');
+      print('Stack trace: $stack');
+      return (false, null);
+    }
   }
 }

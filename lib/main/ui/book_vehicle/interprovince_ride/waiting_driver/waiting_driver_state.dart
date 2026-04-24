@@ -15,6 +15,7 @@ class WaitingDriverState extends Equatable {
     this.destinationAddress = 'Sân bay Quốc tế Tân Sơn Nhất, Quận Tân Bình',
     this.isCancelLoading = false,
     this.errorMessage,
+    this.rideId = '',
   });
 
   final WaitingDriverStatus status;
@@ -23,6 +24,7 @@ class WaitingDriverState extends Equatable {
   final String destinationAddress;
   final bool isCancelLoading;
   final String? errorMessage;
+  final String rideId;
 
   WaitingDriverState copyWith({
     WaitingDriverStatus? status,
@@ -31,6 +33,7 @@ class WaitingDriverState extends Equatable {
     String? destinationAddress,
     bool? isCancelLoading,
     String? errorMessage,
+    String? rideId,
   }) {
     return WaitingDriverState(
       status: status ?? this.status,
@@ -39,6 +42,7 @@ class WaitingDriverState extends Equatable {
       destinationAddress: destinationAddress ?? this.destinationAddress,
       isCancelLoading: isCancelLoading ?? this.isCancelLoading,
       errorMessage: errorMessage ?? this.errorMessage,
+      rideId: rideId ?? this.rideId,
     );
   }
 
@@ -50,5 +54,6 @@ class WaitingDriverState extends Equatable {
         destinationAddress,
         isCancelLoading,
         errorMessage,
+        rideId,
       ];
 }

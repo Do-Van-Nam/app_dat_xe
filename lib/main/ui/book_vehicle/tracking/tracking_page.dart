@@ -85,12 +85,12 @@ class TrackingPage extends StatelessWidget {
                             followUserLocation: true,
                             autoFetchRoute: true,
                             originPoint: LatLng(
-                              double.parse(ride.pickupLat ?? "0"),
-                              double.parse(ride.pickupLng ?? "0"),
+                              ride.pickupLat?.toDouble() ?? 0,
+                              ride.pickupLng?.toDouble() ?? 0,
                             ),
                             destinationPoint: LatLng(
-                              double.parse(ride.destinationLat ?? "0"),
-                              double.parse(state.ride.destinationLng ?? "0"),
+                              ride.destinationLat?.toDouble() ?? 0,
+                              ride.destinationLng?.toDouble() ?? 0,
                             ),
                           );
                         }),

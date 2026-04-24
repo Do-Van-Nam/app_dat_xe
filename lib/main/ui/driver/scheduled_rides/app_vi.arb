@@ -1,0 +1,41 @@
+{
+  "@@locale": "vi",
+
+  "chuyenDiAppBarTitle": "Danh sách chuyến đi",
+
+  "chuyenDiTabAll": "Tất cả chuyến đi",
+  "chuyenDiTabAccepted": "Chuyến đã nhận",
+
+  "chuyenDiFilterDate": "Ngày đi",
+  "chuyenDiFilterTime": "Giờ đi",
+  "chuyenDiFilterType": "Loại chuyến",
+  "chuyenDiFilterPriceMin": "Giá tối thiểu",
+  "chuyenDiFilterPriceMax": "Giá tối đa",
+  "chuyenDiFilterPriceHint": "VD: 50000",
+  "chuyenDiFilterApply": "Áp dụng",
+  "chuyenDiFilterReset": "Đặt lại",
+
+  "chuyenDiTypeUrban": "Nội thành",
+  "chuyenDiTypeIntercity": "Đi tỉnh",
+  "chuyenDiTypeAirport": "Sân bay",
+
+  "chuyenDiPickupLabel": "Điểm đón",
+  "chuyenDiDestinationLabel": "Điểm đến",
+
+  "chuyenDiBtnAccept": "Nhận chuyến",
+  "chuyenDiBtnCancel": "Hủy chuyến",
+
+  "chuyenDiEmptyAll": "Không có chuyến nào phù hợp",
+  "chuyenDiEmptyAccepted": "Bạn chưa nhận chuyến nào",
+
+  "chuyenDiLoadingError": "Tải dữ liệu thất bại. Thử lại?",
+
+  "chuyenDiAcceptSuccess": "Nhận chuyến thành công!",
+  "chuyenDiCancelSuccess": "Đã hủy chuyến.",
+  "chuyenDiCancelConfirmTitle": "Xác nhận hủy chuyến",
+  "chuyenDiCancelConfirmBody": "Bạn có chắc muốn hủy chuyến này không?",
+  "chuyenDiConfirmYes": "Có, hủy",
+  "chuyenDiConfirmNo": "Không",
+
+  "chuyenDiPriceUnit": "đ"
+}

@@ -246,7 +246,7 @@ class AuthRepository {
       }
     }
     // dispose SocketService khi logout thanh cong
-    if (isSuccess) SocketService().dispose();
+    // if (isSuccess) SocketService().dispose();
 
     return (isSuccess, message);
   }

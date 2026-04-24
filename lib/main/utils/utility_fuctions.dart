@@ -86,13 +86,18 @@ String fomatTime(int second) {
 }
 
 Future<void> makePhoneCall(String phoneNumber) async {
-  final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+  // Loại bỏ các khoảng trắng hoặc ký tự đặc biệt nếu có
+  final cleanPhone = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
+  final Uri launchUri = Uri(scheme: 'tel', path: cleanPhone);
 
-  if (await canLaunchUrl(launchUri)) {
-    await launchUrl(launchUri);
-  } else {
-    // Thông báo lỗi nếu không mở được (ví dụ: đang chạy trên trình giả lập)
-    print('Could not launch $launchUri');
+  try {
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri, mode: LaunchMode.externalApplication);
+    } else {
+      // Thử launch trực tiếp phòng trường hợp canLaunchUrl bị chặn bởi OS (như iOS thiếu LSApplicationQueriesSchemes)
+      await launchUrl(launchUri, mode: LaunchMode.externalApplication);
+    }
+  } catch (e) {
+    debugPrint('Could not launch $launchUri: $e');
   }
 }
-

@@ -189,7 +189,7 @@ class GoingToPickupSection extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(state.customer.name,
+                                Text(state.callInfo?.calleeName ?? "--",
                                     style: AppStyles.inter18Bold),
                                 Text(
                                   state.customer.paymentMethod,
@@ -240,7 +240,7 @@ class GoingToPickupSection extends StatelessWidget {
                                         .copyWith(color: AppColors.color1A56DB),
                                   ),
                                   Text(
-                                    state.customer.pickupAddress,
+                                    state.currentOffer?.pickupAddress ?? "--",
                                     style: AppStyles.inter14Medium,
                                     overflow: TextOverflow.ellipsis,
                                   ),

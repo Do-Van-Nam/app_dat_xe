@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/repository/ride_repository.dart';
-import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
+import 'package:demo_app/main/data/service/socket_service/driver_socket_service.dart';
+// import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:demo_app/main/utils/service/local_notification_service.dart';
 import 'package:equatable/equatable.dart';
 
@@ -18,15 +19,14 @@ class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
       : super(FindingDriverState(
           pickupAddress: ride?.pickupAddress ?? '',
           destinationAddress: ride?.destinationAddress ?? '',
-          estimatedPrice:
-              double.tryParse(ride?.totalPrice ?? '0')?.toInt() ?? 0,
+          estimatedPrice: (ride?.totalPrice ?? 0.0) as int,
           distance: (ride?.distance?.toDouble() ?? 0.0) / 1000,
         )) {
     on<FindingDriverStartSearch>(_onStartSearch);
     on<FindingDriverCancelSearch>(_onCancelSearch);
     on<FindingDriverFound>(_onDriverFound);
     on<FindingDriverTimeout>(_onTimeout);
-    _sub = UserSocketService().onRideEvent.listen((data) {
+    _sub = DriverSocketService().onRideEvent.listen((data) {
       print("data tu user socket service trong finding driver bloc $data");
       if (data["event"] == "ride.accepted") {
         add(const FindingDriverFound());

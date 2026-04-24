@@ -214,4 +214,9 @@ class AppImages {
   static const String icShieldSecure = '$_base/ic_shield_secure.svg';
   // ── Payment Success Icons ──────────────────────────────────────────────────
   static const String icHelpCircle = '$_base/ic_help_circle.svg';
+
+  static const String icFilter = '$_base/ic_help_circle.svg';
+
+  static const String icChevronDown = '$_base/ic_help_circle.svg';
+  static const String icEmptyTrip = '$_base/ic_help_circle.svg';
 }

@@ -5,8 +5,8 @@ abstract class InterprovinceRideEvent {}
 class LoadInitialData extends InterprovinceRideEvent {}
 
 class SelectVehicleType extends InterprovinceRideEvent {
-  final int typeIndex; // 0: Xe ghép, 1: 4 chỗ, 2: 7 chỗ
-  SelectVehicleType(this.typeIndex);
+  final int vehicleType;
+  SelectVehicleType(this.vehicleType);
 }
 
 class ChangeDate extends InterprovinceRideEvent {
@@ -19,9 +19,20 @@ class ChangePickupTime extends InterprovinceRideEvent {
   ChangePickupTime(this.newTime);
 }
 
-class UpdateDestination extends InterprovinceRideEvent {
-  final String destination;
-  UpdateDestination(this.destination);
+class SavePickupPlaceIdEvent extends InterprovinceRideEvent {
+  final String placeId;
+  final String address;
+  SavePickupPlaceIdEvent(this.placeId, this.address);
 }
 
-// Thêm các event khác: chọn điểm đón, submit tìm xe...
+class SaveDestinationPlaceIdEvent extends InterprovinceRideEvent {
+  final String placeId;
+  final String address;
+  SaveDestinationPlaceIdEvent(this.placeId, this.address);
+}
+
+class FetchCurrentLocationEvent extends InterprovinceRideEvent {}
+
+class FetchVehiclesEvent extends InterprovinceRideEvent {}
+
+class BookInterprovinceRideEvent extends InterprovinceRideEvent {}

@@ -7,18 +7,65 @@ final class AirportBookingInitial extends AirportBookingState {}
 
 final class AirportBookingLoading extends AirportBookingState {}
 
+final class AirportBookingSuccess extends AirportBookingState {
+  final String rideId;
+  AirportBookingSuccess(this.rideId);
+}
+
 final class AirportBookingLoaded extends AirportBookingState {
   final int selectedTripType; // 0: Đi đến, 1: Đón từ
   final List<Airport> nearbyAirports;
-  final List<VehicleOption> vehicles;
-  final String selectedVehicleId;
+  final Airport? selectedAirport;
+  final List<Vehicle> vehicles;
+  final int? selectedVehicleType;
+  final String pickupPlaceId;
+  final String currentLocation;
+  final bool isLoadingLocation;
+  final DateTime selectedDate;
+  final TimeOfDay pickupTime;
+  final GoongLocationCoords? pickupCoords;
 
   AirportBookingLoaded({
     this.selectedTripType = 0,
     required this.nearbyAirports,
+    this.selectedAirport,
     required this.vehicles,
-    this.selectedVehicleId = "taxi",
+    this.selectedVehicleType,
+    this.pickupPlaceId = "",
+    this.currentLocation = "Đang tìm kiếm vị trí...",
+    this.isLoadingLocation = false,
+    required this.selectedDate,
+    required this.pickupTime,
+    this.pickupCoords,
   });
+
+  AirportBookingLoaded copyWith({
+    int? selectedTripType,
+    List<Airport>? nearbyAirports,
+    Airport? selectedAirport,
+    List<Vehicle>? vehicles,
+    int? selectedVehicleType,
+    String? pickupPlaceId,
+    String? currentLocation,
+    bool? isLoadingLocation,
+    DateTime? selectedDate,
+    TimeOfDay? pickupTime,
+    GoongLocationCoords? pickupCoords,
+  }) {
+    return AirportBookingLoaded(
+      selectedTripType: selectedTripType ?? this.selectedTripType,
+      nearbyAirports: nearbyAirports ?? this.nearbyAirports,
+      selectedAirport: selectedAirport ?? this.selectedAirport,
+      vehicles: vehicles ?? this.vehicles,
+      selectedVehicleType: selectedVehicleType ?? this.selectedVehicleType,
+      pickupPlaceId: pickupPlaceId ?? this.pickupPlaceId,
+      currentLocation: currentLocation ?? this.currentLocation,
+      isLoadingLocation: isLoadingLocation ?? this.isLoadingLocation,
+      selectedDate: selectedDate ?? this.selectedDate,
+      pickupTime: pickupTime ?? this.pickupTime,
+      pickupCoords: pickupCoords ?? this.pickupCoords,
+    );
+  }
 }
 
 final class AirportBookingError extends AirportBookingState {
@@ -27,32 +74,3 @@ final class AirportBookingError extends AirportBookingState {
 }
 
 // Models
-class Airport {
-  final String name;
-  final String subtitle;
-  final String distance;
-
-  Airport({required this.name, required this.subtitle, required this.distance});
-}
-
-class VehicleOption {
-  final String id;
-  final String name;
-  final int price;
-  final String passengers;
-  final String luggage;
-  final String tag;
-  final Color tagColor;
-  final String imageUrl;
-
-  VehicleOption({
-    required this.id,
-    required this.name,
-    required this.price,
-    required this.passengers,
-    required this.luggage,
-    required this.tag,
-    required this.tagColor,
-    required this.imageUrl,
-  });
-}

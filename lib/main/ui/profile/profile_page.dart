@@ -1,4 +1,4 @@
-import 'package:demo_app/core/app_export.dart';
+﻿import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
@@ -126,7 +126,7 @@ class ProfilePage extends StatelessWidget {
                                       ),
                                     ),
                                     child: Text(
-                                      "Goi thang",
+                                      user.roleLabel ?? "",
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -150,8 +150,8 @@ class ProfilePage extends StatelessWidget {
                           Expanded(
                             child: _buildStatCard(context,
                                 icon: AppImages.icWallet,
-                                title: l10n.totalIncome, // "ĐIỂM THƯỜNG"
-                                value: "${"10000"} ",
+                                title: l10n.regularPoints, // "ĐIỂM THƯỜNG"
+                                value: "${"10000"} ${l10n.points}",
                                 path: PATH_POINTS_WALLET),
                           ),
                           const SizedBox(width: 12),
@@ -159,8 +159,8 @@ class ProfilePage extends StatelessWidget {
                             child: _buildStatCard(
                               context,
                               icon: AppImages.icVoucher2,
-                              title: l10n.totalCreditRemaining,
-                              value: "${"100"} ",
+                              title: l10n.vouchers,
+                              value: "${"100"} Voucher",
                               color: Colors.orange,
                               path: PATH_VOUCHER,
                             ),
@@ -168,47 +168,7 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      l10n.paymentConfiguration,
-                      style: AppStyles.inter12SemiBold,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.chooseDiscountMethod,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Column(
-                      children: [
-                        _buildSelectDiscountType(
-                            context,
-                            AppImages.icWallet,
-                            l10n.creditWallet,
-                            l10n.creditWalletDescription,
-                            l10n.recommendedMdc,
-                            state.isCredit, () {
-                          context
-                              .read<ProfileBloc>()
-                              .add(ChangePaymentMethodEvent(isCredit: true));
-                        }),
-                        _buildSelectDiscountType(
-                            context,
-                            AppImages.icCreditCard,
-                            l10n.subscriptionPackage,
-                            l10n.subscriptionDescription,
-                            l10n.recommended,
-                            !state.isCredit, () {
-                          context
-                              .read<ProfileBloc>()
-                              .add(ChangePaymentMethodEvent(isCredit: false));
-                        }),
-                        // _buildMenuItem(context, AppImages.icCard,
-                        //     l10n.expenseManagement, PATH_EXPENSE_MANAGEMENT),
-                        // _buildMenuItem(context, AppImages.icGift,
-                        //     l10n.voucherCode, PATH_VOUCHER),
-                      ],
-                    ),
+
                     const SizedBox(height: 32),
 
                     // Tài khoản & Tiện ích
@@ -231,11 +191,11 @@ class ProfilePage extends StatelessWidget {
                           _buildMenuItem(context, AppImages.icPerson2,
                               l10n.accountInfo, PATH_EDIT_PROFILE),
                           _buildMenuItem(context, AppImages.icBookmark,
-                              l10n.contactSupport, PATH_EDIT_PROFILE),
-                          // _buildMenuItem(context, AppImages.icCard,
-                          //     l10n.expenseManagement, PATH_EXPENSE_MANAGEMENT),
-                          // _buildMenuItem(context, AppImages.icGift,
-                          //     l10n.voucherCode, PATH_VOUCHER),
+                              l10n.savedAddresses, PATH_EDIT_PROFILE),
+                          _buildMenuItem(context, AppImages.icCard,
+                              l10n.expenseManagement, PATH_EXPENSE_MANAGEMENT),
+                          _buildMenuItem(context, AppImages.icGift,
+                              l10n.voucherCode, PATH_VOUCHER),
                         ],
                       ),
                     ),
@@ -363,100 +323,6 @@ class ProfilePage extends StatelessWidget {
       title: Text(title),
       trailing: const Icon(Icons.chevron_right),
       onTap: () => context.push(path ?? ""),
-    );
-  }
-
-  Widget _buildSelectDiscountType(
-    BuildContext context,
-    String icon,
-    String title,
-    String subTitle,
-    String badgeText,
-    bool isSelected,
-    VoidCallback onTap,
-  ) {
-    final bool isCredit =
-        badgeText == AppLocalizations.of(context)!.recommendedMdc;
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.colorF3F3F6,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? AppColors.colorPrimary : Colors.transparent,
-            width: 1.5,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: isCredit
-                        ? AppColors.color_D9E2FF
-                        : AppColors.color_FFDDB0,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: SvgPicture.asset(
-                    icon,
-                    width: 16,
-                    height: 16,
-                  ),
-                ),
-                Icon(
-                  isSelected
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
-                  color: isSelected ? AppColors.colorPrimary : Colors.grey,
-                  size: 24,
-                ),
-              ],
-            ),
-            const SizedBox(width: 16),
-            Text(
-              title,
-              style: AppStyles.inter16SemiBold.copyWith(
-                color: AppColors.color000000,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subTitle,
-              style: AppStyles.inter12Regular.copyWith(
-                color: AppColors.color000000,
-              ),
-            ),
-            const SizedBox(height: 12),
-            if (badgeText.isNotEmpty)
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isCredit
-                      ? AppColors.color_E2E2E5
-                      : AppColors.color_69FF87,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  badgeText.toUpperCase(),
-                  style: AppStyles.inter10SemiBold.copyWith(
-                    color: AppColors.colorPrimary,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-            const SizedBox(width: 12),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:demo_app/main/ui/splash/splash_event.dart';
+import 'package:demo_app/main/utils/constant.dart';
 import 'package:demo_app/router.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +37,7 @@ class _SplashPageState extends State<SplashPage> {
           SchedulerBinding.instance.addPostFrameCallback((_) {
             switch (state.next) {
               case SplashNext.home:
-                // app khach hang
                 context.go(PATH_HOME);
-                // app tai xe
-                // context.go(PATH_DRIVER_MAIN);
                 break;
               case SplashNext.login:
                 context.go(PATH_LOGIN);

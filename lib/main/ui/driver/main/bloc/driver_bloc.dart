@@ -9,6 +9,7 @@ import 'package:demo_app/main/data/repository/ride_repository.dart';
 import 'package:demo_app/main/data/service/socket_service/driver_socket_service.dart';
 import 'package:demo_app/main/data/service/socket_service/socket_service.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
+import 'package:demo_app/main/utils/utility_fuctions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -60,13 +61,13 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
     _sub = _driverSocketService.onRideEvent.listen((data) {
       print("data tu driver  socket service trong driver bloc $data");
       final status = switch (data["event"]) {
-        "ride.arrived" => DriverScreen.goingToPickup,
-        "ride.picked_up" => DriverScreen.goingToPickup,
-        "ride.started" => DriverScreen.goingToPickup,
+        // "ride.arrived" => DriverScreen.goingToPickup,
+        // "ride.picked_up" => DriverScreen.goingToPickup,
+        // "ride.started" => DriverScreen.goingToPickup,
         "ride.new_offer" => DriverScreen.newRide,
-        "ride.completed" => DriverScreen.goingToPickup,
+        // "ride.completed" => DriverScreen.goingToPickup,
         "ride.cancellation_requested" => DriverScreen.customerCancel,
-        "ride.rejected" || "ride.cancelled" => DriverScreen.goingToPickup,
+        // "ride.rejected" || "ride.cancelled" => DriverScreen.goingToPickup,
         _ => null,
       };
       if (status != null) {
@@ -84,7 +85,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
         final dataMap = data["data"] as Map<String, dynamic>? ?? {};
 
         final Ride ride1 = Ride(
-          id: (dataMap["ride_id"] ?? "").toString(), // An toàn
+          id: (dataMap["ride_id"] ?? 0), // An toàn
           pickupAddress: (dataMap["pickup_address"] ?? "").toString(),
           destinationAddress: (dataMap["destination_address"] ?? "").toString(),
 
@@ -92,7 +93,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
 
           vehicleType: dataMap["vehicle_type"] == "BIKE" ? 1 : 2,
 
-          totalPrice: (dataMap["total_price"] ?? "").toString(),
+          totalPrice: (dataMap["total_price"] ?? "0"),
 
           isPaid: dataMap["is_paid"] == true,
 
@@ -110,11 +111,11 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
               ? DateTime.tryParse(dataMap["deleted_at"].toString())
               : null,
 
-          voucherCode: dataMap["voucher_code"]?.toString(),
-          discountAmount: (dataMap["discount_amount"] ?? "").toString(),
-          cancelReason: dataMap["cancel_reason"]?.toString(),
-          cancellationFee: (dataMap["cancellation_fee"] ?? "").toString(),
-          timeFare: (dataMap["time_fare"] ?? "").toString(),
+          voucherCode: dataMap["voucher_code"],
+          discountAmount: dataMap["discount_amount"],
+          cancelReason: dataMap["cancel_reason"],
+          cancellationFee: dataMap["cancellation_fee"],
+          timeFare: dataMap["time_fare"],
         );
 
         // emit(state.copyWith(currentOffer: ride1));
@@ -265,7 +266,10 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
       if (isSuccess) {
         emit(state.copyWith(screen: DriverScreen.online, clearOffer: true));
       } else {
-        emit(state.copyWith(error: UniqueError(message)));
+        emit(state.copyWith(
+            error: UniqueError(message),
+            screen: DriverScreen.online,
+            clearOffer: true));
       }
     } else {
       emit(state.copyWith(countdownSeconds: event.remaining));
@@ -285,16 +289,21 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
         print("emit  success");
         _countdownTimer?.cancel();
 
-        add(GetCallInfo(ride.id ?? "0"));
+        // add(GetCallInfo(ride.id ?? "0"));
+        final (isSuccess2, callInfo) =
+            await RideRepository().getCallInfo(state.currentOffer?.id ?? "0");
 
+        print("Driver bloc join room sau khi accept ride id ${ride.id}");
+        _driverSocketService.joinRide(ride.id?.toString() ?? "");
         emit(state.copyWith(
           screen: DriverScreen.goingToPickup,
           currentOffer: ride,
+          callInfo: callInfo,
           clearOffer: true,
           isAutoFetchRoute: true,
           destinationPoint: LatLng(
-            double.parse(ride.pickupLat ?? "0"),
-            double.parse(ride.pickupLng ?? "0"),
+            double.parse(ride.pickupLat.toString()),
+            double.parse(ride.pickupLng.toString()),
           ),
         ));
       } else {
@@ -406,8 +415,8 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
           screen: DriverScreen.startTrip,
           isAutoFetchRoute: true,
           destinationPoint: LatLng(
-            double.parse(state.currentOffer?.destinationLat ?? "0"),
-            double.parse(state.currentOffer?.destinationLng ?? "0"),
+            double.parse(state.currentOffer?.destinationLat?.toString() ?? "0"),
+            double.parse(state.currentOffer?.destinationLng?.toString() ?? "0"),
           ),
         ));
       } else {
@@ -475,7 +484,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
     emit(state.copyWith(
       screen: DriverScreen.online,
       todayIncome: state.todayIncome +
-          (int.parse(state.currentOffer?.totalPrice ?? "0")),
+          (int.parse(state.currentOffer?.totalPrice?.toString() ?? "0")),
       totalTrips: state.totalTrips + 1,
     ));
     //debug
@@ -487,8 +496,13 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
   }
 
   void _onSos(SosTapped event, Emitter<DriverState> emit) {}
-  void _onChat(ChatTapped event, Emitter<DriverState> emit) {}
-  void _onCall(CallTapped event, Emitter<DriverState> emit) {}
+  void _onChat(ChatTapped event, Emitter<DriverState> emit) {
+    emit(state.copyWith(error: UniqueError("goToChat")));
+  }
+
+  void _onCall(CallTapped event, Emitter<DriverState> emit) {
+    makePhoneCall(state.callInfo?.calleePhone ?? "");
+  }
 
   void _cancelTimers() {
     _countdownTimer?.cancel();
@@ -498,6 +512,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
   @override
   Future<void> close() {
     _cancelTimers();
+    _sub.cancel();
     return super.close();
   }
 }

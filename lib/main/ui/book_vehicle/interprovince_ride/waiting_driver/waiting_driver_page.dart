@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 import 'waiting_driver_bloc.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -7,12 +8,14 @@ import 'waiting_driver_bloc.dart';
 // ═══════════════════════════════════════════════════════════════
 
 class WaitingDriverPage extends StatelessWidget {
-  const WaitingDriverPage({super.key});
+  const WaitingDriverPage({super.key, required this.rideId});
+
+  final String rideId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => WaitingDriverBloc(),
+      create: (_) => WaitingDriverBloc()..add(WaitingDriverInit(rideId)),
       child: const _WaitingDriverView(),
     );
   }
@@ -31,15 +34,14 @@ class _WaitingDriverView extends StatelessWidget {
       listener: (context, state) {
         if (state.status == WaitingDriverStatus.error &&
             state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.show(context, state.errorMessage!);
+          context.pop();
         }
         if (state.status == WaitingDriverStatus.cancelled) {
-          Navigator.of(context).pop();
+          AppToast.show(context, "Huy chuyen thanh cong");
+          context.go(PATH_HOME);
         }
         if (state.status == WaitingDriverStatus.found) {
-          // TODO: push to driver-on-the-way screen
           context.push(PATH_TRIP_DETAIL);
         }
       },
@@ -92,7 +94,7 @@ class _WaitingDriverAppBar extends StatelessWidget
         ),
       ),
       leading: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
+        onTap: () => context.go(PATH_HOME),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SvgPicture.asset(

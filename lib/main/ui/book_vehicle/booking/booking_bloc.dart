@@ -7,7 +7,8 @@ import 'package:demo_app/main/data/model/ride/vehicle.dart';
 import 'package:demo_app/main/data/model/unique_error.dart';
 import 'package:demo_app/main/data/repository/goong_repository.dart';
 import 'package:demo_app/main/data/repository/ride_repository.dart';
-import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
+import 'package:demo_app/main/data/service/socket_service/driver_socket_service.dart';
+// import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/res/app_images.dart';
 import 'package:demo_app/router.dart';
@@ -256,7 +257,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       event.onSuccess(PATH_TRACKING, ride);
       print(
           "tai booking bloc sau khi goi api confirm dat chuyen bat dau join ride $rId");
-      UserSocketService().joinRide(rId);
+      // UserSocketService().joinRide(rId);
+      DriverSocketService().joinRide(rId);
     }
   }
 

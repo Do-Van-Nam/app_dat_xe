@@ -1,41 +1,84 @@
 part of 'interprovince_ride_bloc.dart';
 
-class InterprovinceRideState {
+sealed class InterprovinceRideState {}
+
+final class InterprovinceRideInitial extends InterprovinceRideState {}
+
+final class InterprovinceRideLoading extends InterprovinceRideState {}
+
+final class InterprovinceRideSuccess extends InterprovinceRideState {
+  final String rideId;
+  InterprovinceRideSuccess(this.rideId);
+}
+
+final class InterprovinceRideError extends InterprovinceRideState {
+  final String message;
+  InterprovinceRideError(this.message);
+}
+
+class InterprovinceRideLoaded extends InterprovinceRideState {
   final String pickupPoint;
+  final String pickupPlaceId;
+  final GoongLocationCoords? pickupCoords;
   final String destination;
+  final String destinationPlaceId;
+  final GoongLocationCoords? destinationCoords;
+
   final DateTime selectedDate;
   final TimeOfDay pickupTime;
-  final int selectedVehicleType; // 0: ghép, 1: 4 chỗ, 2: 7 chỗ
-  final double estimatedPrice;
-  final bool isLoading;
 
-  const InterprovinceRideState({
-    this.pickupPoint = "Vincom Center, Quận 1, TP.HCM",
+  final List<Vehicle> vehicles;
+  final int? selectedVehicleType;
+
+  final String currentLocation;
+  final bool isLoadingLocation;
+  final UniqueError? uniqueError;
+
+  InterprovinceRideLoaded({
+    this.pickupPoint = "",
+    this.pickupPlaceId = "",
+    this.pickupCoords,
     this.destination = "",
+    this.destinationPlaceId = "",
+    this.destinationCoords,
     required this.selectedDate,
     required this.pickupTime,
-    this.selectedVehicleType = 0,
-    this.estimatedPrice = 850000,
-    this.isLoading = false,
+    required this.vehicles,
+    this.selectedVehicleType,
+    this.currentLocation = "Đang tìm kiếm vị trí...",
+    this.isLoadingLocation = false,
+    this.uniqueError,
   });
 
-  InterprovinceRideState copyWith({
+  InterprovinceRideLoaded copyWith({
     String? pickupPoint,
+    String? pickupPlaceId,
+    GoongLocationCoords? pickupCoords,
     String? destination,
+    String? destinationPlaceId,
+    GoongLocationCoords? destinationCoords,
     DateTime? selectedDate,
     TimeOfDay? pickupTime,
+    List<Vehicle>? vehicles,
     int? selectedVehicleType,
-    double? estimatedPrice,
-    bool? isLoading,
+    String? currentLocation,
+    bool? isLoadingLocation,
+    UniqueError? uniqueError,
   }) {
-    return InterprovinceRideState(
+    return InterprovinceRideLoaded(
       pickupPoint: pickupPoint ?? this.pickupPoint,
+      pickupPlaceId: pickupPlaceId ?? this.pickupPlaceId,
+      pickupCoords: pickupCoords ?? this.pickupCoords,
       destination: destination ?? this.destination,
+      destinationPlaceId: destinationPlaceId ?? this.destinationPlaceId,
+      destinationCoords: destinationCoords ?? this.destinationCoords,
       selectedDate: selectedDate ?? this.selectedDate,
       pickupTime: pickupTime ?? this.pickupTime,
+      vehicles: vehicles ?? this.vehicles,
       selectedVehicleType: selectedVehicleType ?? this.selectedVehicleType,
-      estimatedPrice: estimatedPrice ?? this.estimatedPrice,
-      isLoading: isLoading ?? this.isLoading,
+      currentLocation: currentLocation ?? this.currentLocation,
+      isLoadingLocation: isLoadingLocation ?? this.isLoadingLocation,
+      uniqueError: uniqueError ?? this.uniqueError,
     );
   }
 }

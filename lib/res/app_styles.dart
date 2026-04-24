@@ -352,17 +352,23 @@ class AppStyles {
 
   // ── Top up styles ─────────────────────────────────────────────────────────
   static const TextStyle inter20SemiBold = TextStyle(
-    fontFamily: 'Inter', fontSize: 20, fontWeight: FontWeight.w600,
+    fontFamily: 'Inter',
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
     color: AppColors.color333333,
   );
 
   static const TextStyle inter22SemiBold = TextStyle(
-    fontFamily: 'Inter', fontSize: 22, fontWeight: FontWeight.w600,
+    fontFamily: 'Inter',
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
     color: AppColors.color163172,
   );
 
   static const TextStyle inter44ExtraBold = TextStyle(
-    fontFamily: 'Inter', fontSize: 44, fontWeight: FontWeight.w800,
+    fontFamily: 'Inter',
+    fontSize: 44,
+    fontWeight: FontWeight.w800,
     color: AppColors.color163172,
   );
 }

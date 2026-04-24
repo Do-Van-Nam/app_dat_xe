@@ -278,10 +278,10 @@ class _DocumentListSection extends StatelessWidget {
               value: selectedVehicleType,
               icon: Icons.directions_car,
               items: {
-                1: 'Bike',
-                2: 'Car 4 seats',
-                3: 'Car 7 seats',
-                4: 'Car 9 seats',
+                1: 'Xe máy',
+                2: 'Xe hơi 4 chỗ',
+                3: 'Xe hơi 7 chỗ',
+                4: 'Xe hơi 9 chỗ',
               },
               onChanged: (val) {
                 onVehicleTypeChanged(val);

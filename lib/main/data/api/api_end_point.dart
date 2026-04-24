@@ -43,6 +43,8 @@ class ApiEndPoint {
 // chuyen xe
 // khach hang
   static String get DOMAIN_RIDE_DRAFT => "$DOMAIN_API/ride/draft";
+  static String DOMAIN_RIDE_DETAIL(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId";
   static String DOMAIN_RIDE_VEHICLES(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/vehicles";
   static String DOMAIN_RIDE_PRICE(dynamic rideId) =>
@@ -57,6 +59,11 @@ class ApiEndPoint {
       "$DOMAIN_API/ride/$rideId/cancel-request";
   static String DOMAIN_RIDE_CALL_INFO(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/communication/calls";
+  static String DOMAIN_RIDE_MESSAGES(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/communication/messages";
+  static String get DOMAIN_RIDE_AIRPORTS => "$DOMAIN_API/ride/airports";
+  static String get DOMAIN_RIDE_BOOK_AIRPORT => "$DOMAIN_API/ride/airport";
+  static String get DOMAIN_RIDE_BOOK_INTERCITY => "$DOMAIN_API/ride/intercity";
 // chuyen xe
 // tai xe
   static String get DOMAIN_DRIVER_STATUS => "$DOMAIN_API/driver/status";
@@ -80,6 +87,16 @@ class ApiEndPoint {
       "$DOMAIN_API/driver/ride/$rideId/summary";
   static String DOMAIN_DRIVER_RIDE_CONFIRM_READY(dynamic rideId) =>
       "$DOMAIN_API/driver/ride/$rideId/confirm-ready";
+  static String get DOMAIN_DRIVER_SCHEDULED_RIDES =>
+      "$DOMAIN_API/driver/scheduled-rides";
+  static String DOMAIN_DRIVER_SCHEDULED_RIDE_DETAIL(dynamic rideId) =>
+      "$DOMAIN_DRIVER_SCHEDULED_RIDES/$rideId";
+  static String DOMAIN_DRIVER_SCHEDULED_RIDE_ACCEPT(dynamic rideId) =>
+      "$DOMAIN_DRIVER_SCHEDULED_RIDES/${rideId}/accept";
+  static String DOMAIN_DRIVER_SCHEDULED_RIDE_CANCEL(dynamic rideId) =>
+      "$DOMAIN_DRIVER_SCHEDULED_RIDES/$rideId/cancel";
+  static String get DOMAIN_DRIVER_MANAGED_RIDES =>
+      "$DOMAIN_API/driver/managed-rides";
 
   // Operation
   static String get DOMAIN_OPERATION_LOCATION =>

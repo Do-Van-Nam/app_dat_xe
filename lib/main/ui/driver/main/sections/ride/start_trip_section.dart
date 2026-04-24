@@ -156,10 +156,12 @@ class StartTripSection extends StatelessWidget {
                                   Text(l10n.destinationLabel,
                                       style: AppStyles.inter11SemiBold.copyWith(
                                           color: AppColors.color1A56DB)),
-                                  Text(l10n.destinationAddress,
+                                  Text(
+                                      state.currentOffer?.destinationAddress ??
+                                          "--",
                                       style: AppStyles.inter16Bold),
-                                  Text(l10n.destinationDetail,
-                                      style: AppStyles.inter12Regular),
+                                  // Text(state.currentOffer?.destinationDetail ?? "--",
+                                  //     style: AppStyles.inter12Regular),
                                 ],
                               ),
                             ),
@@ -245,7 +247,8 @@ class _CustomerMapCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(state.activeCustomer.name, style: AppStyles.inter15SemiBold),
+              Text(state.callInfo?.calleeName ?? "--",
+                  style: AppStyles.inter15SemiBold),
               Row(
                 children: [
                   SvgPicture.asset(

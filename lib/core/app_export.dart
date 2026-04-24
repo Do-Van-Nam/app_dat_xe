@@ -10,3 +10,5 @@ export 'package:demo_app/main/utils/widget/common_widgets.dart';
 export 'package:flutter_svg/svg.dart';
 export 'package:demo_app/generated/app_localizations.dart';
 export 'package:equatable/equatable.dart';
+export 'package:demo_app/main/utils/constant.dart';
+export 'package:demo_app/main/utils/utility_fuctions.dart';

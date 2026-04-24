@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/repository/ride_repository.dart';
-import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
+import 'package:demo_app/main/data/service/socket_service/driver_socket_service.dart';
+// import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -17,7 +18,7 @@ class TrackingBloc extends Bloc<TrackingEvent, TrackingState> {
     on<CancelRideEvent>(_onCancelRide);
     on<CancelRideRequestEvent>(_onCancelRideRequest);
     on<ChangeTrackingStatusEvent>(_onChangeStatus);
-    _sub = UserSocketService().onRideEvent.listen((data) {
+    _sub = DriverSocketService().onRideEvent.listen((data) {
       print("data tu user socket service trong tracking bloc $data");
       final status = switch (data["event"]) {
         "ride.arrived" => TrackingStatus.driverArrived,
@@ -47,8 +48,8 @@ class TrackingBloc extends Bloc<TrackingEvent, TrackingState> {
           rating: 4.9,
           arrivalTime: "KHOẢNG 2 PHÚT",
           distance: double.parse((ride.distance ?? "0").toString()) / 1000,
-          discountedPrice: double.parse(ride.totalPrice ?? "0"),
-          originalPrice: double.parse(ride.totalPrice ?? "0"),
+          discountedPrice: (ride.totalPrice ?? 0) as double,
+          originalPrice: (ride.basePrice ?? 0) as double,
           pickupAddress: ride.pickupAddress ?? "--",
           destinationAddress: ride.destinationAddress ?? "--",
           status: TrackingStatus.driverArriving,

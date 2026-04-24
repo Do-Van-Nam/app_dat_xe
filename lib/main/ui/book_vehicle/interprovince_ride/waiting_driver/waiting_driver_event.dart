@@ -7,6 +7,15 @@ abstract class WaitingDriverEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Init
+class WaitingDriverInit extends WaitingDriverEvent {
+  const WaitingDriverInit(this.rideId);
+  final String rideId;
+
+  @override
+  List<Object?> get props => [rideId];
+}
+
 /// Fired internally when the backend finds a driver.
 class WaitingDriverDriverFound extends WaitingDriverEvent {
   const WaitingDriverDriverFound();

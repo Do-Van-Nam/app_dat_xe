@@ -59,23 +59,29 @@ class _DriverView extends StatelessWidget {
                   destinationPoint: state.destinationPoint,
                 ),
                 builder: (context, record) {
-                  return MapBackground(
-                    followUserLocation: true,
-                    destinationPoint: record.destinationPoint,
-                    autoFetchRoute: record.isAutoFetchRoute,
-                  );
-                  // return SizedBox(
-                  //   height: 100,
-                  //   width: 100,
+                  // return MapBackground(
+                  //   followUserLocation: true,
+                  //   destinationPoint: record.destinationPoint,
+                  //   autoFetchRoute: record.isAutoFetchRoute,
                   // );
+                  return SizedBox(
+                    height: 100,
+                    width: 100,
+                  );
                 },
               ),
             ),
             BlocListener<DriverBloc, DriverState>(
               listenWhen: (prev, curr) => prev.error != curr.error,
               listener: (context, state) {
-                if (state.error != null) {
+                if (state.error != null && state.error?.message != "goToChat") {
                   AppToast.show(context, state.error!.message);
+                }
+                if (state.error != null && state.error?.message == "goToChat") {
+                  context.push(
+                    PATH_CHAT,
+                    extra: {'rideId': state.currentOffer?.id},
+                  );
                 }
               },
               child: SizedBox(),
@@ -94,13 +100,13 @@ class _DriverView extends StatelessWidget {
                     ),
                   );
                 } else if (state.screen == DriverScreen.arrivedDest) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Đã đến điểm trả!'),
-                      backgroundColor: AppColors.color27AE60,
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text('Đã đến điểm trả!'),
+                  //     backgroundColor: AppColors.color27AE60,
+                  //     duration: const Duration(seconds: 2),
+                  //   ),
+                  // );
                   context.push(PATH_RATE_TRIP,
                       extra: {'rideId': state.currentOffer!.id});
                 } else if (state.screen == DriverScreen.customerCancel) {
@@ -128,59 +134,70 @@ class _DriverView extends StatelessWidget {
                     _buildBody(state),
 
                     // // dropdown doi giao dien de debug
-                    // Positioned(
-                    //   top: 100,
-                    //   left: 20,
-                    //   child: Container(
-                    //     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    //     decoration: BoxDecoration(
-                    //       color: Colors.white.withOpacity(0.8),
-                    //       borderRadius: BorderRadius.circular(8),
-                    //       border: Border.all(color: Colors.red, width: 2),
-                    //     ),
-                    //     child: DropdownButton<DriverScreen>(
-                    //       value: state.screen,
-                    //       items: DriverScreen.values.map((screen) {
-                    //         return DropdownMenuItem(
-                    //           value: screen,
-                    //           child: Text(
-                    //             screen.name,
-                    //             style: const TextStyle(
-                    //                 fontSize: 12, color: Colors.black),
-                    //           ),
-                    //         );
-                    //       }).toList(),
-                    //       onChanged: (val) {
-                    //         if (val != null) {
-                    //           context
-                    //               .read<DriverBloc>()
-                    //               .add(DebugChangeScreen(val));
-                    //         }
-                    //       },
-                    //       underline: const SizedBox(),
-                    //     ),
-                    //   ),
-                    // ),
-
-                    // Positioned(
-                    //     top: 100,
-                    //     right: 20,
-                    //     child: TextButton(
-                    //       child: Text("show popup"),
-                    //       onPressed: () {
-                    //         showCommonPopup(
-                    //           context: context,
-                    //           title:
-                    //               'Khách hàng yêu cầu huỷ chuyến. Xác nhận huỷ chuyến?',
-                    //           option1Text: 'Không',
-                    //           option1OnTap: () => Navigator.pop(context),
-                    //           option2Text: 'Huỷ chuyến',
-                    //           option2OnTap: () {
-                    //             // xử lý huỷ chuyến
-                    //           },
-                    //         );
-                    //       },
-                    //     ))
+                    if (Constant.isDebugMode) ...[
+                      Positioned(
+                        top: 100,
+                        left: 20,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.red, width: 2),
+                          ),
+                          child: DropdownButton<DriverScreen>(
+                            value: state.screen,
+                            items: DriverScreen.values.map((screen) {
+                              return DropdownMenuItem(
+                                value: screen,
+                                child: Text(
+                                  screen.name,
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.black),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (val) {
+                              if (val != null) {
+                                context
+                                    .read<DriverBloc>()
+                                    .add(DebugChangeScreen(val));
+                              }
+                            },
+                            underline: const SizedBox(),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                          top: 100,
+                          right: 20,
+                          child: TextButton(
+                            child: Text("show popup"),
+                            onPressed: () {
+                              showCommonPopup(
+                                context: context,
+                                title:
+                                    'Khách hàng yêu cầu huỷ chuyến. Xác nhận huỷ chuyến?',
+                                option1Text: 'Không',
+                                option1OnTap: () => Navigator.pop(context),
+                                option2Text: 'Huỷ chuyến',
+                                option2OnTap: () {
+                                  // xử lý huỷ chuyến
+                                },
+                              );
+                            },
+                          )),
+                      Positioned(
+                          top: 200,
+                          right: 20,
+                          child: TextButton(
+                            child: Text("chat"),
+                            onPressed: () {
+                              context.push(PATH_CHAT,
+                                  extra: {'rideId': "161351382691115916"});
+                            },
+                          ))
+                    ]
                   ],
                 );
               },

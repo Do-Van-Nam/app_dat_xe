@@ -193,11 +193,7 @@ class _OtpViewState extends State<OtpView> {
                         listener: (context, state) {
                           if (state is OtpSuccess) {
                             AppToast.show(context, 'Đăng ký thành công');
-                            // context.go(PATH_HOME); // app cu nguoi dung binh thuong
-                            context.go(PATH_DRIVER_UPLOAD_RECORDS, extra: {
-                              "phone": widget.phoneNumber ?? "",
-                              "fullName": widget.fullName ?? "",
-                            }); // app moi tai xe
+                            context.go(PATH_HOME);
                           }
                           if (state is OtpForgetSuccess) {
                             context.push(PATH_RESET_PASSWORD, extra: {

@@ -1,16 +1,56 @@
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/interprovince_ride_bloc.dart';
+import 'package:demo_app/main/data/model/goong/location.dart';
+import 'package:demo_app/main/data/repository/goong_repository.dart';
+import 'package:demo_app/main/utils/widget/popup_widgets.dart';
+import 'package:demo_app/main/utils/widget/textfield_widgets.dart';
 
-class RideFormWidget extends StatelessWidget {
+class RideFormWidget extends StatefulWidget {
   const RideFormWidget({super.key});
+
+  @override
+  State<RideFormWidget> createState() => _RideFormWidgetState();
+}
+
+class _RideFormWidgetState extends State<RideFormWidget> {
+  final TextEditingController pickUpController = TextEditingController();
+  final FocusNode pickUpFocus = FocusNode();
+
+  final TextEditingController destinationController = TextEditingController();
+  final FocusNode destinationFocus = FocusNode();
+
+  @override
+  void dispose() {
+    pickUpController.dispose();
+    pickUpFocus.dispose();
+    destinationController.dispose();
+    destinationFocus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<InterprovinceRideBloc, InterprovinceRideState>(
+    return BlocConsumer<InterprovinceRideBloc, InterprovinceRideState>(
+      listener: (context, state) {
+        if (state is InterprovinceRideLoaded) {
+          if (state.pickupPoint.isNotEmpty &&
+              pickUpController.text != state.pickupPoint) {
+            pickUpController.text = state.pickupPoint;
+          }
+          if (state.destination.isNotEmpty &&
+              destinationController.text != state.destination) {
+            destinationController.text = state.destination;
+          }
+        }
+      },
       builder: (context, state) {
         final bloc = context.read<InterprovinceRideBloc>();
+
+        if (state is! InterprovinceRideLoaded) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
         return Container(
           margin: EdgeInsets.only(top: 24),
@@ -50,7 +90,6 @@ class RideFormWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Tiêu đề chuyến đi
                     Row(
                       children: [
                         CircleAvatar(
@@ -86,43 +125,77 @@ class RideFormWidget extends StatelessWidget {
                     const SizedBox(height: 32),
 
                     // Điểm đón
-                    _buildLocationField(
-                      context: context,
-                      label: l10n.pickupPoint,
-                      value: state.pickupPoint,
-                      icon: AppImages.icLocation3,
-                      isPickup: true,
-                      onTap: () {
-                        // TODO: Mở bottom sheet chọn điểm đón
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Chức năng chọn điểm đón đang phát triển')),
-                        );
+                    Container(
+                      padding: const EdgeInsets.only(top: 16, bottom: 8),
+                      child: Text(
+                        l10n.pickupPoint,
+                        style: AppStyles.inter14Medium,
+                      ),
+                    ),
+                    AutocompleteTextField<GoongLocation>(
+                      controller: pickUpController,
+                      focusNode: pickUpFocus,
+                      hintText: l10n.yourLocation,
+                      backgroundColor: AppColors.color_5F5F,
+                      fetchSuggestions: (input) async {
+                        final (ok, list) = await GoongRepository()
+                            .getAutocompletePlaces(input: input);
+                        return ok ? list : [];
                       },
+                      itemBuilder: (context, location) =>
+                          locationSuggestionTile(location),
+                      onSelected: (location) {
+                        pickUpController.text = location.description;
+                        bloc.add(SavePickupPlaceIdEvent(
+                            location.placeId, location.description));
+                      },
+                      persistentTrailingWidget: InkWell(
+                        onTap: () {
+                          bloc.add(FetchCurrentLocationEvent());
+                        },
+                        child: state.isLoadingLocation
+                            ? const Padding(
+                                padding: EdgeInsets.all(12),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              )
+                            : const Icon(
+                                Icons.my_location,
+                                color: Colors.blue,
+                              ),
+                      ),
                     ),
 
                     const SizedBox(height: 16),
 
                     // Điểm đến
-                    _buildLocationField(
-                      context: context,
-                      label: l10n.destination,
-                      value: state.destination.isEmpty
-                          ? l10n.whereToGo
-                          : state.destination,
-                      icon: AppImages.icLocation,
-                      isPickup: false,
-                      textColor: state.destination.isEmpty
-                          ? AppColors.textSecondary.withOpacity(0.5)
-                          : AppColors.textPrimary,
-                      onTap: () {
-                        // TODO: Mở dialog hoặc bottom sheet chọn tỉnh/thành
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Chức năng chọn điểm đến đang phát triển')),
-                        );
+                    Container(
+                      padding: const EdgeInsets.only(top: 16, bottom: 8),
+                      child: Text(
+                        l10n.destination,
+                        style: AppStyles.inter14Medium,
+                      ),
+                    ),
+                    AutocompleteTextField<GoongLocation>(
+                      controller: destinationController,
+                      focusNode: destinationFocus,
+                      hintText: l10n.whereToGo,
+                      backgroundColor: AppColors.color_5F5F,
+                      fetchSuggestions: (input) async {
+                        final (ok, list) = await GoongRepository()
+                            .getAutocompletePlaces(input: input);
+                        return ok ? list : [];
+                      },
+                      itemBuilder: (context, location) =>
+                          locationSuggestionTile(location),
+                      onSelected: (location) {
+                        destinationController.text = location.description;
+                        bloc.add(SaveDestinationPlaceIdEvent(
+                            location.placeId, location.description));
                       },
                     ),
 
@@ -187,71 +260,6 @@ class RideFormWidget extends StatelessWidget {
     );
   }
 
-  // Widget tái sử dụng cho Điểm đón & Điểm đến
-  Widget _buildLocationField({
-    required BuildContext context,
-    required String label,
-    required String value,
-    required String icon,
-    required bool isPickup,
-    Color? textColor,
-    required VoidCallback onTap,
-  }) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: ShapeDecoration(
-          color: AppColors.inputBackground,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: SvgPicture.asset(
-                icon,
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(
-                  isPickup ? AppColors.primary : AppColors.textSecondary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: AppStyles.labelSmall,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: AppStyles.bodyLarge.copyWith(
-                      color: textColor ?? AppColors.textPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   // Widget tái sử dụng cho Ngày và Giờ
   Widget _buildDateTimeField({
     required BuildContext context,
@@ -263,7 +271,7 @@ class RideFormWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 87,
+        height: 95,
         padding: const EdgeInsets.all(16),
         decoration: ShapeDecoration(
           color: AppColors.inputBackground,

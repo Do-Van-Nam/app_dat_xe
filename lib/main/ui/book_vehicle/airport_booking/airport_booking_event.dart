@@ -11,6 +11,32 @@ class SelectTripTypeEvent extends AirportBookingEvent {
 }
 
 class SelectVehicleEvent extends AirportBookingEvent {
-  final String vehicleId;
-  SelectVehicleEvent(this.vehicleId);
+  final int vehicleType;
+  SelectVehicleEvent(this.vehicleType);
 }
+
+class SavePickupPlaceIdEvent extends AirportBookingEvent {
+  final String pickupPlaceId;
+  SavePickupPlaceIdEvent(this.pickupPlaceId);
+}
+
+class SelectAirportEvent extends AirportBookingEvent {
+  final Airport airport;
+  SelectAirportEvent(this.airport);
+}
+
+class FetchCurrentLocationEvent extends AirportBookingEvent {}
+
+class ChangeDate extends AirportBookingEvent {
+  final DateTime date;
+  ChangeDate(this.date);
+}
+
+class ChangePickupTime extends AirportBookingEvent {
+  final TimeOfDay time;
+  ChangePickupTime(this.time);
+}
+
+class FetchVehiclesEvent extends AirportBookingEvent {}
+
+class BookAirportRideEvent extends AirportBookingEvent {}

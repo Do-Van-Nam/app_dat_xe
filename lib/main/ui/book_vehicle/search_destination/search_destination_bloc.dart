@@ -622,15 +622,18 @@ class SearchDestinationBloc
       Emitter<SearchDestinationState> emit) async {
     print("emit destinationPlaceId: ${event.destinationPlaceId}");
     print("pickupPlaceId: ${event.destinationPlaceId}");
-    final (success, locations) = await GoongRepository().getPlaceDetail(
-      placeId: event.destinationPlaceId,
-    );
-    if (success && locations != null) {
-      SharePreferenceUtil.saveCurrentDropOff(locations);
-    }
-    emit((state as SearchDestinationLoaded).copyWith(
-      destinationPlaceId: event.destinationPlaceId,
-    ));
+
+    try {
+      final (success, locations) = await GoongRepository().getPlaceDetail(
+        placeId: event.destinationPlaceId,
+      );
+      if (success && locations != null) {
+        SharePreferenceUtil.saveCurrentDropOff(locations);
+      }
+      emit((state as SearchDestinationLoaded).copyWith(
+        destinationPlaceId: event.destinationPlaceId,
+      ));
+    } catch (e) {}
   }
 
   Future<void> _onSubmitSearch(

@@ -14,8 +14,9 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     emit(SignupLoading());
 
     try {
+      // dang ky tai xe type = 5
       final (isSuccess, message) =
-          await AuthRepository().requestOtp(phone: "0${event.phone}", type: 1);
+          await AuthRepository().requestOtp(phone: "0${event.phone}", type: 5);
       if (event.fullName.isEmpty ||
           event.phone.isEmpty ||
           event.password.length < 8) {

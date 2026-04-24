@@ -6,8 +6,9 @@ import 'package:demo_app/main/data/repository/homepage_repository.dart';
 import 'package:demo_app/main/data/service/socket_service/approval_socket_service.dart';
 import 'package:demo_app/main/data/service/socket_service/driver_socket_service.dart';
 import 'package:demo_app/main/data/service/socket_service/socket_service5.dart';
-import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
+// import 'package:demo_app/main/data/service/socket_service/user_socket_service.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
+import 'package:demo_app/main/utils/constant.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'home_event.dart';
@@ -49,18 +50,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(HomeLoadFailure('Không tìm thấy thông tin người dùng'));
       }
       // khoi tao user socket service o man home
-      // print("khoi tao user socket service o home bloc");
-      // UserSocketService().init();
-      // if (currentRide != null) {
-      //   UserSocketService().joinRide(currentRide.id ?? "");
-      // }
-
-      // khoi tao driver socket service o man home
+      // if (Constant.isUserApp) {
+      //   print("khoi tao user socket service o home bloc");
+      //   UserSocketService().init();
+      //   if (currentRide != null) {
+      //     UserSocketService().joinRide(currentRide.id ?? "");
+      //   }
+      // } else {
       print("khoi tao driver socket service o home bloc");
       DriverSocketService().init();
       if (currentRide != null) {
-        DriverSocketService().joinRide(currentRide.id ?? "");
+        DriverSocketService().joinRide(currentRide.id.toString());
       }
+      // }
     });
 
     // khoi tao approval socket service o man home

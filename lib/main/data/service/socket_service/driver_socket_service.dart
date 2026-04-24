@@ -76,7 +76,7 @@ class DriverSocketService {
 
     try {
       final user = await SharePreferenceUtil.getUser();
-      final userId = (user?.id ?? "160079173451580383").toString();
+      final userId = (user?.id ?? "0").toString();
       _currentUserId = userId;
 
       print('DriverSocketService 🚀 Khởi tạo socket với userId=$userId');
@@ -234,6 +234,12 @@ class DriverSocketService {
     s.on('ride:tracking.updated', (data) {
       print('DriverSocketService 📨 ride:tracking.updated: $data');
       _emitRideEvent('ride:tracking.updated', data);
+    });
+
+    // tin nhan
+    s.on('communication.chat.message.sent', (data) {
+      print('DriverSocketService 📨 communication.chat.message.sent: $data');
+      _emitRideEvent('communication.chat.message.sent', data);
     });
 
     s.on('ride:join:response', (response) {

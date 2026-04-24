@@ -16,6 +16,38 @@ class DriverRepository {
     return {"Authorization": "Bearer $token"};
   }
 
+  Ride? _parseRide(dynamic data) {
+    if (data is! Map<String, dynamic>) return null;
+    try {
+      return Ride.fromJson(data);
+    } catch (e) {
+      print('❌ parseRide error: $e');
+      return null;
+    }
+  }
+
+  List<Ride> _parseRideList(dynamic data) {
+    final rawData =
+        data is Map<String, dynamic> ? (data['data'] ?? data) : data;
+    final candidates = [
+      rawData,
+      rawData is Map<String, dynamic> ? rawData['rides'] : null,
+      rawData is Map<String, dynamic> ? rawData['items'] : null,
+      rawData is Map<String, dynamic> ? rawData['results'] : null,
+    ];
+
+    for (final candidate in candidates) {
+      if (candidate is List) {
+        return candidate
+            .whereType<Map<String, dynamic>>()
+            .map(Ride.fromJson)
+            .toList();
+      }
+    }
+
+    return <Ride>[];
+  }
+
   // ============================================================
   // Cập nhật trạng thái online/offline và vị trí
   // PUT /api/v1/driver/status
@@ -212,5 +244,142 @@ class DriverRepository {
       }
     }
     return (response.isSuccess, response.message ?? "", rideIncomeSummary);
+  }
+
+  Future<(bool, List<Ride>)> getScheduledRides({
+    String? travelDate,
+    String? travelTime,
+    int? rideType,
+    num? minPrice,
+    num? maxPrice,
+  }) async {
+    try {
+      final params = <String, dynamic>{};
+      if (travelDate != null && travelDate.isNotEmpty) {
+        params['travel_date'] = travelDate;
+      }
+      if (travelTime != null && travelTime.isNotEmpty) {
+        params['travel_time'] = travelTime;
+      }
+      if (rideType != null) {
+        params['ride_type'] = rideType;
+      }
+      if (minPrice != null) {
+        params['min_price'] = minPrice;
+      }
+      if (maxPrice != null) {
+        params['max_price'] = maxPrice;
+      }
+
+      final BaseResponse response = await ApiUtil.getInstance()!.get(
+        url: ApiEndPoint.DOMAIN_DRIVER_SCHEDULED_RIDES,
+        params: params,
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        return (true, _parseRideList(response.data));
+      }
+
+      return (false, <Ride>[]);
+    } catch (e, stack) {
+      print('❌ getScheduledRides error: $e');
+      print('Stack trace: $stack');
+      return (false, <Ride>[]);
+    }
+  }
+
+  Future<(bool, Ride?)> getScheduledRideDetail(dynamic rideId) async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.get(
+        url: ApiEndPoint.DOMAIN_DRIVER_SCHEDULED_RIDE_DETAIL(rideId),
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        final ride = _parseRide(
+          data is Map<String, dynamic> && data['ride'] is Map<String, dynamic>
+              ? data['ride']
+              : data,
+        );
+        return (ride != null, ride);
+      }
+
+      return (false, null);
+    } catch (e, stack) {
+      print('❌ getScheduledRideDetail error: $e');
+      print('Stack trace: $stack');
+      return (false, null);
+    }
+  }
+
+  Future<(bool, Ride?)> acceptScheduledRide(dynamic rideId) async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.post(
+        url: ApiEndPoint.DOMAIN_DRIVER_SCHEDULED_RIDE_ACCEPT(rideId),
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        final ride = _parseRide(
+          data is Map<String, dynamic> && data['ride'] is Map<String, dynamic>
+              ? data['ride']
+              : data,
+        );
+        return (true, ride);
+      }
+
+      return (false, null);
+    } catch (e, stack) {
+      print('❌ acceptScheduledRide error: $e');
+      print('Stack trace: $stack');
+      return (false, null);
+    }
+  }
+
+  Future<(bool, Ride?)> cancelScheduledRide(dynamic rideId) async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.post(
+          url: ApiEndPoint.DOMAIN_DRIVER_SCHEDULED_RIDE_CANCEL(rideId),
+          headers: await _authHeader(),
+          body: {"reason": "Hủy chuyến"});
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        final ride = _parseRide(
+          data is Map<String, dynamic> && data['ride'] is Map<String, dynamic>
+              ? data['ride']
+              : data,
+        );
+        return (true, ride);
+      }
+
+      return (false, null);
+    } catch (e, stack) {
+      print('❌ cancelScheduledRide error: $e');
+      print('Stack trace: $stack');
+      return (false, null);
+    }
+  }
+
+  Future<(bool, List<Ride>)> getManagedRides() async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.get(
+        url: ApiEndPoint.DOMAIN_DRIVER_MANAGED_RIDES,
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        return (true, _parseRideList(response.data));
+      }
+
+      return (false, <Ride>[]);
+    } catch (e, stack) {
+      print('❌ getManagedRides error: $e');
+      print('Stack trace: $stack');
+      return (false, <Ride>[]);
+    }
   }
 }

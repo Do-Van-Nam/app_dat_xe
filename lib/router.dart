@@ -11,15 +11,17 @@ import 'package:demo_app/main/ui/auth/signup/signup_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/airport_booking/airport_booking_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/book_for_family/book_for_family_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/booking/booking_page.dart';
-import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/interprovice_ride_page.dart';
+import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/interprovince_ride_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/trip_detail/tai_xe_nhan_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/interprovince_ride/waiting_driver/waiting_driver_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/rent_driver/rent_driver_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/finding_driver/finding_driver_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/search_destination/search_destination_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/tracking/tracking_page.dart';
+import 'package:demo_app/main/ui/chat/chat_page.dart';
 import 'package:demo_app/main/ui/driver/map_sample.dart';
 import 'package:demo_app/main/ui/driver/membership/membership_page.dart';
+import 'package:demo_app/main/ui/driver/scheduled_rides/scheduled_ride_page.dart';
 import 'package:demo_app/main/ui/food_delivery/cart/cart_page.dart';
 import 'package:demo_app/main/ui/food_delivery/checkout/checkout_page.dart';
 import 'package:demo_app/main/ui/food_delivery/food_delivery_page.dart';
@@ -34,6 +36,7 @@ import 'package:demo_app/main/ui/profile/profile_page.dart';
 import 'package:demo_app/main/ui/profile/voucher/voucher_page.dart';
 import 'package:demo_app/main/ui/shipping/delivery_info/delivery_info_page.dart';
 import 'package:demo_app/main/ui/shipping/shipping_page.dart';
+import 'package:demo_app/main/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -88,6 +91,7 @@ const String PATH_RENT_DRIVER = "/rent-driver";
 const String PATH_FINDING_DRIVER = "/finding-driver";
 const String PATH_WAITING_DRIVER = "/waiting-driver";
 const String PATH_TRIP_DETAIL = "/trip-detail";
+const String PATH_CHAT = "/chat";
 
 //Shipping
 const String PATH_SHIPPING = "/shipping";
@@ -109,6 +113,7 @@ const String PATH_DRIVER_WALLET = "/driver-wallet";
 const String PATH_DRIVER_MEMBERSHIP = "/driver-membership";
 const String PATH_DRIVER_TOPUP = "/driver-topup";
 const String PATH_PAYMENT_SUCCESS = "/payment-success";
+const String PATH_DRIVER_SCHEDULED_RIDE = "/driver-scheduled-ride";
 
 // activity
 const String PATH_ACTIVITY_TRIP_DETAIL = "/activity-trip-detail";
@@ -126,37 +131,88 @@ final GoRouter router = GoRouter(
   initialLocation: PATH_SPLASH,
 
   routes: [
-    ShellRoute(
-      navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) {
-        return MainPage(child: child);
+    // ShellRoute(
+    //   navigatorKey: _shellNavigatorKey,
+    //   builder: (context, state, child) {
+    //     return MainPage(child: child);
+    //   },
+    //   routes: [
+    //     // app khach hang
+    //     GoRoute(
+    //         path: PATH_HOME,
+    //         builder: (context, state) {
+    //           if (Constant.isUserApp) {
+    //             return HomePage();
+    //           } else {
+    //             return DriverPage();
+    //           }
+    //         }),
+
+    //     // app tai xe
+    //     // GoRoute(path: PATH_HOME, builder: (context, state) => DriverPage()),
+    //     GoRoute(
+    //       path: PATH_DRIVER_MAIN,
+    //       builder: (context, state) => DriverPage(),
+    //     ),
+
+    //     GoRoute(path: PATH_PROFILE, builder: (context, state) => ProfilePage()),
+    //     GoRoute(
+    //         path: PATH_ACTIVITY, builder: (context, state) => ActivityPage()),
+    //     GoRoute(
+    //       path: PATH_DRIVER_WALLET,
+    //       builder: (context, state) => WalletPage(),
+    //     ),
+    //   ],
+    // ),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return MainPage(shell: navigationShell);
       },
-      routes: [
-        // app khach hang
-        GoRoute(path: PATH_HOME, builder: (context, state) => HomePage()),
-
-        // app tai xe
-        // GoRoute(path: PATH_HOME, builder: (context, state) => DriverPage()),
-        GoRoute(
-          path: PATH_DRIVER_MAIN,
-          builder: (context, state) => DriverPage(),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+                path: PATH_HOME,
+                builder: (_, __) {
+                  return Constant.isUserApp ? HomePage() : DriverPage();
+                }),
+          ],
         ),
-
-        GoRoute(path: PATH_PROFILE, builder: (context, state) => ProfilePage()),
-        GoRoute(
-            path: PATH_ACTIVITY, builder: (context, state) => ActivityPage()),
-        GoRoute(
-          path: PATH_DRIVER_WALLET,
-          builder: (context, state) => WalletPage(),
+        // StatefulShellBranch(
+        //   routes: [
+        //     GoRoute(
+        //         path: PATH_DRIVER_MAIN,
+        //         builder: (_, __) {
+        //           return DriverPage();
+        //         }),
+        //   ],
+        // ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+                path: PATH_ACTIVITY, builder: (_, __) => const ActivityPage()),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+                path: PATH_PROFILE, builder: (_, __) => const ProfilePage()),
+          ],
         ),
       ],
     ),
-
     GoRoute(
       path: PATH_SPLASH,
       builder: (context, state) => const SplashPage(),
     ),
-
+    GoRoute(path: PATH_DRIVER_MAIN, builder: (context, state) => DriverPage()),
+    GoRoute(
+        path: PATH_CHAT,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final rideId = extra?['rideId'] as String?;
+          return ChatPage(rideId: rideId ?? '');
+        }),
     GoRoute(
         name: PATH_LOGIN,
         path: PATH_LOGIN,
@@ -327,7 +383,12 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: PATH_WAITING_DRIVER,
-      builder: (context, state) => WaitingDriverPage(),
+      builder: (context, state) {
+        final extra = state.extra as Map;
+        final rideId = extra['rideId'] as String;
+
+        return WaitingDriverPage(rideId: rideId);
+      },
     ),
     GoRoute(
       path: PATH_TRIP_DETAIL,
@@ -384,6 +445,10 @@ final GoRouter router = GoRouter(
         final rideId = extras['rideId'] as String;
         return RateTripPage(rideId: rideId);
       },
+    ),
+    GoRoute(
+      path: PATH_DRIVER_SCHEDULED_RIDE,
+      builder: (context, state) => ScheduledRidePage(),
     ),
     GoRoute(
       path: PATH_MAP_SAMPLE,

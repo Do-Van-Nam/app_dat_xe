@@ -676,4 +676,43 @@ class AppColors {
   static const Color colorBtnPrimaryText = Color(0xFF111827);
   static const Color colorBtnSecondaryBg = Color(0xFFF3F3F6);
   static const Color colorBtnSecondaryText = Color(0xFF374151);
+
+  // Tab bar
+  static const Color colorTabBarBg = Color(0xFFFFFFFF);
+  static const Color colorTabSelected = Color(0xFF1A3FA4);
+  static const Color colorTabUnselected = Color(0xFF6B7280);
+  static const Color colorTabIndicator = Color(0xFF1A3FA4);
+  static const Color colorTabDivider = Color(0xFFE5E7EB);
+
+  // Filter
+  static const Color colorFilterBg = Color(0xFFFFFFFF);
+  static const Color colorFilterBorder = Color(0xFFE5E7EB);
+  static const Color colorFilterChipBg = Color(0xFFF3F3F6);
+  static const Color colorFilterChipBgActive = Color(0xFFEEF2FF);
+  static const Color colorFilterChipBorder = Color(0xFFE5E7EB);
+  static const Color colorFilterChipBorderActive = Color(0xFF1A3FA4);
+  static const Color colorFilterChipText = Color(0xFF374151);
+  static const Color colorFilterChipTextActive = Color(0xFF1A3FA4);
+  static const Color colorFilterInputBg = Color(0xFFF7F8FA);
+  static const Color colorFilterInputBorder = Color(0xFFE5E7EB);
+  static const Color colorFilterLabel = Color(0xFF6B7280);
+
+  static const Color colorTripTypeBadgeBg = Color(0xFFEEF2FF);
+  static const Color colorTripTypeBadgeText = Color(0xFF1A3FA4);
+  static const Color colorTripDotPickup = Color(0xFF1A3FA4);
+  static const Color colorTripDotDestination = Color(0xFFF5A623);
+  static const Color colorTripRouteLine = Color(0xFFD1D5DB);
+  static const Color colorTripPriceText = Color(0xFF1A3FA4);
+  static const Color colorTripMetaText = Color(0xFF6B7280);
+
+  // Buttons
+  static const Color colorBtnAcceptBg = Color(0xFF1A3FA4);
+  static const Color colorBtnAcceptText = Color(0xFFFFFFFF);
+  static const Color colorBtnCancelBg = Color(0xFFFFFFFF);
+  static const Color colorBtnCancelText = Color(0xFFDC2626);
+  static const Color colorBtnCancelBorder = Color(0xFFFCA5A5);
+
+  // Empty state
+  static const Color colorEmptyIcon = Color(0xFFD1D5DB);
+  static const Color colorEmptyText = Color(0xFF9CA3AF);
 }

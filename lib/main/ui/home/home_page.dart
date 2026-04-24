@@ -444,86 +444,91 @@ class HomeView extends StatelessWidget {
                 ),
 
                 // debug
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_DRIVER_MAIN),
-                    child: Text("Driver Main")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_WAITING_APPROVAL),
-                    child: Text("Waiting Approval")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_MAP_SAMPLE),
-                    child: Text("Map Sample")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_MAP_BG),
-                    child: Text("Map background")),
-                OutlinedButton(
-                    onPressed: () async {
-                      final User? user = await SharePreferenceUtil.getUser();
-                      if (user != null) {
-                        context.push(PATH_DRIVER_UPLOAD_RECORDS, extra: {
-                          "phone": user.phone ?? "",
-                          "fullName": user.fullName?.value ?? "test"
+                if (Constant.isDebugMode) ...[
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_DRIVER_MAIN),
+                      child: Text("Driver Main")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_WAITING_APPROVAL),
+                      child: Text("Waiting Approval")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_MAP_SAMPLE),
+                      child: Text("Map Sample")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_MAP_BG),
+                      child: Text("Map background")),
+                  OutlinedButton(
+                      onPressed: () async {
+                        final User? user = await SharePreferenceUtil.getUser();
+                        if (user != null) {
+                          context.push(PATH_DRIVER_UPLOAD_RECORDS, extra: {
+                            "phone": user.phone ?? "",
+                            "fullName": user.fullName?.value ?? "test"
+                          });
+                        } else {
+                          context.push(PATH_DRIVER_UPLOAD_RECORDS, extra: {
+                            "phone": "961597099",
+                            "fullName": "test Driver"
+                          });
+                        }
+                      },
+                      child: Text("Upload Records")),
+                  OutlinedButton(
+                      onPressed: () {
+                        context.push(PATH_FINDING_DRIVER, extra: {
+                          "path": PATH_TRACKING,
+                          "ride": Ride(
+                            id: 160402426172027395,
+                            customerId: 158637144988007679,
+                            driverId: null,
+                            pickupAddress: "Số 1 Đào Duy Anh, Đống Đa, Hà Nội",
+                            pickupLat: 21.0072000,
+                            pickupLng: 105.8428000,
+                            destinationAddress:
+                                "Vincom Mega Mall Ocean Park, Gia Lâm, Hà Nội",
+                            destinationLat: 20.9944000,
+                            destinationLng: 105.9458000,
+                            distance: 5000,
+                            duration: 600,
+                            vehicleType: 1,
+                            status: 2,
+                            basePrice: 12000.00,
+                            distancePrice: 20000.00,
+                            totalPrice: 35000.00,
+                            voucherId: null,
+                            isPaid: false,
+                            createdAt:
+                                DateTime.parse("2026-04-18T03:37:58.000000Z"),
+                            updatedAt:
+                                DateTime.parse("2026-04-18T03:40:13.000000Z"),
+                            deletedAt: null,
+                            voucherCode: null,
+                            discountAmount: 0.00,
+                            cancelReason: null,
+                            cancellationFee: 0.00,
+                            timeFare: 3000.00,
+                            // trackingStatus: null,
+                            // driverAssignedAt: null,
+                            // driverArrivedAt: null,
+                            // trackingLastPingAt: null
+                          )
                         });
-                      } else {
-                        context.push(PATH_DRIVER_UPLOAD_RECORDS, extra: {
-                          "phone": "961597099",
-                          "fullName": "test Driver"
-                        });
-                      }
-                    },
-                    child: Text("Upload Records")),
-                OutlinedButton(
-                    onPressed: () {
-                      context.push(PATH_FINDING_DRIVER, extra: {
-                        "path": PATH_TRACKING,
-                        "ride": Ride(
-                          id: "160402426172027395",
-                          customerId: "158637144988007679",
-                          driverId: null,
-                          pickupAddress: "Số 1 Đào Duy Anh, Đống Đa, Hà Nội",
-                          pickupLat: "21.0072000",
-                          pickupLng: "105.8428000",
-                          destinationAddress:
-                              "Vincom Mega Mall Ocean Park, Gia Lâm, Hà Nội",
-                          destinationLat: "20.9944000",
-                          destinationLng: "105.9458000",
-                          distance: 5000,
-                          duration: 600,
-                          vehicleType: 1,
-                          status: 2,
-                          basePrice: "12000.00",
-                          distancePrice: "20000.00",
-                          totalPrice: "35000.00",
-                          voucherId: null,
-                          isPaid: false,
-                          createdAt:
-                              DateTime.parse("2026-04-18T03:37:58.000000Z"),
-                          updatedAt:
-                              DateTime.parse("2026-04-18T03:40:13.000000Z"),
-                          deletedAt: null,
-                          voucherCode: null,
-                          discountAmount: "0.00",
-                          cancelReason: null,
-                          cancellationFee: "0.00",
-                          timeFare: "3000.00",
-                          // trackingStatus: null,
-                          // driverAssignedAt: null,
-                          // driverArrivedAt: null,
-                          // trackingLastPingAt: null
-                        )
-                      });
-                    },
-                    child: Text("Finding driver")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_DRIVER_WALLET),
-                    child: Text("Driver Wallet")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_DRIVER_MEMBERSHIP),
-                    child: Text("Driver Membership")),
-                OutlinedButton(
-                    onPressed: () => context.push(PATH_RATE_TRIP,
-                        extra: {'rideId': "161154110074588293"}),
-                    child: Text("Rate Trip")),
+                      },
+                      child: Text("Finding driver")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_DRIVER_WALLET),
+                      child: Text("Driver Wallet")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_DRIVER_MEMBERSHIP),
+                      child: Text("Driver Membership")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_RATE_TRIP,
+                          extra: {'rideId': "161154110074588293"}),
+                      child: Text("Rate Trip")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_DRIVER_SCHEDULED_RIDE),
+                      child: Text("Driver Scheduled Ride")),
+                ],
                 const SizedBox(height: 100), // Space for bottom nav
               ],
             ),
