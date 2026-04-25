@@ -91,7 +91,8 @@ class CreditWalletSection extends StatelessWidget {
 
           // Top-up button
           GestureDetector(
-            onTap: () => context.read<WalletBloc>().add(const TopUpTapped()),
+            onTap: () => context.push(PATH_DRIVER_TOPUP),
+            // context.read<WalletBloc>().add(const TopUpTapped()),
             child: Container(
               width: double.infinity,
               height: 50,

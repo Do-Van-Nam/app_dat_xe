@@ -2,6 +2,7 @@ import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/ride/ride_income_summary.dart';
+import 'package:demo_app/main/data/model/finance/wallet.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import '../../base/base_response.dart';
 

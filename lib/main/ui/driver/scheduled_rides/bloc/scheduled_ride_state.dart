@@ -18,6 +18,7 @@ class TripModel extends Equatable {
     this.status = TripStatus.available,
     this.distance,
     this.estimatedMinutes,
+    this.expectedEarnings,
   });
 
   final String id;
@@ -30,6 +31,7 @@ class TripModel extends Equatable {
   final TripStatus status;
   final String? distance;
   final int? estimatedMinutes;
+  final int? expectedEarnings;
 
   TripModel copyWith({TripStatus? status}) {
     return TripModel(
@@ -43,6 +45,7 @@ class TripModel extends Equatable {
       status: status ?? this.status,
       distance: distance,
       estimatedMinutes: estimatedMinutes,
+      expectedEarnings: expectedEarnings,
     );
   }
 
@@ -58,6 +61,7 @@ class TripModel extends Equatable {
         status,
         distance,
         estimatedMinutes,
+        expectedEarnings,
       ];
 }
 

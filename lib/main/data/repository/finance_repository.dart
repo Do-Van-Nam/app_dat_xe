@@ -1,6 +1,9 @@
 import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
+import 'package:demo_app/main/data/model/finance/package.dart';
+import 'package:demo_app/main/data/model/finance/top_up.dart';
 import 'package:demo_app/main/data/model/finance/point_wallet.dart';
+import 'package:demo_app/main/data/model/finance/wallet.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/data/model/finance/spending.dart';
 import 'package:demo_app/main/data/model/finance/voucher.dart';
@@ -161,5 +164,93 @@ class FinanceRepository {
       }
     }
     return (false, null);
+  }
+
+  // Finance  Tài xế
+  Future<(bool, WalletManageResponse?)> getWalletManage() async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.get(
+        url: ApiEndPoint.DOMAIN_WALLET_MANAGE,
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        return (
+          true,
+          WalletManageResponse.fromJson(data as Map<String, dynamic>)
+        );
+      }
+
+      return (false, null);
+    } catch (e, stack) {
+      print('❌ getWalletManage error: $e');
+      print('Stack trace: $stack');
+      return (false, null);
+    }
+  }
+
+  Future<(bool, List<Package>)> getSubscriptionPackages() async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.get(
+        url: ApiEndPoint.DOMAIN_SUBSCRIPTION_PACKAGES,
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final rawData = response.data['data'] ?? response.data;
+        if (rawData is List) {
+          final packages = rawData
+              .map((e) => Package.fromJson(e as Map<String, dynamic>))
+              .toList();
+          return (true, packages);
+        }
+      }
+      return (false, <Package>[]);
+    } catch (e) {
+      print('❌ getSubscriptionPackages error: $e');
+      return (false, <Package>[]);
+    }
+  }
+  Future<(bool, Transaction?)> getTransactionDetail(dynamic transactionId) async {
+    final BaseResponse response = await ApiUtil.getInstance()!.get(
+      url: ApiEndPoint.DOMAIN_WALLET_TRANSACTION_DETAIL(transactionId),
+      headers: await _authHeader(),
+    );
+
+    if (response.isSuccess && response.data != null) {
+      try {
+        final data = response.data['data'] ?? response.data;
+        return (true, Transaction.fromJson(data as Map<String, dynamic>));
+      } catch (e) {
+        print('❌ getTransactionDetail parse error: $e');
+      }
+    }
+    return (false, null);
+  }
+  Future<(bool, TopUpResponse?)> requestTopUp({
+    required num amount,
+    required String paymentMethod,
+  }) async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.post(
+        url: ApiEndPoint.DOMAIN_WALLET_TOP_UP,
+        body: {
+          'amount': amount,
+          'payment_method': paymentMethod,
+        },
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        return (true, TopUpResponse.fromJson(data as Map<String, dynamic>));
+      }
+
+      return (false, null);
+    } catch (e) {
+      print('❌ requestTopUp error: $e');
+      return (false, null);
+    }
   }
 }

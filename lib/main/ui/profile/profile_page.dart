@@ -220,9 +220,9 @@ class ProfilePage extends StatelessWidget {
                       child: Column(
                         children: [
                           _buildMenuItem(context, AppImages.icHelp,
-                              l10n.helpSupport, "PATH_HELP"),
+                              l10n.helpSupport, PATH_EDIT_PROFILE),
                           _buildMenuItem(context, AppImages.icSetting,
-                              l10n.settings, "PATH_SETTINGS"),
+                              l10n.settings, PATH_EDIT_PROFILE),
                           // Đăng xuất
                           ListTile(
                             leading: Container(

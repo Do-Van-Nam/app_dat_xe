@@ -12,16 +12,18 @@ class WalletState extends Equatable {
     this.transactions = const [],
     this.isLowBalance = true,
     this.errorMessage,
+    this.walletManageResponse,
   });
 
   final WalletStatus status;
   final NavTab selectedTab;
-  final int income;           // VND
-  final int creditBalance;    // VND
+  final int income; // VND
+  final int creditBalance; // VND
   final int performancePercent;
   final List<Transaction> transactions;
   final bool isLowBalance;
   final String? errorMessage;
+  final WalletManageResponse? walletManageResponse;
 
   WalletState copyWith({
     WalletStatus? status,
@@ -32,6 +34,7 @@ class WalletState extends Equatable {
     List<Transaction>? transactions,
     bool? isLowBalance,
     String? errorMessage,
+    WalletManageResponse? walletManageResponse,
   }) {
     return WalletState(
       status: status ?? this.status,
@@ -42,12 +45,20 @@ class WalletState extends Equatable {
       transactions: transactions ?? this.transactions,
       isLowBalance: isLowBalance ?? this.isLowBalance,
       errorMessage: errorMessage,
+      walletManageResponse: walletManageResponse ?? this.walletManageResponse,
     );
   }
 
   @override
   List<Object?> get props => [
-        status, selectedTab, income, creditBalance,
-        performancePercent, transactions, isLowBalance, errorMessage,
+        status,
+        selectedTab,
+        income,
+        creditBalance,
+        performancePercent,
+        transactions,
+        isLowBalance,
+        errorMessage,
+        walletManageResponse,
       ];
 }

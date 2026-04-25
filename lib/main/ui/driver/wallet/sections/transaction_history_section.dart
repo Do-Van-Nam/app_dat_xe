@@ -9,7 +9,8 @@ class TransactionHistorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final transactions = context.select((WalletBloc b) => b.state.transactions);
+    final recentTransactions = context.select(
+        (WalletBloc b) => b.state.walletManageResponse?.recentTransactions);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +39,7 @@ class TransactionHistorySection extends StatelessWidget {
         const SizedBox(height: 12),
 
         // Transaction list
-        if (transactions.isEmpty)
+        if (recentTransactions == null || recentTransactions.isEmpty)
           const SizedBox(height: 40)
         else
           CommonCard(
@@ -46,10 +47,10 @@ class TransactionHistorySection extends StatelessWidget {
             child: ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: transactions.length,
+              itemCount: recentTransactions.length,
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
-                return TransactionTile(tx: transactions[index]);
+                return TransactionTile(tx: recentTransactions[index]);
               },
             ),
           ),

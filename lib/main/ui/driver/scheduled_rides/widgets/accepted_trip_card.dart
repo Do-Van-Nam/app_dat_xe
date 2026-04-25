@@ -4,8 +4,8 @@ import 'package:demo_app/main/ui/driver/scheduled_rides/bloc/scheduled_ride_bloc
 /// Trip card shown in both tabs.
 /// [onAccept] is non-null for available trips.
 /// [onCancel] is non-null for accepted trips.
-class TripCard extends StatelessWidget {
-  const TripCard({
+class AcceptedTripCard extends StatelessWidget {
+  const AcceptedTripCard({
     super.key,
     required this.trip,
     required this.typeLabel,
@@ -51,13 +51,13 @@ class TripCard extends StatelessWidget {
             // ── Header row: type badge + price ──────────────
             Row(
               children: [
-                _TypeBadge(label: typeLabel, type: trip.type),
-                // Text(
-                //   "Cước phí dự kiến",
-                //   style: AppStyles.inter12Regular.copyWith(
-                //     color: AppColors.colorTextSecondary,
-                //   ),
-                // ),
+                // _TypeBadge(label: typeLabel, type: trip.type),
+                Text(
+                  "Cước phí dự kiến",
+                  style: AppStyles.inter12Regular.copyWith(
+                    color: AppColors.colorTextSecondary,
+                  ),
+                ),
                 const Spacer(),
                 Text(
                   _formatPrice(trip.price),
@@ -80,15 +80,35 @@ class TripCard extends StatelessWidget {
             // ── Meta: date + time + distance ─────────────────
             _MetaRow(trip: trip),
             const SizedBox(height: 14),
+            Row(
+              children: [
+                // _TypeBadge(label: typeLabel, type: trip.type),
+                Text(
+                  "Thu nhập",
+                  style: AppStyles.inter12Regular.copyWith(
+                    color: AppColors.colorTextSecondary,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  _formatPrice(trip.expectedEarnings ?? 0),
+                  style: AppStyles.inter16Bold.copyWith(
+                    color: AppColors.colorTripPriceText,
+                  ),
+                ),
+              ],
+            ),
 
+            const SizedBox(height: 14),
             // ── Action button ────────────────────────────────
             if (onAccept != null)
               _AcceptButton(
                 label: acceptLabel,
                 onTap: onAccept!,
                 isLoading: isProcessing,
-              )
-            else if (onCancel != null)
+              ),
+            const SizedBox(height: 14),
+            if (onCancel != null)
               _CancelButton(
                 label: cancelLabel,
                 onTap: onCancel!,

@@ -16,6 +16,6 @@ class PaymentMethod {
   final String name;
   final PaymentMethodGroup group;
   final String iconPath;
-  final String? subLabel;   // e.g. "Miễn phí giao dịch"
-  final bool hasArrow;      // bank rows show a chevron instead of radio
+  final String? subLabel; // e.g. "Miễn phí giao dịch"
+  final bool hasArrow; // bank rows show a chevron instead of radio
 }

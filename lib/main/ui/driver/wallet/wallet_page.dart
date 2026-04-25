@@ -45,24 +45,48 @@ class _WalletView extends StatelessWidget {
   // ── AppBar ──────────────────────────────────────────────────────────────
   PreferredSizeWidget _buildAppBar(
       BuildContext context, AppLocalizations l10n) {
+    final state = context.watch<WalletBloc>().state;
+    final driverStatus = state.walletManageResponse?.driverStatus;
+    final isOnline = driverStatus?.isOnline ?? false;
+    final statusLabel = driverStatus?.label ??
+        (isOnline ? l10n.statusOnline : l10n.statusOffline);
+
     return AppBar(
       backgroundColor: AppColors.colorFFFFFF,
       elevation: 0,
-      leadingWidth: 56,
+      leadingWidth: 84,
       leading: Padding(
         padding: const EdgeInsets.all(10),
-        child: CircleAvatar(
-          backgroundImage: const AssetImage('assets/images/driver_avatar.jpg'),
-          backgroundColor: AppColors.colorF3F4F6,
+        child: InkWell(
+          onTap: () {
+            context.pop();
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.arrow_back_ios_new,
+                color: AppColors.color1A1A1A,
+                size: 24,
+              ),
+              CircleAvatar(
+                backgroundImage:
+                    const AssetImage('assets/images/driver_avatar.jpg'),
+                backgroundColor: AppColors.colorF3F4F6,
+              ),
+            ],
+          ),
         ),
       ),
+      centerTitle: false,
+      titleSpacing: 0,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.statusOnline,
+            statusLabel,
             style: AppStyles.inter16Bold.copyWith(
-              color: AppColors.color1A56DB,
+              color: isOnline ? AppColors.color1A56DB : AppColors.color999999,
             ),
           ),
           Row(
@@ -70,16 +94,18 @@ class _WalletView extends StatelessWidget {
               Container(
                 width: 7,
                 height: 7,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.color2ECC71,
+                  color:
+                      isOnline ? AppColors.color2ECC71 : AppColors.color999999,
                 ),
               ),
               const SizedBox(width: 4),
               Text(
-                l10n.statusActive,
+                isOnline ? l10n.statusActive : "Ngoại tuyến",
                 style: AppStyles.inter11SemiBold.copyWith(
-                  color: AppColors.color2ECC71,
+                  color:
+                      isOnline ? AppColors.color2ECC71 : AppColors.color999999,
                 ),
               ),
             ],

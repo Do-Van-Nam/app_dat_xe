@@ -350,88 +350,98 @@ class _PriceChip extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => Padding(
+      builder: (sheetContext) => Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-          left: 16,
-          right: 16,
-          top: 20,
+          bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Khoảng giá', style: AppStyles.inter16SemiBold),
-            const SizedBox(height: 14),
-            Row(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: minCtrl,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      hintText: labelMin,
-                      filled: true,
-                      fillColor: AppColors.colorFilterInputBg,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: AppColors.colorFilterInputBorder),
+                Text('Khoảng giá', style: AppStyles.inter16SemiBold),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: minCtrl,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        decoration: InputDecoration(
+                          hintText: labelMin,
+                          filled: true,
+                          fillColor: AppColors.colorFilterInputBg,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.colorFilterInputBorder),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                        ),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 10),
                     ),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Text('–'),
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: maxCtrl,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      hintText: labelMax,
-                      filled: true,
-                      fillColor: AppColors.colorFilterInputBg,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: AppColors.colorFilterInputBorder),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: Text('–'),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: maxCtrl,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        decoration: InputDecoration(
+                          hintText: labelMax,
+                          filled: true,
+                          fillColor: AppColors.colorFilterInputBg,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                color: AppColors.colorFilterInputBorder),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                        ),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 10),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 46,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      onApply(
+                        minCtrl.text.isNotEmpty
+                            ? int.tryParse(minCtrl.text)
+                            : null,
+                        maxCtrl.text.isNotEmpty
+                            ? int.tryParse(maxCtrl.text)
+                            : null,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.colorPrimary,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(22)),
+                    ),
+                    child: Text('Áp dụng',
+                        style: AppStyles.inter14SemiBold
+                            .copyWith(color: AppColors.colorTextWhite)),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              height: 46,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  onApply(
-                    minCtrl.text.isNotEmpty ? int.tryParse(minCtrl.text) : null,
-                    maxCtrl.text.isNotEmpty ? int.tryParse(maxCtrl.text) : null,
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.colorPrimary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22)),
-                ),
-                child: Text('Áp dụng',
-                    style: AppStyles.inter14SemiBold
-                        .copyWith(color: AppColors.colorTextWhite)),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

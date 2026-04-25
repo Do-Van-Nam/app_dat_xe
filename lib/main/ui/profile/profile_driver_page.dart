@@ -4,8 +4,8 @@ import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
 import 'profile_bloc.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfileDriverPage extends StatelessWidget {
+  const ProfileDriverPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -232,6 +232,10 @@ class ProfilePage extends StatelessWidget {
                               l10n.accountInfo, PATH_EDIT_PROFILE),
                           _buildMenuItem(context, AppImages.icBookmark,
                               l10n.contactSupport, PATH_EDIT_PROFILE),
+                          _buildMenuItem(context, AppImages.icWallet,
+                              "Quản lý Ví", PATH_DRIVER_WALLET),
+                          _buildMenuItem(context, AppImages.icWallet,
+                              "Gói hội viên", PATH_DRIVER_MEMBERSHIP),
                           // _buildMenuItem(context, AppImages.icCard,
                           //     l10n.expenseManagement, PATH_EXPENSE_MANAGEMENT),
                           // _buildMenuItem(context, AppImages.icGift,
@@ -260,9 +264,9 @@ class ProfilePage extends StatelessWidget {
                       child: Column(
                         children: [
                           _buildMenuItem(context, AppImages.icHelp,
-                              l10n.helpSupport, "PATH_HELP"),
+                              l10n.helpSupport, PATH_EDIT_PROFILE),
                           _buildMenuItem(context, AppImages.icSetting,
-                              l10n.settings, "PATH_SETTINGS"),
+                              l10n.settings, PATH_EDIT_PROFILE),
                           // Đăng xuất
                           ListTile(
                             leading: Container(

@@ -15,7 +15,8 @@ class TotalPaymentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final selected = context.select((MembershipBloc b) => b.state.selectedPlan);
+    final selected =
+        context.select((MembershipBloc b) => b.state.selectedPackage);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -25,7 +26,7 @@ class TotalPaymentSection extends StatelessWidget {
           style: AppStyles.inter16Bold,
         ),
         Text(
-          selected != null ? _fmt(selected.price) : '—',
+          selected != null ? _fmt(selected.price?.toInt() ?? 0) : '—',
           style: AppStyles.inter32ExtraBold,
         ),
       ],

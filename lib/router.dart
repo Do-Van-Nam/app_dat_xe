@@ -32,6 +32,7 @@ import 'package:demo_app/main/ui/notification/notification_page.dart';
 import 'package:demo_app/main/ui/profile/edit_profile/edit_profile_page.dart';
 import 'package:demo_app/main/ui/profile/expense_management/expense_management_page.dart';
 import 'package:demo_app/main/ui/profile/points_wallet/points_wallet_page.dart';
+import 'package:demo_app/main/ui/profile/profile_driver_page.dart';
 import 'package:demo_app/main/ui/profile/profile_page.dart';
 import 'package:demo_app/main/ui/profile/voucher/voucher_page.dart';
 import 'package:demo_app/main/ui/shipping/delivery_info/delivery_info_page.dart';
@@ -196,7 +197,9 @@ final GoRouter router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-                path: PATH_PROFILE, builder: (_, __) => const ProfilePage()),
+                path: PATH_PROFILE,
+                builder: (_, __) =>
+                    Constant.isUserApp ? ProfilePage() : ProfileDriverPage()),
           ],
         ),
       ],
@@ -205,7 +208,14 @@ final GoRouter router = GoRouter(
       path: PATH_SPLASH,
       builder: (context, state) => const SplashPage(),
     ),
-    GoRoute(path: PATH_DRIVER_MAIN, builder: (context, state) => DriverPage()),
+    GoRoute(
+      path: PATH_DRIVER_MAIN,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final rideId = extra?['rideId'] as String?;
+        return DriverPage(rideId: rideId);
+      },
+    ),
     GoRoute(
         path: PATH_CHAT,
         builder: (context, state) {
@@ -467,6 +477,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_DRIVER_MEMBERSHIP,
       builder: (context, state) => MembershipPage(),
+    ),
+    GoRoute(
+      path: PATH_DRIVER_WALLET,
+      builder: (context, state) => WalletPage(),
     ),
     GoRoute(
       path: PATH_DRIVER_TOPUP,

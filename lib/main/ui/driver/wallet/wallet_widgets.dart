@@ -1,5 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
-
+import 'package:demo_app/main/data/model/finance/wallet.dart' as wallet_model;
 import 'bloc/wallet_models.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -70,15 +70,15 @@ class SosBadge extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TransactionTile — single row in transaction list
+// TransactionTile — single row in transaction list for API model
 // ─────────────────────────────────────────────────────────────────────────────
 class TransactionTile extends StatelessWidget {
   const TransactionTile({super.key, required this.tx});
-  final Transaction tx;
+  final wallet_model.Transaction tx;
 
   @override
   Widget build(BuildContext context) {
-    final isIncome = tx.isIncome;
+    final isIncome = tx.symbol == '+';
 
     return AppCard(
       borderRadius: BorderRadius.circular(32),
@@ -111,16 +111,18 @@ class TransactionTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(tx.title, style: AppStyles.inter14SemiBold),
+                Text(tx.description ?? tx.typeLabel ?? "",
+                    style: AppStyles.inter14SemiBold),
                 const SizedBox(height: 3),
-                Text(tx.time, style: AppStyles.inter12Regular),
+                if (tx.createdAt != null)
+                  Text(tx.createdAt!, style: AppStyles.inter12Regular),
               ],
             ),
           ),
 
           // Amount
           Text(
-            _formatAmount(tx.amount),
+            "${tx.symbol}${_formatAmount(tx.amount)}đ",
             style: AppStyles.inter14SemiBold.copyWith(
               color: isIncome ? AppColors.color27AE60 : AppColors.colorE53E3E,
             ),
@@ -130,14 +132,84 @@ class TransactionTile extends StatelessWidget {
     );
   }
 
-  String _formatAmount(int amount) {
-    final abs = amount.abs().toString().replaceAllMapped(
+  String _formatAmount(num? amount) {
+    if (amount == null) return "0";
+    return amount.toString().replaceAllMapped(
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (m) => '${m[1]}.',
         );
-    return amount >= 0 ? '+$abs' + 'đ' : '-$abs' + 'đ';
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TransactionTile — single row in transaction list
+// ─────────────────────────────────────────────────────────────────────────────
+// class TransactionTile extends StatelessWidget {
+//   const TransactionTile({super.key, required this.tx});
+//   final Transaction tx;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final isIncome = tx.isIncome;
+
+//     return AppCard(
+//       borderRadius: BorderRadius.circular(32),
+//       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+//       child: Row(
+//         children: [
+//           // Icon circle
+//           Container(
+//             width: 36,
+//             height: 44,
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(16),
+//               color: isIncome ? AppColors.colorD4F5E2 : AppColors.colorFFEBEB,
+//             ),
+//             alignment: Alignment.center,
+//             child: SvgPicture.asset(
+//               isIncome ? AppImages.icArrowDown : AppImages.icArrowUp,
+//               width: 20,
+//               height: 20,
+//               colorFilter: ColorFilter.mode(
+//                 isIncome ? AppColors.color27AE60 : AppColors.colorE53E3E,
+//                 BlendMode.srcIn,
+//               ),
+//             ),
+//           ),
+//           const SizedBox(width: 12),
+
+//           // Title + time
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(tx.title, style: AppStyles.inter14SemiBold),
+//                 const SizedBox(height: 3),
+//                 Text(tx.time, style: AppStyles.inter12Regular),
+//               ],
+//             ),
+//           ),
+
+//           // Amount
+//           Text(
+//             _formatAmount(tx.amount),
+//             style: AppStyles.inter14SemiBold.copyWith(
+//               color: isIncome ? AppColors.color27AE60 : AppColors.colorE53E3E,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   String _formatAmount(int amount) {
+//     final abs = amount.abs().toString().replaceAllMapped(
+//           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+//           (m) => '${m[1]}.',
+//         );
+//     return amount >= 0 ? '+$abs' + 'đ' : '-$abs' + 'đ';
+//   }
+// }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // BarChart — simple vertical bar chart for performance section

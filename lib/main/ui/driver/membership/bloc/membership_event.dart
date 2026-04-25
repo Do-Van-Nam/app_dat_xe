@@ -11,12 +11,11 @@ class MembershipLoaded extends MembershipEvent {
   const MembershipLoaded();
 }
 
-/// User selects a plan.
-class PlanSelected extends MembershipEvent {
-  final MembershipPlanId planId;
-  const PlanSelected(this.planId);
+class PackageSelected extends MembershipEvent {
+  final String packageId;
+  const PackageSelected(this.packageId);
   @override
-  List<Object?> get props => [planId];
+  List<Object?> get props => [packageId];
 }
 
 /// User taps "Chi tiết quyền lợi".

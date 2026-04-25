@@ -19,7 +19,8 @@ import 'sections/ride/online_section.dart';
 import 'sections/ride/start_trip_section.dart';
 
 class DriverPage extends StatelessWidget {
-  const DriverPage({super.key});
+  const DriverPage({super.key, this.rideId});
+  final String? rideId;
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +60,18 @@ class _DriverView extends StatelessWidget {
                   destinationPoint: state.destinationPoint,
                 ),
                 builder: (context, record) {
-                  // return MapBackground(
-                  //   followUserLocation: true,
-                  //   destinationPoint: record.destinationPoint,
-                  //   autoFetchRoute: record.isAutoFetchRoute,
-                  // );
-                  return SizedBox(
-                    height: 100,
-                    width: 100,
-                  );
+                  if (!Constant.isDebugMode) {
+                    return MapBackground(
+                      followUserLocation: true,
+                      destinationPoint: record.destinationPoint,
+                      autoFetchRoute: record.isAutoFetchRoute,
+                    );
+                  } else {
+                    return SizedBox(
+                      height: 100,
+                      width: 100,
+                    );
+                  }
                 },
               ),
             ),
@@ -179,9 +183,10 @@ class _DriverView extends StatelessWidget {
                                 title:
                                     'Khách hàng yêu cầu huỷ chuyến. Xác nhận huỷ chuyến?',
                                 option1Text: 'Không',
-                                option1OnTap: () => Navigator.pop(context),
+                                option1OnTap: () => context.pop(),
                                 option2Text: 'Huỷ chuyến',
                                 option2OnTap: () {
+                                  context.pop();
                                   // xử lý huỷ chuyến
                                 },
                               );

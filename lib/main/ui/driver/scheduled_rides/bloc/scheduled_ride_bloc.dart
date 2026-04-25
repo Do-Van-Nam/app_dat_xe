@@ -72,6 +72,8 @@ class ScheduledRideBloc extends Bloc<ScheduledRideEvent, ScheduledRideState> {
       price: price,
       status: status,
       distance: distance,
+      expectedEarnings:
+          num.tryParse((ride.expectedEarnings ?? '0').toString())?.toInt(),
     );
   }
 

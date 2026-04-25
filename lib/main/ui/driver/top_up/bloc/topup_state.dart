@@ -5,11 +5,12 @@ enum TopUpStatus { initial, loading, confirming, success, failure }
 class TopUpState extends Equatable {
   const TopUpState({
     this.status = TopUpStatus.initial,
-    this.amount = 100000,
+    this.amount = 0,
     this.selectedMethodId = PaymentMethodId.momo,
     this.methods = const [],
     this.quickAmounts = const [50000, 100000, 200000, 500000],
     this.errorMessage,
+    this.topUpResponse,
   });
 
   final TopUpStatus status;
@@ -18,6 +19,7 @@ class TopUpState extends Equatable {
   final List<PaymentMethod> methods;
   final List<int> quickAmounts;
   final String? errorMessage;
+  final TopUpResponse? topUpResponse;
 
   List<PaymentMethod> get eWalletMethods =>
       methods.where((m) => m.group == PaymentMethodGroup.eWallet).toList();
@@ -32,6 +34,7 @@ class TopUpState extends Equatable {
     List<PaymentMethod>? methods,
     List<int>? quickAmounts,
     String? errorMessage,
+    TopUpResponse? topUpResponse,
   }) {
     return TopUpState(
       status: status ?? this.status,
@@ -40,11 +43,18 @@ class TopUpState extends Equatable {
       methods: methods ?? this.methods,
       quickAmounts: quickAmounts ?? this.quickAmounts,
       errorMessage: errorMessage,
+      topUpResponse: topUpResponse ?? this.topUpResponse,
     );
   }
 
   @override
   List<Object?> get props => [
-        status, amount, selectedMethodId, methods, quickAmounts, errorMessage,
+        status,
+        amount,
+        selectedMethodId,
+        methods,
+        quickAmounts,
+        errorMessage,
+        topUpResponse,
       ];
 }

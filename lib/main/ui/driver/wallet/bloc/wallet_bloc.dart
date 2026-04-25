@@ -1,4 +1,6 @@
+import 'package:demo_app/main/data/model/finance/wallet.dart';
 import 'package:bloc/bloc.dart';
+import 'package:demo_app/main/data/repository/finance_repository.dart';
 import 'package:equatable/equatable.dart';
 
 import './wallet_models.dart';
@@ -23,28 +25,22 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   ) async {
     emit(state.copyWith(status: WalletStatus.loading));
 
-    // Simulate network fetch
-    await Future.delayed(const Duration(milliseconds: 400));
+    final (success, response) = await FinanceRepository().getWalletManage();
 
-    emit(state.copyWith(
-      status: WalletStatus.success,
-      transactions: const [
-        Transaction(
-          id: 'tx1',
-          title: 'Thu nhập từ cuốc xe #9921',
-          time: '10:45 • 24 Th05, 2024',
-          amount: 45000,
-          type: TransactionType.income,
-        ),
-        Transaction(
-          id: 'tx2',
-          title: 'Khấu trừ chiết khấu',
-          time: '09:15 • 24 Th05, 2024',
-          amount: -12500,
-          type: TransactionType.deduction,
-        ),
-      ],
-    ));
+    if (success && response != null) {
+      emit(state.copyWith(
+        status: WalletStatus.success,
+        walletManageResponse: response,
+        // Optional: Update existing fields for compatibility with existing UI if needed
+        income: response.wallet?.totalEarned?.toInt() ?? 0,
+        creditBalance: response.wallet?.balance?.toInt() ?? 0,
+      ));
+    } else {
+      emit(state.copyWith(
+        status: WalletStatus.failure,
+        errorMessage: "Không thể lấy thông tin ví",
+      ));
+    }
   }
 
   void _onTopUp(TopUpTapped event, Emitter<WalletState> emit) {

@@ -101,3 +101,10 @@ Future<void> makePhoneCall(String phoneNumber) async {
     debugPrint('Could not launch $launchUri: $e');
   }
 }
+
+num? parseNum(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value;
+  if (value is String) return num.tryParse(value);
+  return null;
+}

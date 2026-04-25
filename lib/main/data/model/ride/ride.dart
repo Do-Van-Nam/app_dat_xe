@@ -41,6 +41,7 @@ class Ride {
   final DateTime? completedAt;
   final num? serviceFee;
   final num? driverEarnings;
+  final num? expectedEarnings;
   final num? rideType;
   final DateTime? travelDate;
   final String? travelTime;
@@ -88,6 +89,7 @@ class Ride {
     this.completedAt,
     this.serviceFee,
     this.driverEarnings,
+    this.expectedEarnings,
     this.rideType,
     this.travelDate,
     this.travelTime,
@@ -153,6 +155,7 @@ class Ride {
           : null,
       serviceFee: parseNum(json['service_fee']),
       driverEarnings: parseNum(json['driver_earnings']),
+      expectedEarnings: parseNum(json['expected_earnings']),
       rideType: parseNum(json['ride_type']),
       travelDate: json['travel_date'] != null
           ? DateTime.tryParse(json['travel_date'])
@@ -205,6 +208,7 @@ class Ride {
       'completed_at': completedAt?.toIso8601String(),
       'service_fee': serviceFee,
       'driver_earnings': driverEarnings,
+      'expected_earnings': expectedEarnings,
       'ride_type': rideType,
       'travel_date': travelDate?.toIso8601String(),
       'travel_time': travelTime,

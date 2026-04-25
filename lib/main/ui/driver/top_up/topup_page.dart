@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'bloc/topup_bloc.dart';
 import 'sections/amount_input_section.dart';
@@ -27,16 +28,33 @@ class _TopUpView extends StatelessWidget {
 
     return BlocListener<TopUpBloc, TopUpState>(
       listenWhen: (prev, curr) => prev.status != curr.status,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state.status == TopUpStatus.success) {
+          final urlStr = state.topUpResponse?.redirectUrl;
+          if (urlStr != null && urlStr.isNotEmpty) {
+            final uri = Uri.parse(urlStr);
+            if (await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          }
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Nạp tiền thành công! 🎉'),
+              content: Text('Yêu cầu nạp tiền đã được gửi! 🎉'),
               backgroundColor: AppColors.color1A56DB,
               duration: const Duration(seconds: 2),
             ),
           );
+          // Wait a bit before navigating
+          await Future.delayed(const Duration(seconds: 1));
           context.push(PATH_PAYMENT_SUCCESS);
+        } else if (state.status == TopUpStatus.failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? 'Có lỗi xảy ra'),
+              backgroundColor: AppColors.colorE53E3E,
+            ),
+          );
         }
       },
       child: GestureDetector(
@@ -143,6 +161,7 @@ class _BottomBar extends StatelessWidget {
             ConfirmTopUpButton(
               label: l10n.confirmTopUp,
               isLoading: isConfirming,
+              disable: state.amount == 0,
               onPressed: () =>
                   context.read<TopUpBloc>().add(const TopUpConfirmed()),
             ),

@@ -311,11 +311,13 @@ class ConfirmTopUpButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.isLoading = false,
+    this.disable = false,
   });
 
   final String label;
   final VoidCallback onPressed;
   final bool isLoading;
+  final bool disable;
 
   @override
   Widget build(BuildContext context) {
@@ -323,10 +325,13 @@ class ConfirmTopUpButton extends StatelessWidget {
       width: double.infinity,
       height: 54,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: isLoading || disable ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.rating,
-          foregroundColor: AppColors.color_694600,
+          backgroundColor: disable
+              ? AppColors.rating.withValues(alpha: 0.6)
+              : AppColors.rating,
+          foregroundColor:
+              disable ? AppColors.colorCtaText : AppColors.color_694600,
           disabledBackgroundColor: AppColors.colorCtaBg.withOpacity(0.6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -348,7 +353,9 @@ class ConfirmTopUpButton extends StatelessWidget {
                   Text(
                     label,
                     style: AppStyles.inter18Bold.copyWith(
-                      color: AppColors.color_694600,
+                      color: disable
+                          ? AppColors.colorCtaText
+                          : AppColors.color_694600,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -356,8 +363,8 @@ class ConfirmTopUpButton extends StatelessWidget {
                     AppImages.icArrowRight,
                     width: 20,
                     height: 20,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.color_694600,
+                    colorFilter: ColorFilter.mode(
+                      disable ? AppColors.colorCtaText : AppColors.color_694600,
                       BlendMode.srcIn,
                     ),
                   ),

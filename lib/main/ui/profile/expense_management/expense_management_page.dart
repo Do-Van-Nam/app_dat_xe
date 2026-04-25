@@ -61,7 +61,7 @@ class ExpenseManagementPage extends StatelessWidget {
                       const SizedBox(height: 40),
 
                       // 4. Giao dịch gần đây
-                      _RecentTransactionsHeader(l10n: l10n),
+                      _TransactionsHeader(l10n: l10n),
                       const SizedBox(height: 12),
                       Column(
                         children: state.recentTransactions
@@ -335,10 +335,10 @@ class _CategoryRow extends StatelessWidget {
   }
 }
 
-class _RecentTransactionsHeader extends StatelessWidget {
+class _TransactionsHeader extends StatelessWidget {
   final AppLocalizations l10n;
 
-  const _RecentTransactionsHeader({required this.l10n});
+  const _TransactionsHeader({required this.l10n});
 
   @override
   Widget build(BuildContext context) {

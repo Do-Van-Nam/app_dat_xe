@@ -110,6 +110,12 @@ class ApiEndPoint {
   // Finance
   static String get DOMAIN_SPENDING_SUMMARY =>
       "$DOMAIN_API/finance/spending-summary";
+  static String get DOMAIN_WALLET_MANAGE => "$DOMAIN_API/finance/wallet/manage";
+  static String get DOMAIN_WALLET_TOP_UP => "$DOMAIN_API/finance/wallet/top-up";
+  static String get DOMAIN_SUBSCRIPTION_PACKAGES =>
+      "$DOMAIN_API/finance/subscriptions/packages";
+  static String DOMAIN_WALLET_TRANSACTION_DETAIL(dynamic transactionId) =>
+      "$DOMAIN_API/finance/wallet/transactions/$transactionId";
 
   // Vouchers
   static String get DOMAIN_VOUCHERS => "$DOMAIN_API/vouchers";

@@ -1,5 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
 
+import 'package:demo_app/main/data/model/finance/top_up.dart';
+import 'package:demo_app/main/data/repository/finance_repository.dart';
 import 'topup_models.dart';
 
 part 'topup_event.dart';
@@ -77,7 +79,23 @@ class TopUpBloc extends Bloc<TopUpEvent, TopUpState> {
 
   Future<void> _onConfirm(TopUpConfirmed e, Emitter<TopUpState> emit) async {
     emit(state.copyWith(status: TopUpStatus.confirming));
-    await Future.delayed(const Duration(milliseconds: 900));
-    emit(state.copyWith(status: TopUpStatus.success));
+
+    final paymentMethod = state.selectedMethodId.name; // e.g. "momo"
+    final (success, response) = await FinanceRepository().requestTopUp(
+      amount: state.amount,
+      paymentMethod: paymentMethod,
+    );
+
+    if (success && response != null) {
+      emit(state.copyWith(
+        status: TopUpStatus.success,
+        topUpResponse: response,
+      ));
+    } else {
+      emit(state.copyWith(
+        status: TopUpStatus.failure,
+        errorMessage: "Yêu cầu nạp tiền không thành công",
+      ));
+    }
   }
 }

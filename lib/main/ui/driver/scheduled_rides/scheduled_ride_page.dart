@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/ui/driver/scheduled_rides/widgets/accepted_trip_card.dart';
 import 'bloc/scheduled_ride_bloc.dart';
 import 'widgets/empty_state.dart';
 import 'widgets/filter_bar.dart';
@@ -275,15 +276,16 @@ class _AcceptedTripsTab extends StatelessWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final trip = trips[index];
-              return TripCard(
+              return AcceptedTripCard(
                 trip: trip,
                 typeLabel: _typeLabel(trip.type, l10n),
                 isProcessing: state.processingTripId == trip.id,
                 pickupLabel: l10n.chuyenDiPickupLabel,
                 destinationLabel: l10n.chuyenDiDestinationLabel,
-                acceptLabel: l10n.chuyenDiBtnAccept,
+                acceptLabel: l10n.startRideBtn,
                 cancelLabel: l10n.chuyenDiBtnCancel,
                 onCancel: () => _confirmCancel(context, trip.id, l10n),
+                onAccept: () => _confirmCancel(context, trip.id, l10n),
               );
             },
           ),
