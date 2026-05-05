@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-import '../../driver/map_background.dart';
+import '../../driver/map_background2.dart';
 import 'tracking_bloc.dart';
 
 class TrackingPage extends StatelessWidget {
@@ -49,6 +49,12 @@ class TrackingPage extends StatelessWidget {
               } else if (state.status == TrackingStatus.userCancelRequested) {
                 AppToast.show(context,
                     "Đã gửi yêu cầu hủy chuyến đến tài xế, chuyến sẽ được hủy khi tài xế đồng ý hủy chuyến");
+              }
+              if (state.error != null && state.error?.message == "goToChat") {
+                context.push(
+                  PATH_CHAT,
+                  extra: {'rideId': ride.id?.toString() ?? ""},
+                );
               }
             }
           },
@@ -92,6 +98,8 @@ class TrackingPage extends StatelessWidget {
                               ride.destinationLat?.toDouble() ?? 0,
                               ride.destinationLng?.toDouble() ?? 0,
                             ),
+                            isShowDriverPoint: true,
+                            driverPoint: state.driverLocation,
                           );
                         }),
                   ),
@@ -122,6 +130,11 @@ class TrackingPage extends StatelessWidget {
                         discountedPrice: state.discountedPrice,
                         originalPrice: state.originalPrice,
                         l10n: l10n,
+                        context: context,
+                        ableToCancel:
+                            state.status == TrackingStatus.driverArriving ||
+                                state.status == TrackingStatus.driverArrived ||
+                                state.status == TrackingStatus.driverPickedUp,
                         onCancel: () => _showCancelDialog(context, l10n)),
                   ),
                 ],
@@ -201,6 +214,8 @@ class _DriverInfoBottomSheet extends StatelessWidget {
   final double originalPrice;
   final AppLocalizations l10n;
   final VoidCallback onCancel;
+  final bool ableToCancel;
+  final BuildContext context;
 
   const _DriverInfoBottomSheet({
     required this.driverName,
@@ -211,6 +226,8 @@ class _DriverInfoBottomSheet extends StatelessWidget {
     required this.originalPrice,
     required this.l10n,
     required this.onCancel,
+    required this.ableToCancel,
+    required this.context,
   });
 
   @override
@@ -276,14 +293,22 @@ class _DriverInfoBottomSheet extends StatelessWidget {
                               style: const TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
-                        CircleAvatar(
-                          backgroundColor: Colors.grey[200],
-                          child: SvgPicture.asset(AppImages.icMessage),
+                        GestureDetector(
+                          onTap: () =>
+                              context.read<TrackingBloc>().add(ChatTapped()),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey[200],
+                            child: SvgPicture.asset(AppImages.icMessage),
+                          ),
                         ),
                         const SizedBox(width: 12),
-                        CircleAvatar(
-                          backgroundColor: AppColors.colorMain,
-                          child: SvgPicture.asset(AppImages.icPhone),
+                        GestureDetector(
+                          onTap: () =>
+                              context.read<TrackingBloc>().add(CallTapped()),
+                          child: CircleAvatar(
+                            backgroundColor: AppColors.colorMain,
+                            child: SvgPicture.asset(AppImages.icPhone),
+                          ),
                         ),
                       ],
                     ),
@@ -382,17 +407,19 @@ class _DriverInfoBottomSheet extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Cancel Button
-          GestureDetector(
-            onTap: onCancel,
-            child: Text(
-              l10n.cancelRide,
-              style: const TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
+          ableToCancel
+              ? GestureDetector(
+                  onTap: onCancel,
+                  child: Text(
+                    l10n.cancelRide,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                )
+              : SizedBox(),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 ﻿import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/main/data/model/user/user.dart';
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/utils/widget/app_toast_widget.dart';
 
 import 'profile_bloc.dart';
@@ -255,6 +256,19 @@ class ProfilePage extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
+
+                    if (true || Constant.isDebugMode) ...[
+                      OutlinedButton(
+                          onPressed: () async {
+                            var isUserApp =
+                                await SharePreferenceUtil.getIsUserApp();
+                            await SharePreferenceUtil.setIsUserApp(!isUserApp);
+                            AppToast.show(context,
+                                "Đã chuyển thành app ${isUserApp ? 'Tài xế' : 'Khách hàng'}\n KHởi động lại app để áp dụng thay đổi");
+                          },
+                          child: Text("chuyen doi app"))
+                    ]
+                    //
                   ],
                 ),
               );

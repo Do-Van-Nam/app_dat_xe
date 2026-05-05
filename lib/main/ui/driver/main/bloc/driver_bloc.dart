@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:demo_app/main/data/model/ride/call.dart';
-import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/data/model/ride/ride.dart' hide parseNum;
 import 'package:demo_app/main/data/model/unique_error.dart';
 import 'package:demo_app/main/data/repository/driver_repository.dart';
 import 'package:demo_app/main/data/repository/ride_repository.dart';
@@ -21,12 +21,16 @@ part 'driver_state.dart';
 class DriverBloc extends Bloc<DriverEvent, DriverState> {
   late StreamSubscription _sub;
   final DriverSocketService _driverSocketService = DriverSocketService();
-  DriverBloc() : super(const DriverState()) {
+  final String? rideId;
+  DriverBloc({this.rideId}) : super(const DriverState()) {
+    on<DriverInitStatus>(_onDriverInitStatus);
     on<ToggleOnlineStatus>(_onToggleOnline);
     on<NewRideArrived>(_onNewRide);
     on<RideCancellationRequested>(_onRideCancellationRequested);
+    on<DriverCancelAfterAccept>(_onDriverCancelAfterAccept);
     on<RideAccepted>(_onRideAccepted);
     on<GetCallInfo>(_onGetCallInfo);
+    on<GetRideInfo>(_onGetRideInfo);
     on<RideRejected>(_onRideRejected);
     on<CountdownTicked>(_onCountdownTicked);
     on<ArrivedAtPickup>(_onArrivedPickup);
@@ -85,7 +89,7 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
         final dataMap = data["data"] as Map<String, dynamic>? ?? {};
 
         final Ride ride1 = Ride(
-          id: (dataMap["ride_id"] ?? 0), // An toàn
+          id: parseNum(dataMap["ride_id"] ?? 0), // An toàn
           pickupAddress: (dataMap["pickup_address"] ?? "").toString(),
           destinationAddress: (dataMap["destination_address"] ?? "").toString(),
 
@@ -128,11 +132,78 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
       }
       // data tu user socket service trong finding driver bloc {event: ride.accepted, data: {event: ride.accepted, ride_id: 160403560485574447, driver: {id: 160218433070182013, full_name: driver4, vehicle_name: hshsj, vehicle_number: shnanan, vehicle_type: 1, current_lat: 10.776889, current_lng: 106.700806}, occurred_at: 2026-04-18T04:28:30+00:00}}
     });
+    add(DriverInitStatus());
+
+    if (rideId != null) {
+      print("Driver bloc get ride info ${rideId!}");
+      add(GetRideInfo(rideId!));
+    } else {
+      print("Driver bloc get ride info: $rideId");
+    }
   }
 
   Timer? _countdownTimer;
   Timer? _mockRideTimer;
   final DriverRepository _driverRepository = DriverRepository();
+  Future<void> _onDriverInitStatus(
+      DriverInitStatus event, Emitter<DriverState> emit) async {
+    final isOnline = await SharePreferenceUtil.getDriverOnline();
+    emit(state.copyWith(
+      screen: isOnline ? DriverScreen.online : DriverScreen.offline,
+    ));
+  }
+
+  Future<void> _onGetRideInfo(
+      GetRideInfo event, Emitter<DriverState> emit) async {
+    final isOnline = await SharePreferenceUtil.getDriverOnline();
+    if (event.rideId != null) {
+      print("Driver bloc get ride info ${event.rideId!}");
+      // add(GetRideInfo(event.rideId!));
+    } else {
+      print("Driver bloc get ride info: $event.rideId");
+      emit(state.copyWith(
+        screen: isOnline ? DriverScreen.online : DriverScreen.offline,
+      ));
+      return;
+    }
+    try {
+      final (success, ride) =
+          await RideRepository().getRideDetail(event.rideId);
+      if (success) {
+        print("emit  success");
+
+        final (isSuccess2, callInfo) =
+            await RideRepository().getCallInfo(event.rideId);
+
+        print(
+            "Driver bloc join room sau khi lay thong tin chuyen moi ${event.rideId}");
+        _driverSocketService.joinRide(event.rideId);
+        emit(state.copyWith(
+          screen: DriverScreen.goingToPickup,
+          currentOffer: ride,
+          callInfo: callInfo,
+          clearOffer: true,
+          isAutoFetchRoute: true,
+          destinationPoint: LatLng(
+            double.parse(ride?.pickupLat?.toString() ?? "0"),
+            double.parse(ride?.pickupLng?.toString() ?? "0"),
+          ),
+        ));
+      } else {
+        emit(state.copyWith(
+          screen: isOnline ? DriverScreen.online : DriverScreen.offline,
+          error: UniqueError('Failed to get ride info'),
+        ));
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          screen: isOnline ? DriverScreen.online : DriverScreen.offline,
+          error: UniqueError(e.toString()),
+        ),
+      );
+    }
+  }
 
   Future<void> _onToggleOnline(
       ToggleOnlineStatus event, Emitter<DriverState> emit) async {
@@ -446,6 +517,37 @@ class DriverBloc extends Bloc<DriverEvent, DriverState> {
             screen: DriverScreen.arrivedDest,
             isAutoFetchRoute: false,
             destinationPoint: null));
+      } else {
+        print("emit  fail");
+        emit(state.copyWith(error: UniqueError(message)));
+      }
+    } catch (e) {
+      print("emit  fail: $e");
+      emit(state.copyWith(error: UniqueError(e.toString())));
+    }
+    //debug
+    // emit(state.copyWith(screen: DriverScreen.arrivedDest));
+  }
+
+  Future<void> _onDriverCancelAfterAccept(
+      DriverCancelAfterAccept event, Emitter<DriverState> emit) async {
+    try {
+      final position = await SharePreferenceUtil.getCurrentPosition();
+      final (isSuccess, message) = await _driverRepository.driverCancelRide(
+        rideId: state.currentOffer?.id ?? "0",
+        reasonId: 1,
+        lat: position?.latitude ?? 0,
+        lng: position?.longitude ?? 0,
+      );
+
+      if (isSuccess) {
+        print("emit  success");
+        emit(state.copyWith(
+          screen: DriverScreen.online,
+          isAutoFetchRoute: false,
+          destinationPoint: null,
+          clearOffer: true,
+        ));
       } else {
         print("emit  fail");
         emit(state.copyWith(error: UniqueError(message)));

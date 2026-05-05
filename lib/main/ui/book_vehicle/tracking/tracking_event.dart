@@ -13,3 +13,12 @@ class ChangeTrackingStatusEvent extends TrackingEvent {
   final TrackingStatus status;
   ChangeTrackingStatusEvent({required this.status});
 }
+
+class ChatTapped extends TrackingEvent {}
+
+class CallTapped extends TrackingEvent {}
+
+class TrackingDriverUpdatedEvent extends TrackingEvent {
+  final LatLng location;
+  TrackingDriverUpdatedEvent({required this.location});
+}

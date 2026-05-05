@@ -187,6 +187,12 @@ class ActivityPage extends StatelessWidget {
                           ],
                         ),
                       ),
+                      if (Constant.isDebugMode) ...[
+                        OutlinedButton(
+                            onPressed: () =>
+                                context.push(PATH_DRIVER_SCHEDULED_RIDE),
+                            child: Text("Driver Scheduled Ride")),
+                      ]
                     ],
                   ),
                 ),

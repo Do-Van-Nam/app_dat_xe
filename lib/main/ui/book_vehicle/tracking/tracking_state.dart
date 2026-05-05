@@ -30,8 +30,11 @@ final class TrackingLoaded extends TrackingState {
   final double originalPrice;
   final String pickupAddress;
   final String destinationAddress;
+  final String driverPhone;
   final TrackingStatus status;
   final Ride ride;
+  final UniqueError? error;
+  final LatLng? driverLocation;
 
   TrackingLoaded({
     required this.driverName,
@@ -44,8 +47,11 @@ final class TrackingLoaded extends TrackingState {
     required this.originalPrice,
     required this.pickupAddress,
     required this.destinationAddress,
+    required this.driverPhone,
     required this.status,
     required this.ride,
+    this.error,
+    this.driverLocation,
   });
 
   TrackingLoaded copyWith({
@@ -59,8 +65,11 @@ final class TrackingLoaded extends TrackingState {
     double? originalPrice,
     String? pickupAddress,
     String? destinationAddress,
+    String? driverPhone,
     TrackingStatus? status,
     Ride? ride,
+    UniqueError? error,
+    LatLng? driverLocation,
   }) {
     return TrackingLoaded(
       driverName: driverName ?? this.driverName,
@@ -73,8 +82,11 @@ final class TrackingLoaded extends TrackingState {
       originalPrice: originalPrice ?? this.originalPrice,
       pickupAddress: pickupAddress ?? this.pickupAddress,
       destinationAddress: destinationAddress ?? this.destinationAddress,
+      driverPhone: driverPhone ?? this.driverPhone,
       status: status ?? this.status,
       ride: ride ?? this.ride,
+      error: error,
+      driverLocation: driverLocation ?? this.driverLocation,
     );
   }
 }

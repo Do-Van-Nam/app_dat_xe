@@ -34,6 +34,9 @@ class ShareKey {
   static const String KEY_CURRENT_DROPOFF = "KEY_CURRENT_DROPOFF";
   static const String KEY_HOME_ADDRESS = "KEY_HOME_ADDRESS";
   static const String KEY_WORK_ADDRESS = "KEY_WORK_ADDRESS";
+  static const String KEY_IS_USER_APP = "KEY_IS_USER_APP";
+  static const String KEY_IS_DEBUG_MODE = "KEY_IS_DEBUG_MODE";
+  static const String KEY_DRIVER_ONLINE = "KEY_DRIVER_ONLINE";
 }
 
 class SharePreferenceUtil {
@@ -65,6 +68,36 @@ class SharePreferenceUtil {
   }) async {
     final prefs = await _prefs();
     return prefs.getBool(key) ?? defaultValue;
+  }
+
+  static Future<void> setDriverOnline(bool value) async {
+    final prefs = await _prefs();
+    await prefs.setBool(ShareKey.KEY_DRIVER_ONLINE, value);
+  }
+
+  static Future<bool> getDriverOnline() async {
+    final prefs = await _prefs();
+    return prefs.getBool(ShareKey.KEY_DRIVER_ONLINE) ?? false;
+  }
+
+  static Future<void> setIsUserApp(bool value) async {
+    final prefs = await _prefs();
+    await prefs.setBool(ShareKey.KEY_IS_USER_APP, value);
+  }
+
+  static Future<bool> getIsUserApp() async {
+    final prefs = await _prefs();
+    return prefs.getBool(ShareKey.KEY_IS_USER_APP) ?? false;
+  }
+
+  static Future<void> setIsDebugMode(bool value) async {
+    final prefs = await _prefs();
+    await prefs.setBool(ShareKey.KEY_IS_DEBUG_MODE, value);
+  }
+
+  static Future<bool> getIsDebugMode() async {
+    final prefs = await _prefs();
+    return prefs.getBool(ShareKey.KEY_IS_DEBUG_MODE) ?? true;
   }
 
   static Future<void> setInt(String key, int value) async {

@@ -13,6 +13,10 @@ enum DriverScreen {
   newShippingOrder,
   goingToPickupShippingOrder,
   startTripShippingOrder,
+
+  // giao do an
+  goingToPickupFoodOrder,
+  startFoodOrder
 }
 
 // ── Bottom nav tabs ───────────────────────────────────────────────────────

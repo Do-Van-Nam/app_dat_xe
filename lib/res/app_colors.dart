@@ -712,7 +712,36 @@ class AppColors {
   static const Color colorBtnCancelText = Color(0xFFDC2626);
   static const Color colorBtnCancelBorder = Color(0xFFFCA5A5);
 
-  // Empty state
   static const Color colorEmptyIcon = Color(0xFFD1D5DB);
   static const Color colorEmptyText = Color(0xFF9CA3AF);
+
+  static const Color color00357F = Color(0xFF00357F);
+  static const Color color69FF87 = Color(0xFF69FF87);
+  static const Color color002108 = Color(0xFF002108);
+  static const Color color737784 = Color(0xFF737784);
+  static const Color colorE2E2E5 = Color(0xFFE2E2E5);
+  static const Color colorC3C6D5_4C = Color(0x4CC3C6D5);
+  static const Color color434653 = Color(0xFF434653);
+  static const Color colorB0C6FF = Color(0xFFB0C6FF);
+  static const Color colorD9E2FF_4C = Color(0x4CD9E2FF);
+  static const Color color0F172A = Color(0xFF0F172A);
+  static const Color colorF9AB00 = Color(0xFFF9AB00);
+  static const Color color1A1C1E = Color(0xFF1A1C1E);
+
+  // Confirm Pickup Food Page Colors
+  static const Color color64748B = Color(0xFF64748B);
+  static const Color color00531E = Color(0xFF00531E);
+  static const Color colorC3C6D5_19 = Color(0x19C3C6D5);
+  static const Color colorC3C6D5 = Color(0xFFC3C6D5);
+  static const Color colorC3C6D5_66 = Color(0x66C3C6D5);
+  static const Color color00357F_33 = Color(0x3300357F);
+  static const Color color1A1C1E_CC = Color(0xCC1A1C1E);
+  static const Color color7F0002 = Color(0xFF7F0002);
+  static const Color colorE70003 = Color(0xFFE70003);
+  static const Color colorE8E8EA_7F = Color(0x7FE8E8EA);
+  static const Color color805600 = Color(0xFF805600);
+  static const Color color694600 = Color(0xFF694600);
+  static const Color colorF9F9FC_CC = Color(0xCCF9F9FC);
+  static const Color colorF9F9FC_E5 = Color(0xE5F9F9FC);
+  static const Color color004AAD = Color(0xFF004AAD);
 }

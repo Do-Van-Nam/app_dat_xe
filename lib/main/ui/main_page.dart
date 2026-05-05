@@ -1,3 +1,5 @@
+import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/ui/driver/main/bloc/driver_bloc.dart';
 import 'package:demo_app/main/utils/constant.dart';
 import 'package:demo_app/main/utils/custom_bottom_nav.dart';
 import 'package:demo_app/main/utils/widget/drawer_widget.dart';
@@ -67,13 +69,21 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: shell,
-      bottomNavigationBar: CustomBottomNav(
-        currentIndex: shell.currentIndex,
-        onTabSelected: (index) {
-          shell.goBranch(index);
-        },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<DriverBloc>(
+          create: (context) => DriverBloc(), // Không truyền rideId ở đây
+          lazy: false,
+        ),
+      ],
+      child: Scaffold(
+        body: shell,
+        bottomNavigationBar: CustomBottomNav(
+          currentIndex: shell.currentIndex,
+          onTabSelected: (index) {
+            shell.goBranch(index);
+          },
+        ),
       ),
     );
   }

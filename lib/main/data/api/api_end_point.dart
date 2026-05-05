@@ -61,6 +61,8 @@ class ApiEndPoint {
       "$DOMAIN_API/ride/$rideId/communication/calls";
   static String DOMAIN_RIDE_MESSAGES(dynamic rideId) =>
       "$DOMAIN_API/ride/$rideId/communication/messages";
+  static String DOMAIN_RIDE_TRACKING(dynamic rideId) =>
+      "$DOMAIN_API/ride/$rideId/tracking";
   static String get DOMAIN_RIDE_AIRPORTS => "$DOMAIN_API/ride/airports";
   static String get DOMAIN_RIDE_BOOK_AIRPORT => "$DOMAIN_API/ride/airport";
   static String get DOMAIN_RIDE_BOOK_INTERCITY => "$DOMAIN_API/ride/intercity";

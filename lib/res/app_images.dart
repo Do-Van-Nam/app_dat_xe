@@ -219,4 +219,6 @@ class AppImages {
 
   static const String icChevronDown = '$_base/ic_help_circle.svg';
   static const String icEmptyTrip = '$_base/ic_help_circle.svg';
+  static const String icComputer = '$_base/ic_computer.svg';
+  static const String icBag2 = '$_base/ic_bag2.svg';
 }

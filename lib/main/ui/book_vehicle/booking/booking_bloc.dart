@@ -114,8 +114,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       ];
 
       emit(BookingLoaded(
-        pickupAddress: "123 Lê Lợi, Quận 1",
-        destinationAddress: "Landmark 81, Bình Thạnh",
+        pickupAddress: "--",
+        destinationAddress: "--",
         vehicles: vehicles,
         selectedVehicleId: "car4",
         totalAmount: 45000,
@@ -259,6 +259,9 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           "tai booking bloc sau khi goi api confirm dat chuyen bat dau join ride $rId");
       // UserSocketService().joinRide(rId);
       DriverSocketService().joinRide(rId);
+    } else {
+      emit((state as BookingLoaded).copyWith(
+          submitMessage: UniqueError("Đã xảy ra lỗi! Vui lòng thử lại sau")));
     }
   }
 

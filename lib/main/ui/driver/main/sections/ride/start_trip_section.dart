@@ -1,4 +1,5 @@
 import 'package:demo_app/core/app_export.dart';
+import 'package:demo_app/main/ui/driver/main/sections/ride/widgets.dart';
 
 import '../../bloc/driver_bloc.dart';
 import '../../driver_models.dart';
@@ -205,6 +206,13 @@ class StartTripSection extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
+                      if (state.screen == DriverScreen.arrivedPickup) ...[
+                        CancelButton(
+                          label: l10n.cancelRide,
+                          onTap: () => confirmCancel(context, l10n),
+                          isLoading: false,
+                        ),
+                      ]
                     ],
                   ),
                 ),

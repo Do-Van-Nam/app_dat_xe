@@ -1,10 +1,11 @@
+import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:intl/intl.dart';
 
 class Constant {
   Constant._();
   // PAYMENT SEVICE
-  static const bool isUserApp = true; //true: app người dùng, false: app tài xế
-  static const bool isDebugMode = true;
+  static bool isUserApp = true; //true: app người dùng, false: app tài xế
+  static bool isDebugMode = true;
 
   static const String TOPUP = "Top-up";
   static const String PROFILE = "profile";
@@ -146,4 +147,9 @@ class Constant {
 
   static String formatDateV2(int millis) => DateFormat('dd/MM/yyyy')
       .format(DateTime.fromMillisecondsSinceEpoch(millis));
+}
+
+Future<void> initContants() async {
+  Constant.isUserApp = (await SharePreferenceUtil.getIsUserApp());
+  // Constant.isDebugMode = (await SharePreferenceUtil.getIsDebugMode());
 }

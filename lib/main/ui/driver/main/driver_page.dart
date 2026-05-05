@@ -1,5 +1,7 @@
 import 'package:demo_app/core/app_export.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
+import 'package:demo_app/main/ui/driver/main/sections/food/going_to_pickup_food_order_section.dart';
+import 'package:demo_app/main/ui/driver/main/sections/food/start_shipping_food_section.dart';
 import 'package:demo_app/main/ui/driver/main/sections/shipping/going_to_pickup_shipping_order_section.dart';
 import 'package:demo_app/main/ui/driver/main/sections/shipping/new_shipping_order_section.dart';
 import 'package:demo_app/main/ui/driver/main/sections/shipping/start_shipping_section.dart';
@@ -18,18 +20,70 @@ import 'sections/ride/offline_section.dart';
 import 'sections/ride/online_section.dart';
 import 'sections/ride/start_trip_section.dart';
 
-class DriverPage extends StatelessWidget {
-  const DriverPage({super.key, this.rideId});
+class DriverPage extends StatefulWidget {
   final String? rideId;
+
+  const DriverPage({super.key, this.rideId});
+
+  @override
+  State<DriverPage> createState() => _DriverPageState();
+}
+
+class _DriverPageState extends State<DriverPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Ép reload khi shouldRefresh = true
+    if (widget.rideId != null) {
+      print(" DriverPage được yêu cầu tải lại dữ liệu");
+      context
+          .read<DriverBloc>()
+          .add(GetRideInfo(widget.rideId!)); // Event reload
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant DriverPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Quan trọng: Phát hiện rideId thay đổi khi navigate lại
+    if (widget.rideId != oldWidget.rideId && widget.rideId != null) {
+      print("🔄 rideId thay đổi → Gọi event reload");
+      context.read<DriverBloc>().add(GetRideInfo(widget.rideId!));
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Gọi khi vào trang (cả lần đầu và lần sau)
+    if (widget.rideId != null) {
+      context.read<DriverBloc>().add(GetRideInfo(widget.rideId!));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => DriverBloc(),
-      child: const _DriverView(),
-    );
+    print("DriverPage: rideId: ${widget.rideId}");
+    return _DriverView();
   }
 }
+
+// class DriverPage extends StatelessWidget {
+//   const DriverPage({super.key, this.rideId});
+//   final String? rideId;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     print("DriverPage: rideId: $rideId");
+//     return BlocProvider(
+//       create: (_) => DriverBloc(rideId: rideId),
+//       child: const _DriverView(),
+//     );
+//   }
+// }
 
 class _DriverView extends StatelessWidget {
   const _DriverView();
@@ -112,7 +166,7 @@ class _DriverView extends StatelessWidget {
                   //   ),
                   // );
                   context.push(PATH_RATE_TRIP,
-                      extra: {'rideId': state.currentOffer!.id});
+                      extra: {'rideId': state.currentOffer!.id.toString()});
                 } else if (state.screen == DriverScreen.customerCancel) {
                   showCommonPopup(
                     context: context,
@@ -136,7 +190,21 @@ class _DriverView extends StatelessWidget {
                 return Stack(
                   children: [
                     _buildBody(state),
-
+                    Positioned(
+                      top: state.screen == DriverScreen.online ? 180 : 106,
+                      left: 16,
+                      // right: 16,
+                      child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: () =>
+                              context.push(PATH_DRIVER_SCHEDULED_RIDE),
+                          child: const Text("Chuyến xe đặt trước")),
+                    ),
                     // // dropdown doi giao dien de debug
                     if (Constant.isDebugMode) ...[
                       Positioned(
@@ -307,6 +375,11 @@ class _DriverView extends StatelessWidget {
         return l10n.arrivedDest;
       case DriverScreen.customerCancel:
         return l10n.arrivedDest;
+      // food
+      case DriverScreen.goingToPickupFoodOrder:
+        return l10n.arrivedDest;
+      case DriverScreen.startFoodOrder:
+        return l10n.arrivedDest;
     }
   }
 
@@ -316,6 +389,7 @@ class _DriverView extends StatelessWidget {
       duration: Duration(milliseconds: 300),
       child: () {
         switch (state.screen) {
+          // bike
           case DriverScreen.offline:
             return const OfflineSection();
           case DriverScreen.online:
@@ -330,6 +404,8 @@ class _DriverView extends StatelessWidget {
             return const StartTripSection();
           case DriverScreen.arrivedDest:
             return const OnlineSection();
+
+          // shippping
           case DriverScreen.newShippingOrder:
             return const NewShippingOrderSection();
           case DriverScreen.goingToPickupShippingOrder:
@@ -340,7 +416,11 @@ class _DriverView extends StatelessWidget {
           case DriverScreen.customerCancel:
             return const OnlineSection();
 
-          // return const ArrivedDestSection();
+          // food
+          case DriverScreen.goingToPickupFoodOrder:
+            return const GoingToPickupFoodOrderSection();
+          case DriverScreen.startFoodOrder:
+            return const StartShippingFoodSection();
         }
       }(),
     );

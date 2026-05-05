@@ -2,7 +2,8 @@ import 'app_config.dart';
 
 final AppConfig devConfig = AppConfig(
   environment: Environment.dev,
-  apiBaseUrl: 'http://160.30.173.186:8001',
+  // apiBaseUrl: 'http://160.30.173.186:8001',
+  apiBaseUrl: 'https://movecore.nhmsoft.com',
   enableLogging: true,
   appName: 'Demo App (Dev)',
   socketUrl: 'http://[]',

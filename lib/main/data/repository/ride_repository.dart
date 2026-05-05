@@ -2,6 +2,7 @@ import 'package:demo_app/main/data/api/api_end_point.dart';
 import 'package:demo_app/main/data/api/api_util.dart';
 import 'package:demo_app/main/data/model/ride/call.dart';
 import 'package:demo_app/main/data/model/ride/chat_room.dart';
+import 'package:demo_app/main/data/model/ride/tracking.dart';
 import 'package:demo_app/main/data/share_preference/share_preference.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
 import 'package:demo_app/main/data/model/ride/vehicle.dart';
@@ -55,6 +56,25 @@ class RideRepository {
       return (false, null);
     } catch (e, stack) {
       print('❌ getRideDetail error: $e');
+      print('Stack trace: $stack');
+      return (false, null);
+    }
+  }
+
+  Future<(bool, Tracking?)> getRideTracking(dynamic rideId) async {
+    try {
+      final BaseResponse response = await ApiUtil.getInstance()!.get(
+        url: ApiEndPoint.DOMAIN_RIDE_TRACKING(rideId),
+        headers: await _authHeader(),
+      );
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data['data'] ?? response.data;
+        return (true, Tracking.fromJson(data as Map<String, dynamic>));
+      }
+      return (false, null);
+    } catch (e, stack) {
+      print('❌ getRideTracking error: $e');
       print('Stack trace: $stack');
       return (false, null);
     }
@@ -253,23 +273,23 @@ class RideRepository {
   }
 
 // yeu cau huy chuyen sau khi da co tai xe nhan
-  Future<(bool, Ride?)> cancelRideRequest(dynamic rideId, String reason) async {
+  Future<bool> cancelRideRequest(dynamic rideId, String reason) async {
     final BaseResponse response = await ApiUtil.getInstance()!.post(
       url: ApiEndPoint.DOMAIN_RIDE_CANCEL_REQUEST(rideId),
       body: {"reason": reason},
       headers: await _authHeader(),
     );
 
-    if (response.isSuccess && response.data != null) {
+    if (response.isSuccess) {
       try {
         final data = response.data['data'] ?? response.data;
         await SharePreferenceUtil.saveCurrentRide(null);
-        return (true, Ride.fromJson(data as Map<String, dynamic>));
+        return true;
       } catch (e) {
         print('❌ cancelRide parse error: $e');
       }
     }
-    return (false, null);
+    return false;
   }
 
   // / yeu cau huy chuyen sau khi da co tai xe nhan

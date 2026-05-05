@@ -446,7 +446,7 @@ class HomeView extends StatelessWidget {
                 // debug
                 if (Constant.isDebugMode) ...[
                   OutlinedButton(
-                      onPressed: () => context.push(PATH_DRIVER_MAIN),
+                      onPressed: () => context.go(PATH_DRIVER_MAIN),
                       child: Text("Driver Main")),
                   OutlinedButton(
                       onPressed: () => context.push(PATH_WAITING_APPROVAL),

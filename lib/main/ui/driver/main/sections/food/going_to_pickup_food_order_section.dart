@@ -4,16 +4,16 @@ import 'package:demo_app/main/ui/driver/main/sections/ride/widgets.dart';
 import '../../bloc/driver_bloc.dart';
 import '../../driver_widgets.dart';
 
-class GoingToPickupShippingOrderSection extends StatefulWidget {
-  const GoingToPickupShippingOrderSection({super.key});
+class GoingToPickupFoodOrderSection extends StatefulWidget {
+  const GoingToPickupFoodOrderSection({super.key});
 
   @override
-  State<GoingToPickupShippingOrderSection> createState() =>
-      _GoingToPickupShippingOrderSectionState();
+  State<GoingToPickupFoodOrderSection> createState() =>
+      _GoingToPickupFoodOrderSectionState();
 }
 
-class _GoingToPickupShippingOrderSectionState
-    extends State<GoingToPickupShippingOrderSection> {
+class _GoingToPickupFoodOrderSectionState
+    extends State<GoingToPickupFoodOrderSection> {
   bool _isExpanded = true;
 
   @override
@@ -159,83 +159,40 @@ class _GoingToPickupShippingOrderSectionState
                         // Customer info row
                         Row(
                           children: [
-                            Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: Image.asset(
-                                    state.customer.avatarAsset ??
-                                        'assets/images/avatar.jpg',
-                                    width: 56,
-                                    height: 56,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
-                                      width: 56,
-                                      height: 56,
-                                      decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: AppColors.colorF3F4F6),
-                                    ),
-                                  ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                state.customer.avatarAsset ??
+                                    'assets/images/avatar.jpg',
+                                width: 56,
+                                height: 56,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.colorF3F4F6),
                                 ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.color2ECC71,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          AppImages.icStar,
-                                          width: 10,
-                                          height: 10,
-                                          colorFilter: const ColorFilter.mode(
-                                              AppColors.colorFFFFFF,
-                                              BlendMode.srcIn),
-                                        ),
-                                        const SizedBox(width: 2),
-                                        Text(
-                                          state.customer.rating
-                                              .toStringAsFixed(1),
-                                          style: AppStyles.inter10SemiBold
-                                              .copyWith(
-                                                  color: AppColors.colorFFFFFF),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(state.customer.name,
+                                  Text("state.ten quan an",
                                       style: AppStyles.inter18Bold),
                                   Text(
-                                    state.customer.paymentMethod,
+                                    "state.dia chi quan an",
                                     style: AppStyles.inter13Regular,
                                   ),
                                 ],
                               ),
                             ),
                             CircleIconButton(
-                              iconPath: AppImages.icChat,
-                              borderRadius: 999,
-                              onTap: () => context
-                                  .read<DriverBloc>()
-                                  .add(const ChatTapped()),
-                            ),
-                            const SizedBox(width: 8),
-                            CircleIconButton(
                               iconPath: AppImages.icPhone,
+                              bgColor: AppColors.color_FDB9,
                               borderRadius: 999,
                               onTap: () => context
                                   .read<DriverBloc>()
@@ -257,40 +214,58 @@ class _GoingToPickupShippingOrderSectionState
                                     // Pickup address
                                     CommonCard(
                                       margin: EdgeInsets.zero,
-                                      child: Row(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          SvgPicture.asset(
-                                            AppImages.icLocationPin,
-                                            width: 20,
-                                            height: 20,
-                                            colorFilter: const ColorFilter.mode(
-                                                AppColors.color666666,
-                                                BlendMode.srcIn),
+                                          Text(
+                                            "Danh sach mon",
+                                            style: AppStyles.inter14SemiBold
+                                                .copyWith(
+                                                    color:
+                                                        AppColors.color1A56DB),
                                           ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  l10n.pickupLocation,
-                                                  style: AppStyles
-                                                      .inter11SemiBold
-                                                      .copyWith(
-                                                          color: AppColors
-                                                              .color1A56DB),
+                                          SizedBox(
+                                            height: 4,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 20,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  color: AppColors.color_D9E2FF,
                                                 ),
-                                                Text(
+                                                child: Center(
+                                                  child: Text("1",
+                                                      style: AppStyles
+                                                          .inter14Bold
+                                                          .copyWith(
+                                                              color: AppColors
+                                                                  .colorMain)),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 4,
+                                              ),
+                                              Expanded(
+                                                child: Text(
                                                   state.customer.pickupAddress,
                                                   style:
                                                       AppStyles.inter14Medium,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
+                                          Text("Ghi chú: Không hành",
+                                              style: AppStyles.inter14Medium
+                                                  .copyWith(
+                                                      color: AppColors
+                                                          .colorGroupHeaderText)),
                                         ],
                                       ),
                                     ),
@@ -300,7 +275,7 @@ class _GoingToPickupShippingOrderSectionState
                                     // ĐÃ ĐẾN ĐIỂM ĐÓN button
                                     GestureDetector(
                                       onTap: () => context
-                                          .push(PATH_DELIVERY_CONFIRM_PICKUP),
+                                          .push(PATH_FOOD_CONFIRM_PICKUP),
                                       child: Container(
                                         width: double.infinity,
                                         height: 52,
@@ -311,7 +286,7 @@ class _GoingToPickupShippingOrderSectionState
                                         ),
                                         alignment: Alignment.center,
                                         child: Text(
-                                          l10n.arrivedShippingPickup,
+                                          l10n.arrivedFoodPickup,
                                           style: AppStyles.inter16Bold.copyWith(
                                               color: AppColors.colorFFFFFF),
                                         ),

@@ -19,6 +19,8 @@ import 'package:demo_app/main/ui/book_vehicle/finding_driver/finding_driver_page
 import 'package:demo_app/main/ui/book_vehicle/search_destination/search_destination_page.dart';
 import 'package:demo_app/main/ui/book_vehicle/tracking/tracking_page.dart';
 import 'package:demo_app/main/ui/chat/chat_page.dart';
+import 'package:demo_app/main/ui/driver/main/sections/food/confirm_pickup_food/confirm_pickup_food_page.dart';
+import 'package:demo_app/main/ui/driver/main/sections/shipping/confirm_pickup/confirm_pickup_page.dart';
 import 'package:demo_app/main/ui/driver/map_sample.dart';
 import 'package:demo_app/main/ui/driver/membership/membership_page.dart';
 import 'package:demo_app/main/ui/driver/scheduled_rides/scheduled_ride_page.dart';
@@ -97,6 +99,7 @@ const String PATH_CHAT = "/chat";
 //Shipping
 const String PATH_SHIPPING = "/shipping";
 const String PATH_DELIVERY_INFO = "/delivery-info";
+const String PATH_DELIVERY_CONFIRM_PICKUP = "/delivery-confirm-pickup";
 
 // food
 const String PATH_FOOD_INTRO = "/food-intro";
@@ -104,6 +107,7 @@ const String PATH_FOOD = "/food";
 const String PATH_CART = "/cart";
 const String PATH_CHECKOUT = "/checkout";
 const String PATH_ORDER_TRACKING = "/order-tracking";
+const String PATH_FOOD_CONFIRM_PICKUP = "/food-confirm-pickup";
 
 // driver
 const String PATH_DRIVER_MAIN = "/driver-main";
@@ -174,11 +178,17 @@ final GoRouter router = GoRouter(
           routes: [
             GoRoute(
                 path: PATH_HOME,
-                builder: (_, __) {
-                  return Constant.isUserApp ? HomePage() : DriverPage();
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>?;
+                  final rideId = extra?['rideId'] as String?;
+                  print("PATH_HOME: rideId $rideId");
+                  return Constant.isUserApp
+                      ? HomePage()
+                      : DriverPage(rideId: rideId);
                 }),
           ],
         ),
+
         // StatefulShellBranch(
         //   routes: [
         //     GoRoute(
@@ -202,20 +212,34 @@ final GoRouter router = GoRouter(
                     Constant.isUserApp ? ProfilePage() : ProfileDriverPage()),
           ],
         ),
+        if (Constant.isDebugMode) ...[
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                  path: PATH_DRIVER_MAIN,
+                  builder: (context, state) {
+                    final extra = state.extra as Map<String, dynamic>?;
+                    final rideId = extra?['rideId'] as String?;
+                    print("PATH_DRIVER_MAIN: rideId $rideId");
+                    return DriverPage(rideId: rideId);
+                  }),
+            ],
+          ),
+        ],
       ],
     ),
     GoRoute(
       path: PATH_SPLASH,
       builder: (context, state) => const SplashPage(),
     ),
-    GoRoute(
-      path: PATH_DRIVER_MAIN,
-      builder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        final rideId = extra?['rideId'] as String?;
-        return DriverPage(rideId: rideId);
-      },
-    ),
+    // GoRoute(
+    //   path: PATH_DRIVER_MAIN,
+    //   builder: (context, state) {
+    //     final extra = state.extra as Map<String, dynamic>?;
+    //     final rideId = extra?['rideId'] as String?;
+    //     return DriverPage(rideId: rideId);
+    //   },
+    // ),
     GoRoute(
         path: PATH_CHAT,
         builder: (context, state) {
@@ -437,6 +461,14 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_DELIVERY_INFO,
       builder: (context, state) => DeliveryInfoPage(),
+    ),
+    GoRoute(
+      path: PATH_DELIVERY_CONFIRM_PICKUP,
+      builder: (context, state) => ConfirmPickupPage(),
+    ),
+    GoRoute(
+      path: PATH_FOOD_CONFIRM_PICKUP,
+      builder: (context, state) => ConfirmPickupFoodPage(),
     ),
     GoRoute(
       path: PATH_ACTIVITY_TRIP_DETAIL,

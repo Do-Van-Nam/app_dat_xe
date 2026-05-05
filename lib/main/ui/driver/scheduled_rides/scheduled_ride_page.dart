@@ -285,7 +285,12 @@ class _AcceptedTripsTab extends StatelessWidget {
                 acceptLabel: l10n.startRideBtn,
                 cancelLabel: l10n.chuyenDiBtnCancel,
                 onCancel: () => _confirmCancel(context, trip.id, l10n),
-                onAccept: () => _confirmCancel(context, trip.id, l10n),
+                onAccept: () {
+                  print("go to path home: ${trip.id}");
+                  context.go(PATH_HOME, extra: {
+                    'rideId': trip.id,
+                  });
+                },
               );
             },
           ),

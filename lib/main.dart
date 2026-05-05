@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:demo_app/main/utils/constant.dart';
 import 'package:demo_app/main/utils/service/firebase_messaging_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:ui';
@@ -78,6 +79,9 @@ void main() async {
 
   // ====================== LOCATION PERMISSION ======================
   await _requestLocationPermission();
+
+  // ====================== debug INIT CON TANTS ======================
+  await initContants();
 
   // Chạy app
   runApp(

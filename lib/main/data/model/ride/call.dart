@@ -1,3 +1,5 @@
+import 'package:demo_app/core/app_export.dart';
+
 class Call {
   final num? id;
   final String? rideId;
@@ -36,7 +38,7 @@ class Call {
 
   factory Call.fromJson(Map<String, dynamic> json) {
     return Call(
-      id: json['id'],
+      id: parseNum(json['id']),
       rideId: json['ride_id'],
       callerId: json['caller_id'],
       calleeId: json['callee_id'],

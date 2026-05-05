@@ -4,8 +4,8 @@ import 'package:demo_app/main/ui/driver/main/sections/shipping/confirm_pickup/co
 import '../../bloc/driver_bloc.dart';
 import '../../driver_widgets.dart';
 
-class StartShippingSection extends StatelessWidget {
-  const StartShippingSection({super.key});
+class StartShippingFoodSection extends StatelessWidget {
+  const StartShippingFoodSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -175,23 +175,14 @@ class StartShippingSection extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SvgPicture.asset(
-                                          AppImages.icTruck,
-                                          width: 20,
-                                          height: 20,
-                                          colorFilter: const ColorFilter.mode(
-                                              AppColors.color666666,
-                                              BlendMode.srcIn),
-                                        ),
-                                        const SizedBox(height: 10),
                                         Text(
-                                          l10n.orderCodeLabel,
+                                          "Dia chi",
                                           style: AppStyles.inter11SemiBold
                                               .copyWith(
                                                   color: AppColors.color1A56DB),
                                         ),
                                         Text(
-                                          "ma don",
+                                          "123 duong abc",
                                           style: AppStyles.inter14Medium,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -206,15 +197,6 @@ class StartShippingSection extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SvgPicture.asset(
-                                          AppImages.icCash,
-                                          width: 20,
-                                          height: 20,
-                                          colorFilter: const ColorFilter.mode(
-                                              AppColors.color666666,
-                                              BlendMode.srcIn),
-                                        ),
-                                        const SizedBox(height: 10),
                                         Text(
                                           l10n.paymentLabel,
                                           style: AppStyles.inter11SemiBold
@@ -223,7 +205,9 @@ class StartShippingSection extends StatelessWidget {
                                         ),
                                         Text(
                                           "140 000đ ",
-                                          style: AppStyles.inter14Medium,
+                                          style: AppStyles.inter14Medium
+                                              .copyWith(
+                                                  color: AppColors.colorRed),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
@@ -235,16 +219,31 @@ class StartShippingSection extends StatelessWidget {
                           ),
 
                           const SizedBox(height: 16),
-                          ImageProofWidget(
-                            title: l10n.imageProof,
-                            subtitle: l10n.takePhotoPackage,
-                            hint: l10n.photoRequirement,
-                            isPhotoTaken: false,
-                            onTap: () {
-                              // context
-                              //     .read<ConfirmPickupBloc>()
-                              //     .add(ConfirmPickupCameraTapped());
-                            },
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 8),
+                            decoration: ShapeDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment(0.21, -1.35),
+                                end: Alignment(0.79, 2.35),
+                                colors: [
+                                  AppColors.color7F0002,
+                                  AppColors.colorE70003
+                                ],
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                            ),
+                            child: Text(
+                              l10n.reportIssue,
+                              textAlign: TextAlign.center,
+                              style: AppStyles.inter14Bold.copyWith(
+                                color: Colors.white,
+                                letterSpacing: 1.40,
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 16),
                           // ĐÃ ĐẾN ĐIỂM ĐÓN button

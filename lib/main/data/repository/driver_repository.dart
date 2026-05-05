@@ -67,7 +67,9 @@ class DriverRepository {
         "current_lng": lng,
       },
     );
-
+    if (response.isSuccess) {
+      SharePreferenceUtil.setDriverOnline(isOnline);
+    }
     return (response.isSuccess, response.message ?? "");
   }
 

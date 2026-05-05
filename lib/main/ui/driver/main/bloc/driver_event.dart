@@ -11,6 +11,12 @@ class ToggleOnlineStatus extends DriverEvent {
   const ToggleOnlineStatus();
 }
 
+class DriverInitStatus extends DriverEvent {
+  const DriverInitStatus();
+  @override
+  List<Object?> get props => [];
+}
+
 /// A new ride offer arrived.
 class NewRideArrived extends DriverEvent {
   final Ride offer;
@@ -27,12 +33,26 @@ class GetCallInfo extends DriverEvent {
   List<Object?> get props => [rideId];
 }
 
+class GetRideInfo extends DriverEvent {
+  final String rideId;
+  const GetRideInfo(this.rideId);
+  @override
+  List<Object?> get props => [rideId];
+}
+
 /// Customer cancellation requested.
 class RideCancellationRequested extends DriverEvent {
   final Ride offer;
   const RideCancellationRequested(this.offer);
   @override
   List<Object?> get props => [offer];
+}
+
+///tai xe huy sau khi nhan chuyen
+class DriverCancelAfterAccept extends DriverEvent {
+  const DriverCancelAfterAccept();
+  @override
+  List<Object?> get props => [];
 }
 
 /// Customer cancellation requested.

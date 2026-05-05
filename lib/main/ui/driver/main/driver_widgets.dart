@@ -363,3 +363,79 @@ class NavTabItem {
   final String icon;
   final String label;
 }
+
+class ToggleSection extends StatefulWidget {
+  const ToggleSection({
+    super.key,
+    required this.fixedWidget,
+    required this.contentWidget,
+  });
+  final Widget fixedWidget;
+  final Widget contentWidget;
+
+  @override
+  State<ToggleSection> createState() => _ToggleSectionState();
+}
+
+class _ToggleSectionState extends State<ToggleSection> {
+  bool _isExpanded = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onVerticalDragEnd: (details) {
+        if (details.primaryVelocity != null) {
+          if (details.primaryVelocity! > 0) {
+            setState(() => _isExpanded = false); // Swipe down
+          } else if (details.primaryVelocity! < 0) {
+            setState(() => _isExpanded = true); // Swipe up
+          }
+        }
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          color: AppColors.colorFFFFFF,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            GestureDetector(
+              onTap: () {
+                setState(() => _isExpanded = !_isExpanded);
+              },
+              child: Container(
+                width: double.infinity,
+                color: Colors.transparent,
+                padding: const EdgeInsets.only(bottom: 14),
+                alignment: Alignment.center,
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.colorBDBDBD,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+            ),
+
+            // Customer info row
+            widget.fixedWidget,
+
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: _isExpanded
+                  ? widget.contentWidget
+                  : const SizedBox(width: double.infinity),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

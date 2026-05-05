@@ -19,7 +19,7 @@ class FindingDriverBloc extends Bloc<FindingDriverEvent, FindingDriverState> {
       : super(FindingDriverState(
           pickupAddress: ride?.pickupAddress ?? '',
           destinationAddress: ride?.destinationAddress ?? '',
-          estimatedPrice: (ride?.totalPrice ?? 0.0) as int,
+          estimatedPrice: ride?.totalPrice?.toInt() ?? 0,
           distance: (ride?.distance?.toDouble() ?? 0.0) / 1000,
         )) {
     on<FindingDriverStartSearch>(_onStartSearch);

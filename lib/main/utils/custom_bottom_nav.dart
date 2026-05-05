@@ -1,4 +1,5 @@
 import 'package:demo_app/generated/app_localizations.dart';
+import 'package:demo_app/main/utils/constant.dart';
 import 'package:demo_app/res/app_colors.dart';
 import 'package:demo_app/res/app_fonts.dart';
 import 'package:demo_app/res/app_images.dart';
@@ -53,6 +54,17 @@ class CustomBottomNav extends StatelessWidget {
                     AppLocalizations.of(context)!.profile,
                   ),
                 ),
+                if (Constant.isDebugMode) ...[
+                  Expanded(
+                    child: _buildNavItem(
+                      3,
+                      3 == currentIndex
+                          ? AppImages.icProfileActive
+                          : AppImages.icProfile,
+                      "DRIVER",
+                    ),
+                  ),
+                ]
               ],
             ),
           ),
