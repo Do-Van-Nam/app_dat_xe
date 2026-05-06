@@ -5,7 +5,7 @@ class Constant {
   Constant._();
   // PAYMENT SEVICE
   static bool isUserApp = true; //true: app người dùng, false: app tài xế
-  static bool isDebugMode = true;
+  static bool isDebugMode = false;
 
   static const String TOPUP = "Top-up";
   static const String PROFILE = "profile";

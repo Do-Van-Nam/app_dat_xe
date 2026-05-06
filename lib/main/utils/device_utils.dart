@@ -9,6 +9,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DeviceUtils {
   static final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   static Map<String, dynamic> deviceData = {};
+  static bool _initialized = false;
+  static Future<void> init() async {
+    if (_initialized) return;
+
+    await getDeviceInfo();
+
+    _initialized = true;
+  }
 
   // Lấy thông tin thiết bị
   static Future<Map<String, dynamic>> getDeviceInfo() async {

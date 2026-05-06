@@ -1,130 +1,156 @@
 import 'dart:async';
-import 'package:demo_app/main/utils/constant.dart';
-import 'package:demo_app/main/utils/service/firebase_messaging_service.dart';
-import 'package:geolocator/geolocator.dart';
 import 'dart:ui';
+
 import 'package:demo_app/app.dart';
 import 'package:demo_app/config/app_config.dart';
 import 'package:demo_app/main/data/service/google_sign_in_service.dart';
+import 'package:demo_app/main/utils/constant.dart';
+import 'package:demo_app/main/utils/device_utils.dart';
+import 'package:demo_app/main/utils/service/firebase_messaging_service.dart';
+import 'package:demo_app/main/utils/service/local_notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:geolocator/geolocator.dart';
+
 import 'config/config_dev.dart';
 import 'config/config_prod.dart';
 import 'config/config_staging.dart';
 import 'firebase_options.dart';
-import 'main/utils/device_utils.dart';
-import 'main/utils/service/local_notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ====================== ERROR HANDLING ======================
+  // ====================== ERROR HANDLING (FAIL-SAFE) ======================
   FlutterError.onError = (FlutterErrorDetails details) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+    try {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+    } catch (_) {
+      debugPrint('⚠️ Crashlytics chưa sẵn sàng');
+    }
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    try {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    } catch (_) {
+      debugPrint('⚠️ Crashlytics chưa sẵn sàng');
+    }
     return true;
   };
 
-  // ====================== INITIALIZE FIREBASE ======================
+  // ====================== RUN APP NGAY (KHÔNG CHỜ FIREBASE) ======================
+  final AppConfig appConfig = _getCurrentConfig();
+  AppConfig.init(appConfig);
+  await DeviceUtils.init();
+//debug
+  await initContants();
+
+  runApp(App(config: appConfig));
+
+  // ====================== INIT SAU (KHÔNG BLOCK UI) ======================
+  unawaited(_initServices());
+}
+
+Future<void> _initServices() async {
+  // ====================== FIREBASE ======================
   try {
-    // Kiểm tra để tránh duplicate Firebase App
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-      print("Firebase initialized successfully");
+      debugPrint("✅ Firebase initialized");
     }
   } catch (e) {
-    print("Firebase initialization error: $e");
+    debugPrint("❌ Firebase init error: $e");
   }
 
   // ====================== GOOGLE SIGN IN ======================
   try {
     await GoogleAuthService().initialize();
-    print("Google Sign In initialized");
+    debugPrint("✅ Google Sign In initialized");
   } catch (e) {
-    print("GoogleAuthService initialize error: $e");
+    debugPrint("❌ GoogleAuthService error: $e");
   }
 
   // ====================== LOCAL NOTIFICATION ======================
   try {
     await LocalNotificationService.instance.init();
-    print("Local notification initialized");
+    debugPrint("✅ Local notification initialized");
   } catch (e) {
-    print("Local notification init error: $e");
+    debugPrint("❌ Local notification error: $e");
   }
 
   // ====================== FIREBASE MESSAGING ======================
-  await FirebaseMessagingService.initialize();
-
-  // ====================== FOREGROUND & BACKGROUND MESSAGING ======================
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('🔔 Foreground message: ${message.toString()}');
-    LocalNotificationService.instance.showFromFCM(message);
-  });
-
-  // ====================== APP CONFIG ======================
-  final AppConfig appConfig = _getCurrentConfig();
-
-  AppConfig.init(appConfig);
-
-  // Lưu device info (ID, name, token) vào SharedPreferences
-  await DeviceUtils.saveDeviceInfoToPrefs();
-
-  // ====================== LOCATION PERMISSION ======================
-  await _requestLocationPermission();
-
-  // ====================== debug INIT CON TANTS ======================
-  await initContants();
-
-  // Chạy app
-  runApp(
-      App(config: devConfig)); // ← Dùng appConfig thay vì hard-code devConfig
-}
-
-/// Yêu cầu quyền vị trí khi mở app.
-/// Nếu đã bị từ chối vĩnh viễn thì bỏ qua (không force mở Settings).
-Future<void> _requestLocationPermission() async {
   try {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      print('⚠️ Location services are disabled.');
-      return;
-    }
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
+    await FirebaseMessagingService.initialize();
 
-    if (permission == LocationPermission.deniedForever) {
-      print('⚠️ Location permission permanently denied.');
-      return;
-    }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint('🔔 Foreground message: $message');
+      LocalNotificationService.instance.showFromFCM(message);
+    });
 
-    print('✅ Location permission: $permission');
+    debugPrint("✅ Firebase Messaging initialized");
   } catch (e) {
-    print('❌ _requestLocationPermission error: $e');
+    debugPrint("❌ Firebase Messaging error: $e");
+  }
+
+  // ====================== DEVICE INFO ======================
+  try {
+    await DeviceUtils.saveDeviceInfoToPrefs();
+  } catch (e) {
+    debugPrint("❌ Device info error: $e");
+  }
+
+  // ====================== LOCATION ======================
+  try {
+    await _requestLocationPermission();
+  } catch (e) {
+    debugPrint("❌ Location error: $e");
   }
 }
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('🔕 Background message: ${message.toString()}');
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  LocalNotificationService.instance.showFromFCM(message);
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+
+    debugPrint('🔕 Background message: $message');
+    LocalNotificationService.instance.showFromFCM(message);
+  } catch (e) {
+    debugPrint('❌ Background handler error: $e');
+  }
+}
+
+Future<void> _requestLocationPermission() async {
+  try {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.deniedForever) return;
+
+    debugPrint('✅ Location permission: $permission');
+  } catch (e) {
+    debugPrint('❌ Location error: $e');
+  }
 }
 
 // Hàm chọn config theo môi trường
 AppConfig _getCurrentConfig() {
   const String env = String.fromEnvironment('ENV', defaultValue: 'dev');
-
   switch (env.toLowerCase()) {
     case 'prod':
       return prodConfig;
@@ -135,14 +161,3 @@ AppConfig _getCurrentConfig() {
       return devConfig;
   }
 }
-// # Chạy Dev (mặc định)
-// flutter run -t lib/main.dart --dart-define=ENV=dev
-
-// # Chạy Staging
-// flutter run -t lib/main.dart --dart-define=ENV=staging
-
-// # Chạy Production
-// flutter run -t lib/main.dart --dart-define=ENV=prod
-
-// # Build APK Production
-// flutter build apk -t lib/main.dart --dart-define=ENV=prod --release

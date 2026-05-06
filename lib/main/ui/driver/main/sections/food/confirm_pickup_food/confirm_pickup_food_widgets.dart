@@ -176,6 +176,7 @@ class ReceiptPhotoWidget extends StatelessWidget {
   final String reportIssueText;
   final bool isPhotoTaken;
   final VoidCallback onTap;
+  final BuildContext fatherContext;
 
   const ReceiptPhotoWidget({
     super.key,
@@ -185,6 +186,7 @@ class ReceiptPhotoWidget extends StatelessWidget {
     required this.reportIssueText,
     required this.isPhotoTaken,
     required this.onTap,
+    required this.fatherContext,
   });
 
   @override
@@ -255,24 +257,27 @@ class ReceiptPhotoWidget extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            decoration: ShapeDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment(0.21, -1.35),
-                end: Alignment(0.79, 2.35),
-                colors: [AppColors.color7F0002, AppColors.colorE70003],
+          child: GestureDetector(
+            onTap: () => fatherContext.push(PATH_PROBLEM_REPORT),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              decoration: ShapeDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment(0.21, -1.35),
+                  end: Alignment(0.79, 2.35),
+                  colors: [AppColors.color7F0002, AppColors.colorE70003],
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(999),
+                ),
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(999),
-              ),
-            ),
-            child: Text(
-              reportIssueText,
-              textAlign: TextAlign.center,
-              style: AppStyles.inter14Bold.copyWith(
-                color: Colors.white,
-                letterSpacing: 1.40,
+              child: Text(
+                reportIssueText,
+                textAlign: TextAlign.center,
+                style: AppStyles.inter14Bold.copyWith(
+                  color: Colors.white,
+                  letterSpacing: 1.40,
+                ),
               ),
             ),
           ),

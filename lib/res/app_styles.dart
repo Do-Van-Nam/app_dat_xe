@@ -371,4 +371,29 @@ class AppStyles {
     fontWeight: FontWeight.w800,
     color: AppColors.color163172,
   );
+
+  static const TextStyle inter10Bold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 10,
+    fontWeight: FontWeight.w700,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter10Black = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 10,
+    fontWeight: FontWeight.w900,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter20Black = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 20,
+    fontWeight: FontWeight.w900,
+    color: AppColors.colorTextPrimary,
+  );
+  static const TextStyle inter10Medium = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    color: AppColors.colorTextPrimary,
+  );
 }

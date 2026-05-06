@@ -20,6 +20,7 @@ import 'package:demo_app/main/ui/book_vehicle/search_destination/search_destinat
 import 'package:demo_app/main/ui/book_vehicle/tracking/tracking_page.dart';
 import 'package:demo_app/main/ui/chat/chat_page.dart';
 import 'package:demo_app/main/ui/driver/main/sections/food/confirm_pickup_food/confirm_pickup_food_page.dart';
+import 'package:demo_app/main/ui/driver/main/sections/food/problem_report/problem_report_page.dart';
 import 'package:demo_app/main/ui/driver/main/sections/shipping/confirm_pickup/confirm_pickup_page.dart';
 import 'package:demo_app/main/ui/driver/map_sample.dart';
 import 'package:demo_app/main/ui/driver/membership/membership_page.dart';
@@ -37,6 +38,8 @@ import 'package:demo_app/main/ui/profile/points_wallet/points_wallet_page.dart';
 import 'package:demo_app/main/ui/profile/profile_driver_page.dart';
 import 'package:demo_app/main/ui/profile/profile_page.dart';
 import 'package:demo_app/main/ui/profile/voucher/voucher_page.dart';
+import 'package:demo_app/main/ui/restaurant/dashboard/dashboard_page.dart';
+import 'package:demo_app/main/ui/restaurant/orders/orders_page.dart';
 import 'package:demo_app/main/ui/shipping/delivery_info/delivery_info_page.dart';
 import 'package:demo_app/main/ui/shipping/shipping_page.dart';
 import 'package:demo_app/main/utils/constant.dart';
@@ -108,7 +111,7 @@ const String PATH_CART = "/cart";
 const String PATH_CHECKOUT = "/checkout";
 const String PATH_ORDER_TRACKING = "/order-tracking";
 const String PATH_FOOD_CONFIRM_PICKUP = "/food-confirm-pickup";
-
+const String PATH_PROBLEM_REPORT = "/problem-report";
 // driver
 const String PATH_DRIVER_MAIN = "/driver-main";
 const String PATH_RATE_TRIP = "/rate-trip";
@@ -119,6 +122,10 @@ const String PATH_DRIVER_MEMBERSHIP = "/driver-membership";
 const String PATH_DRIVER_TOPUP = "/driver-topup";
 const String PATH_PAYMENT_SUCCESS = "/payment-success";
 const String PATH_DRIVER_SCHEDULED_RIDE = "/driver-scheduled-ride";
+
+//shop, restaurant
+const String PATH_DASHBOARD = "/dashboard";
+const String PATH_ORDERS = "/orders";
 
 // activity
 const String PATH_ACTIVITY_TRIP_DETAIL = "/activity-trip-detail";
@@ -471,6 +478,10 @@ final GoRouter router = GoRouter(
       builder: (context, state) => ConfirmPickupFoodPage(),
     ),
     GoRoute(
+      path: PATH_PROBLEM_REPORT,
+      builder: (context, state) => ProblemReportPage(),
+    ),
+    GoRoute(
       path: PATH_ACTIVITY_TRIP_DETAIL,
       builder: (context, state) {
         final extras = state.extra as Map;
@@ -521,6 +532,16 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: PATH_PAYMENT_SUCCESS,
       builder: (context, state) => PaymentSuccessPage(),
+    ),
+
+// restaurant
+    GoRoute(
+      path: PATH_DASHBOARD,
+      builder: (context, state) => DashboardPage(),
+    ),
+    GoRoute(
+      path: PATH_ORDERS,
+      builder: (context, state) => OrdersPage(),
     ),
   ],
   // redirect: (context, state) {

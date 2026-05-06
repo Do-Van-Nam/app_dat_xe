@@ -1,4 +1,4 @@
-﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:demo_app/main/data/model/goong/location.dart';
 import 'package:demo_app/main/data/model/homepage/homepage.dart';
 import 'package:demo_app/main/data/model/ride/ride.dart';
@@ -528,6 +528,12 @@ class HomeView extends StatelessWidget {
                   OutlinedButton(
                       onPressed: () => context.push(PATH_DRIVER_SCHEDULED_RIDE),
                       child: Text("Driver Scheduled Ride")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_DASHBOARD),
+                      child: Text("Dashboard")),
+                  OutlinedButton(
+                      onPressed: () => context.push(PATH_ORDERS),
+                      child: Text("Orders")),
                 ],
                 const SizedBox(height: 100), // Space for bottom nav
               ],

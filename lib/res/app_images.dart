@@ -221,4 +221,10 @@ class AppImages {
   static const String icEmptyTrip = '$_base/ic_help_circle.svg';
   static const String icComputer = '$_base/ic_computer.svg';
   static const String icBag2 = '$_base/ic_bag2.svg';
+  static const String icCircleX = '$_base/ic_circle_x.svg';
+  static const String icLocationError = '$_base/ic_location_error.svg';
+  static const String icClock3 = '$_base/ic_clock3.svg';
+  static const String icUnableToContact = '$_base/ic_unable_to_contact.svg';
+  static const String icMore = '$_base/ic_more.svg';
+  static const String icMore2 = '$_base/ic_more2.svg';
 }

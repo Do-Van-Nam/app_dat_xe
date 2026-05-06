@@ -219,32 +219,34 @@ class StartShippingFoodSection extends StatelessWidget {
                           ),
 
                           const SizedBox(height: 16),
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 8),
-                            decoration: ShapeDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment(0.21, -1.35),
-                                end: Alignment(0.79, 2.35),
-                                colors: [
-                                  AppColors.color7F0002,
-                                  AppColors.colorE70003
-                                ],
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                            ),
-                            child: Text(
-                              l10n.reportIssue,
-                              textAlign: TextAlign.center,
-                              style: AppStyles.inter14Bold.copyWith(
-                                color: Colors.white,
-                                letterSpacing: 1.40,
-                              ),
-                            ),
-                          ),
+                          GestureDetector(
+                              onTap: () => context.push(PATH_PROBLEM_REPORT),
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 8),
+                                decoration: ShapeDecoration(
+                                  gradient: const LinearGradient(
+                                    begin: Alignment(0.21, -1.35),
+                                    end: Alignment(0.79, 2.35),
+                                    colors: [
+                                      AppColors.color7F0002,
+                                      AppColors.colorE70003
+                                    ],
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                ),
+                                child: Text(
+                                  l10n.reportIssue,
+                                  textAlign: TextAlign.center,
+                                  style: AppStyles.inter14Bold.copyWith(
+                                    color: Colors.white,
+                                    letterSpacing: 1.40,
+                                  ),
+                                ),
+                              )),
                           const SizedBox(height: 16),
                           // ĐÃ ĐẾN ĐIỂM ĐÓN button
                           GestureDetector(
